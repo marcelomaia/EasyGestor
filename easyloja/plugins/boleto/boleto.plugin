@@ -1,0 +1,8 @@
+[Plugin]
+Module=boletoplugin
+Version=1
+Name=Boleto iugu
+Name[pt_BR]=Boleto iugu
+Authors=EBI
+Copyright=Copyright © 2016 EBI - Empresa Brasileira de Informatica
+Website=http://www.ebi.com.br/

@@ -1,0 +1,52 @@
+<html>
+  <head>
+    <title>Graficos do Easyloja</title>
+        <link rel="stylesheet" href="/web/static/css/chartist.min.css" />
+        <link rel="stylesheet" href="/web/static/css/chartist-plugin-legend.css">
+        <script src="/web/static/js/pollyfix.js"></script>
+        <script src="/web/static/js/chartist.min.js"></script>
+        <script src="/web/static/js/chartist-plugin-legend.js"></script>
+  </head>
+  <body>
+    <h3>Receita x M&ecirc;s</h3>
+    <h5> Total em Vendas CONFIRMADAS e PAGAS no periodo. </h5>
+    <div class="ct-chart ct-major-seventh" id="placeholder"></div>
+    <script>
+             var chart;
+
+             function reloadChart(series, legends){
+
+                 var options = {
+                    fullWidth: true,
+                    axisY: {
+                             low:0,
+                             labelInterpolationFnc: function(value)
+                             {
+                                 return 'R$' +value;
+                             },
+                             labelOffset: {
+                                  x: -11,
+                                  y: 0
+                                }
+                     },
+                     plugins: [
+                                Chartist.plugins.legend({
+                                    legendNames: legends
+                                })
+                        ]
+                 };
+
+                 var data = {
+                    labels: ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul',
+                        'Ago', 'Set', 'Out', 'Nov', 'Dez'],
+                    series:series
+                  }
+                    chart =  new Chartist.Line('#placeholder', data, options);
+             }
+
+
+
+     </script>
+    
+  </body>
+</html>

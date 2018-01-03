@@ -1,0 +1,1 @@
+DROP TABLE IF EXISTS ncm_data CASCADE;

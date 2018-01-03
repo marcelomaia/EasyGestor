@@ -1,0 +1,1 @@
+alter table sale add column daily_code integer;

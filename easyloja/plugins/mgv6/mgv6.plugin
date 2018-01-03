@@ -1,0 +1,8 @@
+[Plugin]
+Module=mgvplugin
+Version=1
+Name=MGV
+Name[pt_BR]=MGV
+Authors=EBI
+Copyright=Copyright © 2017 EBI - Empresa Brasileira de Informatica
+Website=http://www.ebi.com.br/

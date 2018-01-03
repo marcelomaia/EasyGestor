@@ -1,0 +1,1 @@
+ALTER TABLE service  ADD COLUMN full_image bytea;

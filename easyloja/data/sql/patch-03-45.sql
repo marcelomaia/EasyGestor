@@ -1,0 +1,1 @@
+ALTER TABLE  nfe_sale_history ADD COLUMN send_date timestamp;

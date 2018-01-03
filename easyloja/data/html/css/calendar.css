@@ -1,0 +1,92 @@
+* {
+    -webkit-user-select: none;
+    -webkit-user-drag: none;
+    font-family: Ubuntu;
+    margin: 0;
+}
+
+#calendar {
+    font-size: 13px;
+    z-index: 10000 !important;
+    cursor: default;
+}
+
+#loading_box {
+    text-align: center;
+}
+
+#loading {
+    display: inline-block;
+    z-index: 20000;
+    position: relative;
+    background-color: #ffffa3;
+    border: 1px solid #f1d031;
+    border-top: 0;
+    padding: 8px 2em;
+    text-align: center;
+    color: #555555;
+    -webkit-border-radius: 0 0 7px 7px;
+    opacity: 0.90;
+}
+
+.fc-day-number {
+}
+
+.fc-day-content {
+}
+
+.fc-header-title {
+    display: none;
+}
+
+.fc-today {
+    border: 1px solid #999 !important;
+}
+
+.fc-event {
+    border: 1px solid #eee;
+    border-left: 5px solid black;
+    color: black;
+}
+
+.fc-event-inner {
+    border-width: 0 !important;
+    padding: 0 2px;
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+}
+
+.fc-view-basicWeek .fc-event,
+.fc-view-basicDay .fc-event {
+    font-size: 13px;
+}
+
+.ui-tooltip {
+    font-size: 13px;
+}
+
+
+
+
+.client_call {
+    border-left-color: #fcaf3e;
+}
+
+.payable {
+    border-left-color: #ef2929;
+}
+
+.receivable {
+    border-left-color: #4e9a06;
+}
+
+.purchase {
+    border-left-color: #729fcf;
+}
+
+.late {
+    font-weight: bold;
+}
+
+

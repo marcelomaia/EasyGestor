@@ -1,0 +1,1 @@
+alter table product_stock_item add column quote_quantity numeric(20,3) default 0;

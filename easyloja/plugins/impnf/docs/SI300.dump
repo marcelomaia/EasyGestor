@@ -1,0 +1,49 @@
+Contents of SI300.dll: 956928 bytes
+
+Exports table:
+
+  Name:            SI300.dll
+  Characteristics: 00000000
+  TimeDateStamp:   57E29394 Wed Sep 21 11:05:08 2016
+  Version:         0.00
+  Ordinal base:    1
+  # of functions:  31
+  # of Names:      31
+Addresses of functions: 000DCDF8
+Addresses of name ordinals: 000DCEF0
+Addresses of names: 000DCE74
+
+  Entry Pt  Ordn  Name
+  0002FBD0     1 _Get_VersaoDLL@4
+  0002C560     2 SI300_Autenticar_Doc
+  0002B430     3 SI300_Consulta_UltimaImpressao
+  0002C500     4 SI300_Ler_CMC7
+  0002AFF0     5 SI300_ModeloImpressora
+  0002AE00     6 SI300_eBuscarPortaVelocidade
+  0002AFB0     7 SI300_fecharPorta
+  0002B070     8 SI300_iAcionarGaveta
+  0002C1E0     9 SI300_iCarregarBMPMemoria
+  00003820    10 SI300_iConfigurarGuilhotina
+  0002C370    11 SI300_iImprimeCheque
+  0002B8A0    12 SI300_iImprimirArquivo
+  0002BA50    13 SI300_iImprimirBMP
+  0002C2B0    14 SI300_iImprimirBMPMemoria
+  0002BAE0    15 SI300_iImprimirImagem
+  0002B720    16 SI300_iImprimirTexto
+  0002BB70    17 SI300_iImprimirXML
+  0002C000    18 SI300_iImprimirXMLString
+  0002BE00    19 SI300_iImprimirXML_NFCe
+  0002B2E0    20 SI300_rConsultaStatusCompleto
+  0002B220    21 SI300_rConsultaStatusImpressora
+  0002B630    22 SI300_rStatusGaveta
+  00001C00    23 SI300_rStatusGuilhotina
+  0002B3A0    24 SI300_regCodePageAutomatico
+  0002B4E0    25 SI300_regEnterFinal
+  00003820    26 SI300_regLinhasGuilhotina
+  00001C00    27 SI300_regModoGaveta
+  00003820    28 SI300_regPortaComunicacao
+  0002B550    29 SI300_regTabulacao
+  00003820    30 SI300_regVelocidade
+  0002C5C0    31 SetType
+
+Done dumping SI300.dll

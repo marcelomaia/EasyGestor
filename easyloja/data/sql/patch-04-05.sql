@@ -1,0 +1,1 @@
+ALTER TABLE person_adapt_to_individual ADD COLUMN birth_month smallint;

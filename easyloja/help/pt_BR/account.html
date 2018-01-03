@@ -1,0 +1,127 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+<title>Contas</title>
+<link rel="stylesheet" type="text/css" href="C.css">
+<script type="text/javascript" src="jquery.js"></script><script type="text/javascript" src="jquery.syntax.js"></script><script type="text/javascript" src="yelp.js"></script>
+</head>
+<body><div class="page">
+<div class="header"><div class="trails"><div class="trail">
+<a class="trail" href="index.html" title="Manual do Stoq">Manual do Stoq</a> » <a class="trail" href="app-financial.html" title="Aplicativo Financeiro">Aplicativo Financeiro</a> » </div></div></div>
+<div class="body">
+<div class="hgroup"><h1 class="title"><span class="title">Contas</span></h1></div>
+<div class="region">
+<div class="contents">
+<p class="p">
+    Contas são utilizadas para organizar
+    <span class=" link"><a href="transaction.html" title="Transações">transações</a></span> financeiras.
+  </p>
+<p class="p">
+    Elas podem ser encontradas no <span class=" link"><a href="app-financial.html" title="Aplicativo Financeiro">Aplicativo Financeiro</a></span> na aba
+    <span class=" gui">Contas</span> e ser editar no menu
+    <span class=" guiseq"><span class=" gui">Conta</span> ▸ <span class=" gui">Editar</span></span>. Alí você pode editar
+    informações como <span class=" gui">Nome da conta</span>, o seu <span class=" gui">Tipo</span> e até
+    mesmo o seu <span class=" gui">Pai</span>, podendo esta conta ser filha de uma outra conta
+    existente.
+  </p>
+<div class="note note-important" title="Important"><div class="inner"><div class="region"><div class="contents"><p class="p">
+      O tipo <span class=" gui">Banco</span> irá mostrar algumas informações extras de
+      preenchimento, que serão utilizadas para a geração e impressão de
+      <span class=" link"><a href="bill.html" title="Gerando e imprimindo boletos">boletos</a></span>.
+    </p></div></div></div></div>
+<p class="p">
+    Ao dar um duplo clique em uma conta, uma nova aba será aberta listando
+    todas as <span class=" link"><a href="transaction.html" title="Transações">transações</a></span> referentes a mesma.
+  </p>
+</div>
+<div id="double-booking" class="sect"><div class="inner">
+<div class="hgroup"><h2 class="title"><span class="title">Método das partidas dobradas</span></h2></div>
+<div class="region"><div class="contents">
+<p class="p">
+      O stoq utiliza o "método das partidas dobradas" para a organização de
+      transações financeiras, isto é, toda transação possui uma "conta de saída"
+      e uma "conta de entrada". Ex: O
+      <span class=" link"><a href="account-payable.html" title="Conta a pagar">pagamento de um salário</a></span> pode possuir a
+      saída em uma conta bancária chamada "Banco" e entrada em uma conta
+      "Salários".
+    </p>
+<p class="p">
+      Se você por exemplo
+      <span class=" link"><a href="transaction-import.html" title="Importando transações">importa um extrato bancário</a></span>,
+      as as transações terão uma entrada (para transações de crédito em conta)
+      ou saída (para transações de débito em conta) na conta do banco em questão.
+      O Stoq ainda não conhece a finalidade da transação, então as respectivas
+      contrapartes dessas transações aparecerão na conta de
+      <span class=" gui">Desequilíbrio</span> para que sejam organizadas manualmente no futuro
+      (mais detalhes sobre essa conta na sessão de
+      <span class=" link"><a href="#special-accounts" title="Contas especiais">Contas especiais</a></span> abaixo).
+    </p>
+</div></div>
+</div></div>
+<div id="special-accounts" class="sect"><div class="inner">
+<div class="hgroup"><h2 class="title"><span class="title">Contas especiais</span></h2></div>
+<div class="region"><div class="contents">
+<p class="p">
+      As seguintes contas são listadas junto com as outras citadas acima, e
+      possuem um comportamento especial:
+    </p>
+<div class="list"><div class="inner"><div class="region"><ul class="list">
+<li class="list"><p class="p">
+          <span class=" gui">Contas a pagar</span>: Lista transações de
+          <span class=" link"><a href="account-payable.html" title="Conta a pagar">contas a pagar</a></span>.
+        </p></li>
+<li class="list"><p class="p">
+          <span class=" gui">Contas a receber</span>: Lista transações de
+          <span class=" link"><a href="account-receivable.html" title="Conta a receber">contas a receber</a></span>.
+        </p></li>
+<li class="list"><p class="p">
+          <span class=" gui">Caixas</span>: Lista transações provindas de operações
+          financeiras do <span class=" link"><a href="till.html" title="Caixa">caixa</a></span>, como
+          <span class=" link"><a href="till-add-money.html" title="Realizando um suprimento de caixa">suprimentos</a></span> e
+          <span class=" link"><a href="till-remove-money.html" title="Realizando uma sangria de caixa">sangrias</a></span>.
+        </p></li>
+<li class="list"><p class="p">
+          <span class=" gui">Desequilíbrio</span>: É a conta padrão de desequilíbrio. Ela age
+          como um "TODO", armazenando transações que ainda precisam ser
+          organizadas em suas devidas contas, um processo importante do
+          <span class=" link"><a href="#double-booking" title="Método das partidas dobradas">Método das partidas dobradas</a></span>. Você pode alterar a conta de
+          desequilíbrio através de um
+          <span class=" link"><a href="param.html" title="Parâmetros">parmâmetro</a></span> no <span class=" link"><a href="app-admin.html" title="Aplicativo Administrativo">Aplicativo Administrativo</a></span>
+          para qualquer outra de sua escolha.
+        </p></li>
+</ul></div></div></div>
+</div></div>
+</div></div>
+<div class="sect sect-links">
+<div class="hgroup"></div>
+<div class="contents">
+<div class="links seealsolinks"><div class="inner">
+<div class="title"><h2><span class="title">More Information</span></h2></div>
+<div class="region"><ul><li class="links ">
+<a href="app-financial.html" title="Aplicativo Financeiro">Aplicativo Financeiro</a><span class="desc"> — 
+      <span class=" link"><a href="account.html" title="Contas">Contas</a></span>,
+      <span class=" link"><a href="transaction.html" title="Transações">Transações</a></span>,
+      <span class=" link"><a href="account-payable.html" title="Conta a pagar">Conta a pagar</a></span>,
+      <span class=" link"><a href="account-receivable.html" title="Conta a receber">Conta a receber</a></span>...
+    </span>
+</li></ul></div>
+</div></div>
+<div class="links seealsolinks"><div class="inner">
+<div class="title"><h2><span class="title">See Also</span></h2></div>
+<div class="region"><ul><li class="links ">
+<a href="transaction.html" title="Transações">Transações</a><span class="desc"> — 
+      <span class=" link"><a href="transaction-new.html" title="Criando uma transação">Criando uma transação</a></span>,
+      <span class=" link"><a href="inventory-count.html" title="Realizando a contagem de um inventário">Realizando a contagem de um inventário</a></span>,
+      <span class=" link"><a href="inventory-adjust.html" title="Ajustando inventário">Ajustando inventário</a></span>...
+    </span>
+</li></ul></div>
+</div></div>
+</div>
+</div>
+</div>
+<div class="clear"></div>
+</div>
+<div class="footer"></div>
+</div></body>
+</html>

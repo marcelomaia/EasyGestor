@@ -1,0 +1,811 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<interface>
+  <!-- interface-requires kiwiwidgets 0.0 -->
+  <requires lib="gtk+" version="2.16"/>
+  <!-- interface-naming-policy toplevel-contextual -->
+  <object class="GtkAdjustment" id="adjustment1">
+    <property name="upper">99999</property>
+    <property name="value">1</property>
+    <property name="step_increment">1</property>
+    <property name="page_increment">10</property>
+  </object>
+  <object class="GtkWindow" id="pos2">
+    <property name="width_request">800</property>
+    <property name="height_request">570</property>
+    <property name="title" translatable="yes">STOQ - POS Application</property>
+    <property name="window_position">center</property>
+    <property name="destroy_with_parent">True</property>
+    <child>
+      <object class="GtkEventBox" id="pos_event_box">
+        <property name="visible">True</property>
+        <child>
+          <object class="GtkVBox" id="main_vbox">
+            <property name="visible">True</property>
+            <child>
+              <object class="GtkVBox" id="pos_vbox">
+                <property name="visible">True</property>
+                <child>
+                  <object class="GtkEventBox" id="eventbox_list_header_hbox">
+                    <property name="visible">True</property>
+                    <child>
+                      <object class="GtkHBox" id="list_header_hbox">
+                        <property name="visible">True</property>
+                        <child>
+                          <object class="GtkAlignment" id="alignment1">
+                            <property name="visible">True</property>
+                            <property name="top_padding">4</property>
+                            <property name="left_padding">6</property>
+                            <property name="right_padding">6</property>
+                            <child>
+                              <object class="GtkHBox" id="search_box">
+                                <property name="visible">True</property>
+                                <property name="border_width">6</property>
+                                <property name="spacing">100</property>
+                                <child>
+                                  <object class="GtkHBox" id="item_hbox">
+                                    <property name="visible">True</property>
+                                    <property name="spacing">6</property>
+                                    <child>
+                                      <object class="GtkEntry" id="barcode">
+                                        <property name="visible">True</property>
+                                        <property name="has_focus">True</property>
+                                        <property name="has_frame">False</property>
+                                        <property name="invisible_char">•</property>
+                                        <property name="primary_icon_activatable">False</property>
+                                        <property name="secondary_icon_activatable">False</property>
+                                        <property name="primary_icon_sensitive">True</property>
+                                        <property name="secondary_icon_sensitive">True</property>
+                                        <property name="secondary_icon_tooltip_text" translatable="yes">Código de barras: CTRL L</property>
+                                      </object>
+                                      <packing>
+                                        <property name="expand">True</property>
+                                        <property name="fill">True</property>
+                                        <property name="position">0</property>
+                                      </packing>
+                                    </child>
+                                    <child>
+                                      <object class="GtkButton" id="advanced_search">
+                                        <property name="visible">True</property>
+                                        <property name="receives_default">True</property>
+                                        <property name="use_action_appearance">False</property>
+                                        <child>
+                                          <object class="GtkImage" id="image2">
+                                            <property name="visible">True</property>
+                                            <property name="stock">gtk-find</property>
+                                          </object>
+                                        </child>
+                                      </object>
+                                      <packing>
+                                        <property name="expand">False</property>
+                                        <property name="fill">True</property>
+                                        <property name="position">1</property>
+                                      </packing>
+                                    </child>
+                                  </object>
+                                  <packing>
+                                    <property name="expand">True</property>
+                                    <property name="fill">True</property>
+                                    <property name="position">0</property>
+                                  </packing>
+                                </child>
+                                <child>
+                                  <object class="ProxySpinButton" id="quantity">
+                                    <property name="visible">True</property>
+                                    <property name="has_frame">False</property>
+                                    <property name="invisible_char">•</property>
+                                    <property name="xalign">1</property>
+                                    <property name="shadow_type">etched-out</property>
+                                    <property name="invisible_char_set">True</property>
+                                    <property name="secondary_icon_stock">stoq-quantity</property>
+                                    <property name="primary_icon_activatable">False</property>
+                                    <property name="secondary_icon_activatable">False</property>
+                                    <property name="primary_icon_sensitive">True</property>
+                                    <property name="secondary_icon_sensitive">True</property>
+                                    <property name="secondary_icon_tooltip_text" translatable="yes">Adicionar:  CTRL +
+Retirar:         CTRL -
+Experimente: CTRL 1..9
+Focar:     CTRL O</property>
+                                    <property name="adjustment">adjustment1</property>
+                                    <property name="data_type">Decimal</property>
+                                  </object>
+                                  <packing>
+                                    <property name="expand">False</property>
+                                    <property name="fill">True</property>
+                                    <property name="position">1</property>
+                                  </packing>
+                                </child>
+                              </object>
+                            </child>
+                          </object>
+                          <packing>
+                            <property name="expand">True</property>
+                            <property name="fill">True</property>
+                            <property name="position">0</property>
+                          </packing>
+                        </child>
+                      </object>
+                    </child>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">True</property>
+                    <property name="position">0</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkEventBox" id="eventbox_list_vbox">
+                    <property name="visible">True</property>
+                    <child>
+                      <object class="GtkVBox" id="list_vbox">
+                        <property name="visible">True</property>
+                        <property name="spacing">6</property>
+                        <child>
+                          <object class="GtkHPaned" id="sale_items_pane">
+                            <property name="visible">True</property>
+                            <child>
+                              <object class="ObjectList" id="sale_items">
+                                <property name="visible">True</property>
+                              </object>
+                              <packing>
+                                <property name="resize">True</property>
+                                <property name="shrink">False</property>
+                              </packing>
+                            </child>
+                            <child>
+                              <object class="GtkVBox" id="details_box">
+                                <property name="visible">True</property>
+                                <property name="spacing">6</property>
+                                <child>
+                                  <object class="GtkAlignment" id="alignment9">
+                                    <property name="visible">True</property>
+                                    <child>
+                                      <object class="GtkImage" id="stoq_logo">
+                                        <property name="visible">True</property>
+                                      </object>
+                                    </child>
+                                  </object>
+                                  <packing>
+                                    <property name="expand">True</property>
+                                    <property name="fill">True</property>
+                                    <property name="position">0</property>
+                                  </packing>
+                                </child>
+                                <child>
+                                  <object class="GtkAlignment" id="alignment7">
+                                    <property name="visible">True</property>
+                                    <property name="top_padding">6</property>
+                                    <property name="bottom_padding">6</property>
+                                    <property name="left_padding">6</property>
+                                    <child>
+                                      <object class="GtkVBox" id="vbox9">
+                                        <property name="visible">True</property>
+                                        <child>
+                                          <object class="ProxyLabel" id="details_lbl">
+                                            <property name="visible">True</property>
+                                            <property name="ypad">6</property>
+                                            <property name="use_markup">True</property>
+                                            <property name="justify">center</property>
+                                            <attributes>
+                                              <attribute name="size" value="14000"/>
+                                            </attributes>
+                                          </object>
+                                          <packing>
+                                            <property name="expand">False</property>
+                                            <property name="fill">False</property>
+                                            <property name="position">0</property>
+                                          </packing>
+                                        </child>
+                                        <child>
+                                          <object class="GtkAspectFrame" id="aspectframe1">
+                                            <property name="width_request">175</property>
+                                            <property name="height_request">175</property>
+                                            <property name="visible">True</property>
+                                            <property name="border_width">6</property>
+                                            <property name="label_xalign">1</property>
+                                            <property name="label_yalign">1</property>
+                                            <property name="shadow_type">etched-out</property>
+                                            <property name="ratio">1.2999999523162842</property>
+                                            <property name="obey_child">False</property>
+                                            <child>
+                                              <object class="GtkEventBox" id="image_holder">
+                                                <property name="visible">True</property>
+                                                <child>
+                                                  <placeholder/>
+                                                </child>
+                                              </object>
+                                            </child>
+                                          </object>
+                                          <packing>
+                                            <property name="expand">False</property>
+                                            <property name="fill">False</property>
+                                            <property name="position">1</property>
+                                          </packing>
+                                        </child>
+                                        <child>
+                                          <object class="GtkExpander" id="expander">
+                                            <property name="visible">True</property>
+                                            <child>
+                                              <object class="GtkLabel" id="extra_details_lbl">
+                                                <property name="visible">True</property>
+                                                <property name="xalign">0</property>
+                                                <property name="yalign">1</property>
+                                              </object>
+                                            </child>
+                                            <child type="label">
+                                              <object class="GtkLabel" id="label3">
+                                                <property name="visible">True</property>
+                                                <property name="label" translatable="yes">Mais detalhes</property>
+                                              </object>
+                                            </child>
+                                          </object>
+                                          <packing>
+                                            <property name="expand">False</property>
+                                            <property name="fill">False</property>
+                                            <property name="position">2</property>
+                                          </packing>
+                                        </child>
+                                      </object>
+                                    </child>
+                                  </object>
+                                  <packing>
+                                    <property name="expand">False</property>
+                                    <property name="fill">False</property>
+                                    <property name="pack_type">end</property>
+                                    <property name="position">1</property>
+                                  </packing>
+                                </child>
+                                <child>
+                                  <placeholder/>
+                                </child>
+                                <child>
+                                  <placeholder/>
+                                </child>
+                              </object>
+                              <packing>
+                                <property name="resize">False</property>
+                                <property name="shrink">True</property>
+                              </packing>
+                            </child>
+                          </object>
+                          <packing>
+                            <property name="expand">True</property>
+                            <property name="fill">True</property>
+                            <property name="position">-1</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <object class="GtkEventBox" id="aditional_info_event_box">
+                            <property name="visible">True</property>
+                            <child>
+                              <object class="ProxyLabel" id="aditional_info">
+                                <property name="visible">True</property>
+                                <property name="xpad">6</property>
+                                <property name="label" translatable="yes">Domingo, 23 de Dezembro de 1969</property>
+                              </object>
+                            </child>
+                          </object>
+                          <packing>
+                            <property name="expand">False</property>
+                            <property name="fill">False</property>
+                            <property name="position">0</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <object class="GtkAlignment" id="alignment2">
+                            <property name="visible">True</property>
+                            <property name="top_padding">6</property>
+                            <property name="bottom_padding">6</property>
+                            <property name="left_padding">6</property>
+                            <property name="right_padding">6</property>
+                            <child>
+                              <object class="GtkHBox" id="footer_hbox">
+                                <property name="visible">True</property>
+                                <child>
+                                  <object class="GtkVBox" id="toolbar_vbox">
+                                    <property name="visible">True</property>
+                                    <child>
+                                      <object class="GtkHButtonBox" id="toolbar_button_box">
+                                        <property name="visible">True</property>
+                                        <property name="spacing">6</property>
+                                        <child>
+                                          <object class="GtkButton" id="checkout_button">
+                                            <property name="visible">True</property>
+                                            <property name="receives_default">True</property>
+                                            <property name="use_action_appearance">False</property>
+                                            <child>
+                                              <object class="GtkAlignment" id="alignment37">
+                                                <property name="visible">True</property>
+                                                <child>
+                                                  <object class="GtkVBox" id="vbox5">
+                                                    <property name="visible">True</property>
+                                                    <child>
+                                                      <object class="GtkImage" id="image6">
+                                                        <property name="visible">True</property>
+                                                        <property name="stock">gtk-yes</property>
+                                                      </object>
+                                                      <packing>
+                                                        <property name="expand">True</property>
+                                                        <property name="fill">True</property>
+                                                        <property name="position">0</property>
+                                                      </packing>
+                                                    </child>
+                                                    <child>
+                                                      <object class="GtkLabel" id="checkout_button_label">
+                                                        <property name="visible">True</property>
+                                                        <property name="label" translatable="yes">Confirmar</property>
+                                                      </object>
+                                                      <packing>
+                                                        <property name="expand">True</property>
+                                                        <property name="fill">True</property>
+                                                        <property name="position">1</property>
+                                                      </packing>
+                                                    </child>
+                                                    <child>
+                                                      <object class="ProxyLabel" id="checkout_button_shortcut">
+                                                        <property name="visible">True</property>
+                                                        <property name="use_markup">True</property>
+                                                      </object>
+                                                      <packing>
+                                                        <property name="expand">True</property>
+                                                        <property name="fill">True</property>
+                                                        <property name="position">2</property>
+                                                      </packing>
+                                                    </child>
+                                                  </object>
+                                                </child>
+                                              </object>
+                                            </child>
+                                          </object>
+                                          <packing>
+                                            <property name="expand">False</property>
+                                            <property name="fill">False</property>
+                                            <property name="position">0</property>
+                                          </packing>
+                                        </child>
+                                        <child>
+                                          <object class="GtkButton" id="cancel_button">
+                                            <property name="visible">True</property>
+                                            <property name="receives_default">True</property>
+                                            <property name="use_action_appearance">False</property>
+                                            <child>
+                                              <object class="GtkAlignment" id="alignment4">
+                                                <property name="visible">True</property>
+                                                <child>
+                                                  <object class="GtkVBox" id="vbox6">
+                                                    <property name="visible">True</property>
+                                                    <child>
+                                                      <object class="GtkImage" id="image8">
+                                                        <property name="visible">True</property>
+                                                        <property name="stock">gtk-no</property>
+                                                      </object>
+                                                      <packing>
+                                                        <property name="expand">True</property>
+                                                        <property name="fill">True</property>
+                                                        <property name="position">0</property>
+                                                      </packing>
+                                                    </child>
+                                                    <child>
+                                                      <object class="GtkLabel" id="label6">
+                                                        <property name="visible">True</property>
+                                                        <property name="label" translatable="yes">Cancelar</property>
+                                                      </object>
+                                                      <packing>
+                                                        <property name="expand">True</property>
+                                                        <property name="fill">True</property>
+                                                        <property name="position">1</property>
+                                                      </packing>
+                                                    </child>
+                                                    <child>
+                                                      <object class="ProxyLabel" id="cancel_button_shortcut">
+                                                        <property name="visible">True</property>
+                                                        <property name="use_markup">True</property>
+                                                      </object>
+                                                      <packing>
+                                                        <property name="expand">True</property>
+                                                        <property name="fill">True</property>
+                                                        <property name="position">2</property>
+                                                      </packing>
+                                                    </child>
+                                                  </object>
+                                                </child>
+                                              </object>
+                                            </child>
+                                          </object>
+                                          <packing>
+                                            <property name="expand">False</property>
+                                            <property name="fill">False</property>
+                                            <property name="position">1</property>
+                                          </packing>
+                                        </child>
+                                        <child>
+                                          <object class="GtkButton" id="delivery_button">
+                                            <property name="visible">True</property>
+                                            <property name="receives_default">True</property>
+                                            <property name="use_action_appearance">False</property>
+                                            <child>
+                                              <object class="GtkAlignment" id="alignment36">
+                                                <property name="visible">True</property>
+                                                <child>
+                                                  <object class="GtkVBox" id="vbox3">
+                                                    <property name="visible">True</property>
+                                                    <child>
+                                                      <object class="GtkImage" id="image5">
+                                                        <property name="visible">True</property>
+                                                        <property name="stock">stoq-delivery</property>
+                                                      </object>
+                                                      <packing>
+                                                        <property name="expand">True</property>
+                                                        <property name="fill">True</property>
+                                                        <property name="position">0</property>
+                                                      </packing>
+                                                    </child>
+                                                    <child>
+                                                      <object class="GtkLabel" id="label5">
+                                                        <property name="visible">True</property>
+                                                        <property name="label" translatable="yes">_Entrega</property>
+                                                        <property name="use_underline">True</property>
+                                                      </object>
+                                                      <packing>
+                                                        <property name="expand">True</property>
+                                                        <property name="fill">True</property>
+                                                        <property name="position">1</property>
+                                                      </packing>
+                                                    </child>
+                                                    <child>
+                                                      <object class="ProxyLabel" id="delivery_button_shortcut">
+                                                        <property name="visible">True</property>
+                                                        <property name="use_markup">True</property>
+                                                      </object>
+                                                      <packing>
+                                                        <property name="expand">True</property>
+                                                        <property name="fill">True</property>
+                                                        <property name="position">2</property>
+                                                      </packing>
+                                                    </child>
+                                                  </object>
+                                                </child>
+                                              </object>
+                                            </child>
+                                          </object>
+                                          <packing>
+                                            <property name="expand">False</property>
+                                            <property name="fill">False</property>
+                                            <property name="position">2</property>
+                                          </packing>
+                                        </child>
+                                        <child>
+                                          <object class="GtkButton" id="edit_item_button">
+                                            <property name="visible">True</property>
+                                            <property name="receives_default">True</property>
+                                            <property name="use_action_appearance">False</property>
+                                            <child>
+                                              <object class="GtkAlignment" id="alignment8">
+                                                <property name="visible">True</property>
+                                                <child>
+                                                  <object class="GtkVBox" id="vbox1">
+                                                    <property name="visible">True</property>
+                                                    <child>
+                                                      <object class="GtkImage" id="image1">
+                                                        <property name="visible">True</property>
+                                                        <property name="stock">gtk-edit</property>
+                                                      </object>
+                                                      <packing>
+                                                        <property name="expand">True</property>
+                                                        <property name="fill">True</property>
+                                                        <property name="position">0</property>
+                                                      </packing>
+                                                    </child>
+                                                    <child>
+                                                      <object class="GtkLabel" id="label8">
+                                                        <property name="visible">True</property>
+                                                        <property name="label" translatable="yes">Editar</property>
+                                                        <property name="use_underline">True</property>
+                                                      </object>
+                                                      <packing>
+                                                        <property name="expand">True</property>
+                                                        <property name="fill">True</property>
+                                                        <property name="position">1</property>
+                                                      </packing>
+                                                    </child>
+                                                    <child>
+                                                      <object class="ProxyLabel" id="edit_item_button_shortcut">
+                                                        <property name="visible">True</property>
+                                                        <property name="use_markup">True</property>
+                                                      </object>
+                                                      <packing>
+                                                        <property name="expand">True</property>
+                                                        <property name="fill">True</property>
+                                                        <property name="position">2</property>
+                                                      </packing>
+                                                    </child>
+                                                  </object>
+                                                </child>
+                                              </object>
+                                            </child>
+                                          </object>
+                                          <packing>
+                                            <property name="expand">False</property>
+                                            <property name="fill">False</property>
+                                            <property name="position">3</property>
+                                          </packing>
+                                        </child>
+                                        <child>
+                                          <object class="GtkButton" id="remove_item_button">
+                                            <property name="visible">True</property>
+                                            <property name="receives_default">True</property>
+                                            <property name="use_action_appearance">False</property>
+                                            <child>
+                                              <object class="GtkAlignment" id="alignment16">
+                                                <property name="visible">True</property>
+                                                <child>
+                                                  <object class="GtkVBox" id="vbox2">
+                                                    <property name="visible">True</property>
+                                                    <child>
+                                                      <object class="GtkImage" id="image4">
+                                                        <property name="visible">True</property>
+                                                        <property name="stock">gtk-remove</property>
+                                                      </object>
+                                                      <packing>
+                                                        <property name="expand">True</property>
+                                                        <property name="fill">True</property>
+                                                        <property name="position">0</property>
+                                                      </packing>
+                                                    </child>
+                                                    <child>
+                                                      <object class="GtkLabel" id="label46">
+                                                        <property name="visible">True</property>
+                                                        <property name="label" translatable="yes">Remover</property>
+                                                        <property name="use_underline">True</property>
+                                                      </object>
+                                                      <packing>
+                                                        <property name="expand">True</property>
+                                                        <property name="fill">True</property>
+                                                        <property name="position">1</property>
+                                                      </packing>
+                                                    </child>
+                                                    <child>
+                                                      <object class="ProxyLabel" id="remove_item_button_shortcut">
+                                                        <property name="visible">True</property>
+                                                        <property name="use_markup">True</property>
+                                                      </object>
+                                                      <packing>
+                                                        <property name="expand">True</property>
+                                                        <property name="fill">True</property>
+                                                        <property name="position">2</property>
+                                                      </packing>
+                                                    </child>
+                                                  </object>
+                                                </child>
+                                              </object>
+                                            </child>
+                                          </object>
+                                          <packing>
+                                            <property name="expand">False</property>
+                                            <property name="fill">False</property>
+                                            <property name="position">4</property>
+                                          </packing>
+                                        </child>
+                                        <child>
+                                          <object class="GtkButton" id="sellable_search_button">
+                                            <property name="visible">True</property>
+                                            <property name="receives_default">True</property>
+                                            <property name="use_action_appearance">False</property>
+                                            <child>
+                                              <object class="GtkAlignment" id="alignment3">
+                                                <property name="visible">True</property>
+                                                <child>
+                                                  <object class="GtkVBox" id="vbox4">
+                                                    <property name="visible">True</property>
+                                                    <child>
+                                                      <object class="GtkImage" id="image7">
+                                                        <property name="visible">True</property>
+                                                        <property name="stock">gtk-find</property>
+                                                      </object>
+                                                      <packing>
+                                                        <property name="expand">True</property>
+                                                        <property name="fill">True</property>
+                                                        <property name="position">0</property>
+                                                      </packing>
+                                                    </child>
+                                                    <child>
+                                                      <object class="GtkLabel" id="label4">
+                                                        <property name="visible">True</property>
+                                                        <property name="label" translatable="yes">Produtos</property>
+                                                      </object>
+                                                      <packing>
+                                                        <property name="expand">True</property>
+                                                        <property name="fill">True</property>
+                                                        <property name="position">1</property>
+                                                      </packing>
+                                                    </child>
+                                                    <child>
+                                                      <object class="ProxyLabel" id="sellable_search_button_shortcut">
+                                                        <property name="visible">True</property>
+                                                        <property name="use_markup">True</property>
+                                                      </object>
+                                                      <packing>
+                                                        <property name="expand">True</property>
+                                                        <property name="fill">True</property>
+                                                        <property name="position">2</property>
+                                                      </packing>
+                                                    </child>
+                                                  </object>
+                                                </child>
+                                              </object>
+                                            </child>
+                                          </object>
+                                          <packing>
+                                            <property name="expand">False</property>
+                                            <property name="fill">False</property>
+                                            <property name="position">5</property>
+                                          </packing>
+                                        </child>
+                                        <child>
+                                          <object class="ProxyButton" id="impnf_button">
+                                            <property name="visible">True</property>
+                                            <property name="receives_default">True</property>
+                                            <property name="use_action_appearance">False</property>
+                                            <property name="data_type">str</property>
+                                            <child>
+                                              <object class="GtkAlignment" id="alignment5">
+                                                <property name="visible">True</property>
+                                                <child>
+                                                  <object class="GtkVBox" id="vbox7">
+                                                    <property name="visible">True</property>
+                                                    <child>
+                                                      <object class="GtkImage" id="image9">
+                                                        <property name="visible">True</property>
+                                                        <property name="stock">stoq-fiscal-printer</property>
+                                                      </object>
+                                                      <packing>
+                                                        <property name="expand">True</property>
+                                                        <property name="fill">True</property>
+                                                        <property name="position">0</property>
+                                                      </packing>
+                                                    </child>
+                                                    <child>
+                                                      <object class="GtkLabel" id="label7">
+                                                        <property name="visible">True</property>
+                                                        <property name="label" translatable="yes">2ª via N.F.</property>
+                                                      </object>
+                                                      <packing>
+                                                        <property name="expand">True</property>
+                                                        <property name="fill">True</property>
+                                                        <property name="position">1</property>
+                                                      </packing>
+                                                    </child>
+                                                    <child>
+                                                      <object class="ProxyLabel" id="impnf_button_shortcut">
+                                                        <property name="visible">True</property>
+                                                        <property name="use_markup">True</property>
+                                                      </object>
+                                                      <packing>
+                                                        <property name="expand">True</property>
+                                                        <property name="fill">True</property>
+                                                        <property name="position">2</property>
+                                                      </packing>
+                                                    </child>
+                                                  </object>
+                                                </child>
+                                              </object>
+                                            </child>
+                                          </object>
+                                          <packing>
+                                            <property name="expand">False</property>
+                                            <property name="fill">False</property>
+                                            <property name="position">6</property>
+                                          </packing>
+                                        </child>
+                                        <child>
+                                          <object class="GtkButton" id="nfce_button">
+                                            <property name="visible">True</property>
+                                            <property name="receives_default">True</property>
+                                            <property name="use_action_appearance">False</property>
+                                            <child>
+                                              <object class="GtkAlignment" id="alignment6">
+                                                <property name="visible">True</property>
+                                                <child>
+                                                  <object class="GtkVBox" id="vbox8">
+                                                    <property name="visible">True</property>
+                                                    <child>
+                                                      <object class="GtkImage" id="image10">
+                                                        <property name="visible">True</property>
+                                                        <property name="stock">stoq-nfce</property>
+                                                      </object>
+                                                      <packing>
+                                                        <property name="expand">True</property>
+                                                        <property name="fill">True</property>
+                                                        <property name="position">0</property>
+                                                      </packing>
+                                                    </child>
+                                                    <child>
+                                                      <object class="GtkLabel" id="label9">
+                                                        <property name="visible">True</property>
+                                                        <property name="label" translatable="yes">2ª via NFCe</property>
+                                                      </object>
+                                                      <packing>
+                                                        <property name="expand">True</property>
+                                                        <property name="fill">True</property>
+                                                        <property name="position">1</property>
+                                                      </packing>
+                                                    </child>
+                                                    <child>
+                                                      <object class="ProxyLabel" id="nfce_button_shortcut">
+                                                        <property name="visible">True</property>
+                                                        <property name="use_markup">True</property>
+                                                      </object>
+                                                      <packing>
+                                                        <property name="expand">True</property>
+                                                        <property name="fill">True</property>
+                                                        <property name="position">2</property>
+                                                      </packing>
+                                                    </child>
+                                                  </object>
+                                                </child>
+                                              </object>
+                                            </child>
+                                          </object>
+                                          <packing>
+                                            <property name="expand">False</property>
+                                            <property name="fill">False</property>
+                                            <property name="position">7</property>
+                                          </packing>
+                                        </child>
+                                      </object>
+                                      <packing>
+                                        <property name="expand">False</property>
+                                        <property name="fill">True</property>
+                                        <property name="position">0</property>
+                                      </packing>
+                                    </child>
+                                  </object>
+                                  <packing>
+                                    <property name="expand">False</property>
+                                    <property name="fill">True</property>
+                                    <property name="position">0</property>
+                                  </packing>
+                                </child>
+                                <child>
+                                  <object class="ProxyLabel" id="order_total_label">
+                                    <property name="visible">True</property>
+                                    <property name="xalign">1</property>
+                                    <property name="yalign">1</property>
+                                    <property name="use_markup">True</property>
+                                  </object>
+                                  <packing>
+                                    <property name="expand">True</property>
+                                    <property name="fill">True</property>
+                                    <property name="position">1</property>
+                                  </packing>
+                                </child>
+                              </object>
+                            </child>
+                          </object>
+                          <packing>
+                            <property name="expand">False</property>
+                            <property name="fill">True</property>
+                            <property name="position">2</property>
+                          </packing>
+                        </child>
+                      </object>
+                    </child>
+                  </object>
+                  <packing>
+                    <property name="expand">True</property>
+                    <property name="fill">True</property>
+                    <property name="position">1</property>
+                  </packing>
+                </child>
+              </object>
+              <packing>
+                <property name="expand">True</property>
+                <property name="fill">True</property>
+                <property name="position">0</property>
+              </packing>
+            </child>
+          </object>
+        </child>
+      </object>
+    </child>
+  </object>
+</interface>

@@ -1,0 +1,84 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+<title>Plugin NF-e</title>
+<link rel="stylesheet" type="text/css" href="C.css">
+<script type="text/javascript" src="jquery.js"></script><script type="text/javascript" src="jquery.syntax.js"></script><script type="text/javascript" src="yelp.js"></script>
+</head>
+<body><div class="page">
+<div class="header"><div class="trails"><div class="trail">
+<a class="trail" href="index.html" title="Manual do Stoq">Manual do Stoq</a> » <a class="trail" href="app-admin.html" title="Aplicativo Administrativo">Aplicativo Administrativo</a> » <a class="trail" href="plugin.html" title="Plugins">Plugins</a> » </div></div></div>
+<div class="body">
+<div class="hgroup"><h1 class="title"><span class="title">Plugin NF-e</span></h1></div>
+<div class="region">
+<div class="contents">
+<p class="p">
+    Ao ativar este plugin, o Stoq estará apto a gerar notas fiscais
+    eletrônicas para <span class=" link"><a href="sale.html" title="Vendas">vendas</a></span>.
+  </p>
+<div class="note note-important" title="Important"><div class="inner"><div class="region"><div class="contents"><p class="p">
+      Assim como todos os <span class=" link"><a href="plugin.html" title="Plugins">plugins</a></span> após ativo não
+      será possível desativá-lo. Tenha certeza de que realmente deseja fazê-lo
+      antes de confirmar a ação!
+    </p></div></div></div></div>
+<p class="p">
+    Toda a venda realizada pelo Stoq irá gerar um arquivo txt dentro de
+    <span class=" file">~/.stoq/exported_nfe</span>. Este será separado por pastas
+    representando meses e dias, para facilitar a organização.
+  </p>
+<p class="p">
+    Esses arquivos podem ser importados importados por um sistema de emissão de
+    NF-e, como o
+    <span class=" link"><a href="http://www.emissornfe.fazenda.sp.gov.br/" title="http://www.emissornfe.fazenda.sp.gov.br/">Emissor de NF-e da Secretaria da Fazenda</a></span>.
+    Após este passo a importação pode ser feita, de modo que toda nota
+    importada estará automaticamente com o status “em digitação”. Todo restante
+    do processo deve ser realizado no sistema da receita, entre eles a
+    verificação, validação e assinatura. Com todo este processo realizado é
+    possível enviar a NF-e.
+  </p>
+<div class="list"><div class="inner">
+<div class="title title-list"><h2><span class="title">Algumas considerações importantes</span></h2></div>
+<div class="region"><ul class="list">
+<li class="list"><p class="p">
+        No emissor citado acima, o cadastro da empresa deve ser realizado com
+        os mesmos <span class=" link"><a href="branch.html" title="Filiais">dados cadastrados</a></span> no Stoq.
+      </p></li>
+<li class="list"><p class="p">
+        Não será possível realizar <span class=" link"><a href="sale.html" title="Vendas">vendas</a></span> sem informar
+        um <span class=" link"><a href="client.html" title="Clientes">cliente</a></span>.
+      </p></li>
+<li class="list"><p class="p">
+        Não será possível <span class=" link"><a href="receipt.html" title="Imprimindo um recibo">imprimir recibos</a></span> para
+        vendas, uma vez que a emissão de NF-e substitui essa funcionalidade.
+      </p></li>
+</ul></div>
+</div></div>
+</div>
+<div class="sect sect-links">
+<div class="hgroup"></div>
+<div class="contents">
+<div class="links seealsolinks"><div class="inner">
+<div class="title"><h2><span class="title">More Information</span></h2></div>
+<div class="region"><ul><li class="links ">
+<a href="plugin.html" title="Plugins">Plugins</a><span class="desc"> — 
+      Plugins do Stoq
+    </span>
+</li></ul></div>
+</div></div>
+<div class="links seealsolinks"><div class="inner">
+<div class="title"><h2><span class="title">See Also</span></h2></div>
+<div class="region"><ul><li class="links ">
+<a href="receipt.html" title="Imprimindo um recibo">Imprimindo um recibo</a><span class="desc"> — 
+      Imprimindo um recibo no Stoq
+    </span>
+</li></ul></div>
+</div></div>
+</div>
+</div>
+</div>
+<div class="clear"></div>
+</div>
+<div class="footer"></div>
+</div></body>
+</html>

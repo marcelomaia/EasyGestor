@@ -1,0 +1,2 @@
+ALTER TABLE receiving_order ADD COLUMN nfe_key CHARACTER VARYING(44);
+ALTER TABLE fiscal_book_entry ADD COLUMN nfe_key CHARACTER VARYING(44);

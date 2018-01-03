@@ -1,0 +1,118 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+<title>Executando a tarefa de uma ordem de serviço</title>
+<link rel="stylesheet" type="text/css" href="C.css">
+<script type="text/javascript" src="jquery.js"></script><script type="text/javascript" src="jquery.syntax.js"></script><script type="text/javascript" src="yelp.js"></script>
+</head>
+<body><div class="page">
+<div class="header"><div class="trails"><div class="trail">
+<a class="trail" href="index.html" title="Manual do Stoq">Manual do Stoq</a> » <a class="trail" href="app-services.html" title="Aplicativo Serviços">Aplicativo Serviços</a> » <a class="trail" href="workorder.html" title="Ordem de serviço">Ordem de serviço</a> » </div></div></div>
+<div class="body">
+<div class="hgroup"><h1 class="title"><span class="title">Executando a tarefa de uma ordem de serviço</span></h1></div>
+<div class="region">
+<div class="contents">
+<p class="p">
+    Este processo é utilizado para executar a tarefa de uma ordem de serviço, isto
+    é, informar <span class=" link"><a href="product.html" title="Produtos">produtos</a></span> e
+    <span class=" link"><a href="service.html" title="Serviços">serviços</a></span> utilizados para a realização da tarefa.
+  </p>
+<p class="p">
+    Note que a execução somente poderá ser iniciada após a
+    <span class=" link"><a href="workorder-quote.html#approve" title="Aprovando o orçamento">aprovação do orçamento</a></span> pelo
+    cliente, e continuará neste estado até a
+    <span class=" link"><a href="workorder-finish.html#finish" title="Marcando a ordem de serviço como finalizada">finalização da tarefa</a></span>.
+  </p>
+<div class="note note-tip" title="Tip"><div class="inner"><div class="region"><div class="contents"><p class="p">
+      Como este <span class=" link"><a href="overview.html#editor" title="Editores">editor</a></span> é o
+      mesmo do <span class=" link"><a href="workorder-quote.html" title="Realizando o orçamento de uma ordem de serviço">orçamento</a></span> e
+      <span class=" link"><a href="workorder-execution.html" title="Executando a tarefa de uma ordem de serviço">execução</a></span>, todos os
+      processos podem ser feitos de uma vez só ao invés de em etapas.
+    </p></div></div></div></div>
+<div class="steps"><div class="inner"><div class="region"><ol class="steps">
+<li class="steps"><p class="p">
+        Abra o <span class=" link"><a href="app-services.html" title="Aplicativo Serviços">Aplicativo Serviços</a></span> e realize uma
+        <span class=" link"><a href="overview.html#search" title="Pesquisas">pesquisa</a></span> pela ordem de serviço
+        em questão.
+      </p></li>
+<li class="steps"><p class="p">
+        Tendo a ordem de serviço selecionada, clique em <span class=" gui">Editar</span>.
+      </p></li>
+<li class="steps">
+<p class="p">
+        No <span class=" link"><a href="overview.html#editor" title="Editores">editor</a></span> que será aberto, navegue
+        até a aba <span class=" gui">Execução</span>. Apesar de não obrigatório, é interessante
+        indicar o <span class=" gui">Responsável pela execução</span> (a pessoa que irá realizar
+        a tarefa) pois além de se ter um controle maior sobre
+        funcionários/tafefas, o nome deste irá aparecer na impressão do
+        recibo após a finlização da ordem.
+      </p>
+<p class="p">
+        Para adicionar <span class=" link"><a href="product.html" title="Produtos">produtos</a></span> ou
+        <span class=" link"><a href="service.html" title="Serviços">serviços</a></span>, clique na <span class=" gui">lupa</span>,
+        selecione o item na <span class=" link"><a href="overview.html#search" title="Pesquisas">pesquisa</a></span> que
+        aparecerá e aperte <span class=" gui">Ok</span>. Preencha a <span class=" gui">Quantidade</span>
+        utilizada deste item assim como o <span class=" gui">Preço</span> que será cobrado do
+        cliente e aperte o botão <span class=" gui">+</span>.
+      </p>
+<div class="note note-tip" title="Tip"><div class="inner"><div class="region"><div class="contents"><p class="p">
+          Note que assim que o primeiro produto/serviço for adicionado, o estado
+          da ordem mudará para <span class=" gui">Em andamento</span> e não será mais possível
+          desaprová-la.
+        </p></div></div></div></div>
+</li>
+<li class="steps"><p class="p">
+        Após clicar em <span class=" gui">Ok</span> as alterações serão salvas. Repita este
+        processo cada vez que você tiver que adicionar algum item à ordem até o
+        momento da <span class=" link"><a href="workorder-finish.html#finish" title="Marcando a ordem de serviço como finalizada">finalização</a></span>
+        da mesma.
+      </p></li>
+</ol></div></div></div>
+</div>
+<div class="sect sect-links">
+<div class="hgroup"></div>
+<div class="contents">
+<div class="links seealsolinks"><div class="inner">
+<div class="title"><h2><span class="title">More Information</span></h2></div>
+<div class="region"><ul><li class="links ">
+<a href="workorder.html" title="Ordem de serviço">Ordem de serviço</a><span class="desc"> — 
+      <span class=" link"><a href="workorder-new.html" title="Registrando uma ordem de serviço">Registrando uma ordem de serviço</a></span>,
+      <span class=" link"><a href="workorder-quote.html" title="Realizando o orçamento de uma ordem de serviço">Realizando o orçamento de uma ordem de serviço</a></span>,
+      <span class=" link"><a href="workorder-close.html" title="workorder-close">workorder-close</a></span>...
+    </span>
+</li></ul></div>
+</div></div>
+<div class="links seealsolinks"><div class="inner">
+<div class="title"><h2><span class="title">See Also</span></h2></div>
+<div class="region"><ul>
+<li class="links ">
+<a href="workorder-execution.html" title="Executando a tarefa de uma ordem de serviço">Executando a tarefa de uma ordem de serviço</a><span class="desc"> — 
+      Executando a tarefa de uma ordem de serviço no Stoq
+    </span>
+</li>
+<li class="links ">
+<a href="workorder-finish.html" title="Finalizando uma ordem de serviço">Finalizando uma ordem de serviço</a><span class="desc"> — 
+      Finalizando uma ordem de serviço no Stoq
+    </span>
+</li>
+<li class="links ">
+<a href="workorder-quote.html" title="Realizando o orçamento de uma ordem de serviço">Realizando o orçamento de uma ordem de serviço</a><span class="desc"> — 
+      Realizando o orçamento de uma ordem de serviço Stoq
+    </span>
+</li>
+<li class="links ">
+<a href="workorder-new.html" title="Registrando uma ordem de serviço">Registrando uma ordem de serviço</a><span class="desc"> — 
+      Registrando uma ordem de serviço no Stoq
+    </span>
+</li>
+</ul></div>
+</div></div>
+</div>
+</div>
+</div>
+<div class="clear"></div>
+</div>
+<div class="footer"></div>
+</div></body>
+</html>

@@ -1,0 +1,146 @@
+Contents of HprtPrinter.dll: 162816 bytes
+
+Exports table:
+
+  Name:            ESC_SDK.dll
+  Characteristics: 00000000
+  TimeDateStamp:   57B587BD Thu Aug 18 07:02:37 2016
+  Version:         0.00
+  Ordinal base:    1
+  # of functions:  128
+  # of Names:      128
+Addresses of functions: 00021328
+Addresses of name ordinals: 00021728
+Addresses of names: 00021528
+
+  Entry Pt  Ordn  Name
+  00012ED0     1 FreeIMGData
+  00012CF0     2 GetIMGData
+  000128E0     3 PrtCancelPrintDataInPageMode
+  000129A0     4 PrtCheckPrinterState
+  000127B0     5 PrtCutPaper
+  00012BD0     6 PrtDefineBufferedImageA
+  00012BF0     7 PrtDefineBufferedImageW
+  00012B70     8 PrtDefineDownloadedImageA
+  00012AA0     9 PrtDefineDownloadedImageCompatibleA
+  00012AC0    10 PrtDefineDownloadedImageCompatibleW
+  00012B90    11 PrtDefineDownloadedImageW
+  00012B00    12 PrtDefineNVImageA
+  00012A40    13 PrtDefineNVImageCompatibleA
+  00012A60    14 PrtDefineNVImageCompatibleW
+  00012B20    15 PrtDefineNVImageW
+  00012C30    16 PrtDeleteAllNVImages
+  00007710    17 PrtDirectIO
+  00012610    18 PrtFeedLine
+  000075D0    19 PrtFormatErrorA
+  00007600    20 PrtFormatErrorW
+  00012C70    21 PrtGetDrawerState
+  00012C50    22 PrtGetPrinterVersion
+  000127D0    23 PrtOpenDrawer
+  000077B0    24 PrtOpenPrinterDriverS
+  000076F0    25 PrtPortClose
+  000076B0    26 PrtPortOpenA
+  000076D0    27 PrtPortOpenW
+  00012960    28 PrtPositionNextLabel
+  000126F0    29 PrtPrintBarCodeA
+  00012720    30 PrtPrintBarCodeW
+  00012C10    31 PrtPrintBufferedImage
+  00012980    32 PrtPrintDataInPageMode
+  00012BB0    33 PrtPrintDownloadedImage
+  00012AE0    34 PrtPrintDownloadedImageCompatible
+  00012A00    35 PrtPrintImageA
+  00012A20    36 PrtPrintImageW
+  00012B40    37 PrtPrintNVImage
+  00012A80    38 PrtPrintNVImageCompatible
+  00012750    39 PrtPrintSymbolA
+  00012780    40 PrtPrintSymbolW
+  00012650    41 PrtPrintTextA
+  000126B0    42 PrtPrintTextSA
+  000126D0    43 PrtPrintTextSW
+  00012680    44 PrtPrintTextW
+  00012C90    45 PrtPrintTwoQRCode
+  00012CD0    46 PrtPrintTwoQRCodeS
+  00007630    47 PrtPrinterCreatorA
+  00007670    48 PrtPrinterCreatorS
+  00007650    49 PrtPrinterCreatorW
+  00007690    50 PrtPrinterDestroy
+  000125F0    51 PrtPrinterInitialize
+  00007760    52 PrtReadData
+  00007780    53 PrtReadDataEOF
+  00012890    54 PrtSelectPageMode
+  00012900    55 PrtSelectPrintDirectionInPageMode
+  000127F0    56 PrtSelectStandardMode
+  00012870    57 PrtSetAbsolutePrintPosition
+  00012920    58 PrtSetAbsoluteVerticalPrintPositionInPageMode
+  00012630    59 PrtSetAlign
+  000129C0    60 PrtSetCharacterSet
+  00012940    61 PrtSetPrintAndReturnStandardMode
+  000128B0    62 PrtSetPrintAreaInPageMode
+  000129E0    63 PrtSetPrintSpeed
+  00012830    64 PrtSetTextBold
+  00012850    65 PrtSetTextFont
+  00012810    66 PrtSetTextLineSpace
+  00012870    67 PrtSetTextPosition
+  00007740    68 PrtWriteData
+  00010F90    69 hprt_printer_add_generate_pulse
+  00010070    70 hprt_printer_cancel_print_data_in_page_mode
+  0000FE70    71 hprt_printer_check_printer_state
+  00010E90    72 hprt_printer_cut_paper
+  00011890    73 hprt_printer_define_NV_image
+  000113E0    74 hprt_printer_define_NV_image_compatible
+  00011530    75 hprt_printer_define_NV_image_compatible_wchar
+  00011960    76 hprt_printer_define_NV_image_wchar
+  00011C30    77 hprt_printer_define_buffered_image
+  00011D00    78 hprt_printer_define_buffered_image_wchar
+  00011A60    79 hprt_printer_define_downloaded_image
+  000115A0    80 hprt_printer_define_downloaded_image_compatible
+  00011670    81 hprt_printer_define_downloaded_image_compatible_wchar
+  00011B30    82 hprt_printer_define_downloaded_image_wchar
+  00011DE0    83 hprt_printer_delete_all_nv_images
+  00011010    84 hprt_printer_directio
+  00010E20    85 hprt_printer_feed_line
+  00011230    86 hprt_printer_get_drawer_state
+  00011130    87 hprt_printer_get_printer_version
+  0000FB10    88 hprt_printer_initialize
+  00010F10    89 hprt_printer_open_drawer
+  00010230    90 hprt_printer_position_next_label
+  000119E0    91 hprt_printer_print_NV_image
+  00011360    92 hprt_printer_print_NV_image_compatible
+  00010AE0    93 hprt_printer_print_bar_code
+  00010B70    94 hprt_printer_print_bar_code_wchar
+  00011D70    95 hprt_printer_print_buffered_image
+  000102A0    96 hprt_printer_print_data_in_page_mode
+  00011BB0    97 hprt_printer_print_downloaded_image
+  000116E0    98 hprt_printer_print_downloaded_image_compatible
+  00011750    99 hprt_printer_print_image
+  00011820   100 hprt_printer_print_image_wchar
+  00010C80   101 hprt_printer_print_symbol
+  00010D10   102 hprt_printer_print_symbol_wchar
+  000108E0   103 hprt_printer_print_text
+  00010A60   104 hprt_printer_print_text2
+  00010970   105 hprt_printer_print_text2_wchar
+  000107E0   106 hprt_printer_print_text_wchar
+  00011FA0   107 hprt_printer_print_two_qr_code
+  000123C0   108 hprt_printer_print_two_qr_code_simple
+  0000FF10   109 hprt_printer_select_page_mode
+  000100E0   110 hprt_printer_select_print_direction_in_page_mode
+  0000FF80   111 hprt_printer_select_standard_mode
+  000104D0   112 hprt_printer_set_absolute_print_position
+  00010150   113 hprt_printer_set_absolute_vertical_print_position_in_page_mode
+  000110C0   114 hprt_printer_set_characterset
+  00010690   115 hprt_printer_set_double_strike
+  000101C0   116 hprt_printer_set_print_and_return_standard_mode
+  0000FFF0   117 hprt_printer_set_print_area_in_page_mode
+  00010700   118 hprt_printer_set_print_modes
+  000112F0   119 hprt_printer_set_speed
+  00010310   120 hprt_printer_set_text_align
+  00010460   121 hprt_printer_set_text_bold
+  00010540   122 hprt_printer_set_text_font
+  00010380   123 hprt_printer_set_text_linespace
+  000104D0   124 hprt_printer_set_text_position
+  000103F0   125 hprt_printer_set_text_rotate
+  00010770   126 hprt_printer_set_text_size
+  00010620   127 hprt_printer_set_text_upside_down
+  000105B0   128 hprt_printer_set_text_white_black_reverse
+
+Done dumping HprtPrinter.dll

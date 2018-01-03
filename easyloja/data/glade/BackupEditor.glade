@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<interface>
+  <requires lib="gtk+" version="2.24"/>
+  <!-- interface-requires kiwiwidgets 0.0 -->
+  <!-- interface-naming-policy project-wide -->
+  <object class="GtkWindow" id="BackupEditor">
+    <child>
+      <object class="GtkVBox" id="vbox1">
+        <property name="visible">True</property>
+        <child>
+          <object class="GtkLabel" id="label1">
+            <property name="visible">True</property>
+            <property name="label" translatable="yes">Neste assistente você poderá ajustar a forma como o 
+Easyloja salva seus dados, abaixo escolha o modo de 
+execução para o backup do seu banco de dados:
+</property>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="padding">10</property>
+            <property name="position">0</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkVButtonBox" id="vbuttonbox1">
+            <property name="visible">True</property>
+            <property name="spacing">7</property>
+            <child>
+              <object class="ProxyRadioButton" id="daily_rb">
+                <property name="label" translatable="yes">Diariamente</property>
+                <property name="visible">True</property>
+                <property name="receives_default">False</property>
+                <property name="use_action_appearance">False</property>
+                <property name="draw_indicator">True</property>
+                <property name="group">weekly_rb</property>
+                <property name="data_type">str</property>
+                <property name="data_value">daily</property>
+                <property name="model_attribute">schedule</property>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">False</property>
+                <property name="position">0</property>
+              </packing>
+            </child>
+            <child>
+              <object class="ProxyRadioButton" id="weekly_rb">
+                <property name="label" translatable="yes">Semanalmente</property>
+                <property name="visible">True</property>
+                <property name="receives_default">False</property>
+                <property name="use_action_appearance">False</property>
+                <property name="draw_indicator">True</property>
+                <property name="data_type">str</property>
+                <property name="data_value">weekly</property>
+                <property name="model_attribute">schedule</property>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">False</property>
+                <property name="position">1</property>
+              </packing>
+            </child>
+            <child>
+              <object class="ProxyRadioButton" id="monthly_rb">
+                <property name="label" translatable="yes">Mensalmente</property>
+                <property name="visible">True</property>
+                <property name="receives_default">False</property>
+                <property name="use_action_appearance">False</property>
+                <property name="xalign">0.51999998092651367</property>
+                <property name="draw_indicator">True</property>
+                <property name="group">weekly_rb</property>
+                <property name="data_type">str</property>
+                <property name="data_value">monthly</property>
+                <property name="model_attribute">schedule</property>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">False</property>
+                <property name="position">2</property>
+              </packing>
+            </child>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">1</property>
+          </packing>
+        </child>
+      </object>
+    </child>
+  </object>
+</interface>

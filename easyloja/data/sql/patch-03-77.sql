@@ -1,0 +1,1 @@
+alter table payment add column migrated_hash text;

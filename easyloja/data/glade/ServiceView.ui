@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<interface>
+  <requires lib="gtk+" version="2.24"/>
+  <!-- interface-naming-policy project-wide -->
+  <object class="GtkWindow" id="ServiceView">
+    <child>
+      <object class="GtkEventBox" id="placeholder">
+        <property name="visible">True</property>
+        <child>
+          <object class="GtkLabel" id="label">
+            <property name="visible">True</property>
+            <property name="label" translatable="yes">Lista de Vendas</property>
+          </object>
+        </child>
+      </object>
+    </child>
+  </object>
+</interface>

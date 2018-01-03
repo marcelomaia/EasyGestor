@@ -1,0 +1,26 @@
+recursive-include data/config *.cfg
+recursive-include data/csv *.csv
+recursive-include data/fonts *.ttf
+recursive-include data/glade *.ui
+recursive-include data/misc *.gtkrc
+recursive-include data/uixml *.xml
+recursive-include data/html *.html *.css *.png *.js
+recursive-include data/pixmaps *.png *.svg *.jpg *.gif
+recursive-include data/sql *.sql *.py
+recursive-include data/template *.rml
+recursive-include docs *
+recursive-include external *.py
+recursive-include help *.page *.xml *.svg *.png
+recursive-include po *.po *.pot POTFILES.list
+recursive-include plugins *.csv *.py *.ui *.sql *.plugin
+recursive-include stoqlib *.pdf *.txt
+include debian/changelog debian/compat debian/copyright debian/control debian/rules
+include debian/pycompat debian/pyversions
+include AUTHORS
+include MANIFEST.in
+include README
+include INSTALL
+include NEWS
+include stoq.desktop
+include stoq.spec
+include data/br.com.stoq.createdatabase.policy

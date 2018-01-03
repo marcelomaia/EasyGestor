@@ -1,0 +1,132 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+<title>Finalizando um empréstimo</title>
+<link rel="stylesheet" type="text/css" href="C.css">
+<script type="text/javascript" src="jquery.js"></script><script type="text/javascript" src="jquery.syntax.js"></script><script type="text/javascript" src="yelp.js"></script>
+</head>
+<body><div class="page">
+<div class="header"><div class="trails">
+<div class="trail">
+<a class="trail" href="index.html" title="Manual do Stoq">Manual do Stoq</a> » <a class="trail" href="app-stock.html" title="Aplicativo Estoque">Aplicativo Estoque</a> » <a class="trail" href="loan.html" title="Empréstimos">Empréstimos</a> » </div>
+<div class="trail">
+<a class="trail" href="index.html" title="Manual do Stoq">Manual do Stoq</a> » <a class="trail" href="app-pos.html" title="Aplicativo Ponto de vendas">Aplicativo Ponto de vendas</a> » </div>
+<div class="trail">
+<a class="trail" href="index.html" title="Manual do Stoq">Manual do Stoq</a> » <a class="trail" href="app-sales.html" title="Aplicativo Vendas">Aplicativo Vendas</a> » <a class="trail" href="loan.html" title="Empréstimos">Empréstimos</a> » </div>
+</div></div>
+<div class="body">
+<div class="hgroup"><h1 class="title"><span class="title">Finalizando um empréstimo</span></h1></div>
+<div class="region">
+<div class="contents">
+<p class="p">
+    Utilizamos este processo para finalizar um empréstimo no Stoq, isto é,
+    receber novamente os <span class=" link"><a href="product.html" title="Produtos">produtos</a></span> que o
+    <span class=" link"><a href="client.html" title="Clientes">cliente</a></span> emprestou, e criando uma
+    <span class=" link"><a href="sale-quote.html" title="Realizando uma cotação de venda">cotação de venda</a></span> dos que ele decidiu
+    comprar.
+  </p>
+<div class="note note-important" title="Important"><div class="inner"><div class="region"><div class="contents">
+<p class="p">
+      Note que os produtos devolvidos terão o seu
+      <span class=" link"><a href="stock.html" title="Estoque">estoque</a></span> automáticamente aumentado novamente.
+    </p>
+<p class="p">
+      Este processo é baseado no <span class=" link"><a href="app-stock.html" title="Aplicativo Estoque">Aplicativo Estoque</a></span> ou
+      <span class=" link"><a href="app-sales.html" title="Aplicativo Vendas">Aplicativo Vendas</a></span>. Porém, o mesmo pode ser realizado no
+      <span class=" link"><a href="app-pos.html" title="Aplicativo Ponto de vendas">Aplicativo Ponto de vendas</a></span> através do menu
+      <span class=" guiseq"><span class=" gui">Arquivo</span> ▸ <span class=" gui">Fechar empréstimo</span></span>. Neste
+      caso, será necessário ter ao menos 1 item vendido e, ao invés de gerar
+      uma <span class=" link"><a href="sale-quote.html" title="Realizando uma cotação de venda">cotação de venda</a></span> no final, os items
+      serão adicionados na lista e vendidos como se tivessem sido adicionados
+      da forma convencional.
+    </p>
+</div></div></div></div>
+<div class="steps"><div class="inner"><div class="region"><ol class="steps">
+<li class="steps"><p class="p">
+        Abra o <span class=" link"><a href="app-stock.html" title="Aplicativo Estoque">Aplicativo Estoque</a></span> ou <span class=" link"><a href="app-sales.html" title="Aplicativo Vendas">Aplicativo Vendas</a></span>.
+      </p></li>
+<li class="steps"><p class="p">
+        Selecione o menu
+        <span class=" guiseq"><span class=" gui">Arquivo</span> ▸ <span class=" gui"> Fechar empréstimo</span></span>.
+      </p></li>
+<li class="steps">
+<p class="p">
+        Um <span class=" link"><a href="overview.html#wizard" title="Assistentes">assistente</a></span> será aberto:
+      </p>
+<div class="steps"><div class="inner"><div class="region"><ol class="steps">
+<li class="steps"><p class="p">
+            O primeiro passo é uma <span class=" link"><a href="overview.html#search" title="Pesquisas">pesquisa</a></span>
+            onde você deverá encontrar o empréstimo em questão. Tendo ele
+            selecionado, clique em <span class=" gui">Avançar</span>.
+          </p></li>
+<li class="steps"><p class="p">
+            No segundo passo você deve selecionar quais produtos e quantidades
+            serão devolvidos/vendidos. Note que ao menos 1 unidade de 1 produto deve
+            ser selecionado aqui. Você pode alterar a quantidade clicando duas
+            vezes na coluna <span class=" gui">Quantidade</span> do produto.
+          </p></li>
+</ol></div></div></div>
+</li>
+<li class="steps"><p class="p">
+        Pronto! O seu empréstimo foi finalizado com sucesso! Os itens que foram
+        devolvidos retornaram ao <span class=" link"><a href="stock.html" title="Estoque">estoque</a></span> enquanto os
+        que foram vendidos se transformaram em uma
+        <span class=" link"><a href="sale-quote.html" title="Realizando uma cotação de venda">cotação de venda</a></span>, podendo esta ser
+        confirmada posteriormente no <span class=" link"><a href="app-till.html" title="Aplicativo Caixa">Aplicativo Caixa</a></span>.
+      </p></li>
+</ol></div></div></div>
+</div>
+<div class="sect sect-links">
+<div class="hgroup"></div>
+<div class="contents">
+<div class="links seealsolinks"><div class="inner">
+<div class="title"><h2><span class="title">More Information</span></h2></div>
+<div class="region"><ul>
+<li class="links ">
+<a href="app-pos.html" title="Aplicativo Ponto de vendas">Aplicativo Ponto de vendas</a><span class="desc"> — 
+      <span class=" link"><a href="sale.html" title="Vendas">Vendas</a></span>,
+      <span class=" link"><a href="product.html" title="Produtos">Produtos</a></span>,
+      <span class=" link"><a href="service.html" title="Serviços">Serviços</a></span>,
+      <span class=" link"><a href="client.html" title="Clientes">Clientes</a></span>,
+      <span class=" link"><a href="till.html" title="Caixa">Caixa</a></span>...
+    </span>
+</li>
+<li class="links ">
+<a href="loan.html" title="Empréstimos">Empréstimos</a><span class="desc"> — 
+      <span class=" link"><a href="loan-new.html" title="Realizando um empréstimo">Realizando um empréstimo</a></span>,
+      <span class=" link"><a href="loan-search.html" title="Pesquisando por um empréstimo">Pesquisando por um empréstimo</a></span>,
+      <span class=" link"><a href="loan-item-search.html" title="Pesquisando por itens emprestados">Pesquisando por itens emprestados</a></span>,
+      <span class=" link"><a href="loan-finish.html" title="Finalizando um empréstimo">Finalizando um empréstimo</a></span>...
+    </span>
+</li>
+</ul></div>
+</div></div>
+<div class="links seealsolinks"><div class="inner">
+<div class="title"><h2><span class="title">See Also</span></h2></div>
+<div class="region"><ul>
+<li class="links ">
+<a href="stock.html" title="Estoque">Estoque</a><span class="desc"> — 
+      <span class=" link"><a href="stock-register-initial.html" title="Registro de estoque inicial">Registro de estoque inicial</a></span>,
+      <span class=" link"><a href="stock-transfer.html" title="Transferência de estoque entre filiais">Transferência de estoque entre filiais</a></span>,
+      <span class=" link"><a href="stock-decrease.html" title="Saída manual de estoque">Saída manual de estoque</a></span>...
+    </span>
+</li>
+<li class="links ">
+<a href="sale.html" title="Vendas">Vendas</a><span class="desc"> — 
+      <span class=" link"><a href="sale-new.html" title="Realizando uma venda">Realizando uma venda</a></span>,
+      <span class=" link"><a href="sale-search.html" title="Pesquisando por uma venda">Pesquisando por uma venda</a></span>,
+      <span class=" link"><a href="sale-confirm.html" title="Confirmando uma venda">Confirmando uma venda</a></span>,
+      <span class=" link"><a href="sale-receive.html" title="sale-receive">sale-receive</a></span>...
+    </span>
+</li>
+</ul></div>
+</div></div>
+</div>
+</div>
+</div>
+<div class="clear"></div>
+</div>
+<div class="footer"></div>
+</div></body>
+</html>

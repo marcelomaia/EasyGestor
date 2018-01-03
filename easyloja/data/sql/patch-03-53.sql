@@ -1,0 +1,1 @@
+ALTER TABLE person_adapt_to_branch ADD COLUMN aliquota_credito numeric(10,2) NOT NULL DEFAULT 0;

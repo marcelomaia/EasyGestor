@@ -1,0 +1,1 @@
+ALTER TABLE purchase_item ADD COLUMN  ipi_cost numeric(20, 8) CONSTRAINT positive_ipi_cost CHECK (ipi_cost >= 0);

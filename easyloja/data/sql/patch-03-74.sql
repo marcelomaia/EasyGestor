@@ -1,0 +1,1 @@
+alter table sale_item add column category_name text;

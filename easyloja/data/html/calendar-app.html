@@ -1,0 +1,102 @@
+<!DOCTYPE html5>
+<html>
+
+<head>
+  <link rel='stylesheet' type='text/css' href='/web/static/css/fullcalendar.css' />
+  <link rel='stylesheet' type='text/css' href='/web/static/css/jquery.qtip.min.css' />
+  <link rel='stylesheet' type='text/css' href='/web/static/css/calendar.css' />
+  <script type='text/javascript' src='/web/static/js/jquery-1.5.2.min.js'></script>
+  <script type='text/javascript' src='/web/static/js/fullcalendar-1.5.2.min.js'></script>
+  <script type='text/javascript' src='/web/static/js/jquery.qtip.min.js'></script>
+
+  <script>
+  var timeout_id = 0;
+  var calendar_options = {};
+  function update_options(new_options) {
+    $.extend(calendar_options, new_options);
+  };
+
+  function startup(options) {
+      $("#loading").html(options.loading_msg);
+      options.aspectRatio = 2.3;
+      options.events = function(start, end, callback) {
+        calendar_options.start = start.getTime() / 1000;
+        calendar_options.end = end.getTime() / 1000;
+        calendar_options.group = $('#calendar').fullCalendar('getView').name == 'month';
+        if ('data' in options) {
+          update_options(options.data)
+          options.data = {};
+        }
+        $.ajax({
+            url: "/web/calendar-events.json",
+            dataType: 'json',
+            data: calendar_options,
+            success: function(events) {
+                callback(events);
+            }
+        });
+      };
+      options.eventRender = function(event, element) {
+        element.qtip({
+          content: event.title,
+          position: {
+            my: 'top center',
+            at: 'bottom center',
+            viewport: $('#calendar'),
+            adjust: {
+              method: 'shift',
+            }
+          }
+        });
+      }
+      options.selectable = true;
+      options.selectHelper = true;
+      options.select = function(start, end, allDay) {
+          if ($('#calendar').fullCalendar('getView') == 'basicDay') {
+              return;
+          }
+          window.location = 'stoq://self/?method=changeView,view=basicDay,date=' + start;
+      };
+
+      options.header = {
+          left: '',
+          center: 'title',
+          right: '',
+      };
+      options.loading = function(isLoading, view) {
+             if (isLoading) {
+                timeout_id = setTimeout(function() {
+                    $('#loading').slideDown();
+                }, 200);
+             } else {
+              clearTimeout(timeout_id);
+                $('#loading').slideUp();
+             }
+      };
+      $('#calendar').fullCalendar(options);
+  };
+  $(function() {
+     if (navigator.userAgent.search("Stoq") == -1) {
+        startup({data: {'in_payments': true,
+                        'out_payments':  true,
+                        'purchase_orders': true,
+                        'client_calls': true,}});
+        //$('#calendar').fullCalendar('changeView', 'basicDay')
+        //$('#calendar').fullCalendar('gotoDate', 2010, 10)
+     }
+  })
+  </script>
+</head>
+
+<body>
+  <div id='content'>
+    <div id="loading_box">
+        <div id='loading'>
+          Loading calendar content, please wait...
+        </div>
+    </div>
+    <div id='calendar' style='font-size:13px;position: fixed; top: 0'>
+    </div>
+  </div>
+</body>
+</html>

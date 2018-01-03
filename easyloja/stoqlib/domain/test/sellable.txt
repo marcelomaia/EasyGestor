@@ -1,0 +1,213 @@
+.. -*- Mode: doctest -*-
+
+Doctest for domain/sellable.txt
+
+Imports that will be used in this doctest:
+
+    >>> from stoqlib.database.runtime import new_transaction
+    >>> from stoqlib.domain.product import Product
+    >>> from stoqlib.domain.sellable import Sellable
+    >>> from stoqlib.domain.sellable import SellableCategory
+    >>> from decimal import Decimal
+
+Create a new transaction
+
+    >>> trans = new_transaction()
+
+SellableCategory
+================
+
+.. TODO:
+..     def get_commission(self):
+..     def get_description(self):
+..     def get_commission(self):
+..     def get_markup(self):
+..     def get_full_description(self):
+
+
+Sellable
+========
+
+    >>> sellable = Sellable(description="Sellable",
+    ...                     barcode='1138', connection=trans)
+
+    >>> sellable
+    <Sellable ...>
+
+Commission is initially set to 0:
+
+    >>> sellable.get_commission()
+    Decimal('0.00')
+
+    >>> sellable.get_description()
+    u'Sellable'
+
+
+    >>> product = Product(sellable=sellable, connection=trans)
+
+Properties: Markup, Price and Commission
+========================================
+
+Markup is initially set to 0, since we haven't defined price or cost:
+
+    >>> sellable.markup
+    Decimal('0')
+
+Let's say that the initial price is 20 and the cost to 10
+
+    >>> sellable.price = 20
+    >>> sellable.cost = 10
+
+Then we will have a markup of 100%:
+
+    >>> sellable.markup
+    Decimal('100')
+
+If we modify markup directly, the price will be updated:
+
+    >>> sellable.markup = 200
+    >>> sellable.price
+    <currency ...30...>
+
+But the cost will stay the same:
+
+    >>> sellable.cost
+    <currency ...10...>
+
+The default commission is 0
+
+    >>> sellable.commission
+    Decimal('0.00')
+
+It can be modified:
+
+    >>> sellable.commission = Decimal('10.00')
+
+    >>> sellable.commission
+    Decimal('10.00')
+
+Querying sellable status
+========================
+
+.. TODO:
+..     def is_unavailable(self):
+..     def set_unavailable(self):
+..     def cancel(self):
+
+A newly created sellable is in the status unavailable, because there are no available
+items to sell:
+
+    >>> sellable.status == Sellable.STATUS_UNAVAILABLE
+    True
+
+Since there's no stock, then it cannot be sold:
+
+    >>> sellable.can_be_sold()
+    False
+
+At some point we get stocks, then we make it possible to sell it:
+
+    >>> sellable.can_sell()
+
+And the it's possible to sell it:
+
+    >>> sellable.can_be_sold()
+    True
+
+Accessors
+=========
+
+.. TODO
+..     def get_code_str(self):
+..     def get_short_description(self):
+..     def get_suggested_markup(self):
+..     def get_unit_description(self):
+..     def get_description(self):
+
+Class methods:
+=============
+
+.. TODO:
+..     def check_barcode_exists(cls, barcode):
+
+This will return a list of available sellables:
+
+    >>> sellable.status == Sellable.STATUS_AVAILABLE
+    True
+
+    >>> sellable in Sellable.get_available_sellables(trans)
+    True
+
+Selling the sellable, removes it from the list of available sellables:
+
+    >>> sellable.set_unavailable()
+    >>> sellable in Sellable.get_available_sellables(trans)
+    False
+
+Also, we can get a list of available sellable by a list of categories:
+
+    >>> category = SellableCategory(description='Battery', connection=trans)
+    >>> sellable.category = category
+    >>> sellable.can_sell()
+    >>> sellable in Sellable.get_unblocked_by_categories(trans, [category])
+    True
+
+Unblocked means available or sold:
+
+    >>> sellable in Sellable.get_unblocked_sellables(trans)
+    True
+
+    >> sellable.set_unavailable()
+    >>> sellable in Sellable.get_unblocked_sellables(trans)
+    True
+
+Blocking the sellable removes from the return value:
+
+    >>> sellable.status = Sellable.STATUS_BLOCKED
+    >>> sellable in Sellable.get_unblocked_sellables(trans)
+    False
+
+Unavailable means that it cannot be sold (no stock):
+
+    >>> Sellable.get_unavailable_sellables(trans).count()
+    5L
+
+We can query using a specific barcode:
+
+    >>> sellable.barcode == '1138'
+    True
+
+    >>> Sellable.get_availables_by_barcode(trans, '1138')
+    Traceback (most recent call last):
+        ...
+    BarcodeDoesNotExists: The sellable with barcode '1138' doesn't exists or is not available to be sold
+
+    >>> sellable.cancel()
+
+    >>> sellable == Sellable.get_availables_by_barcode(trans, '1138')
+    True
+
+And for sold sellables using a specific barcode:
+
+    >>> sellable == Sellable.get_availables_and_unavailable_by_barcode(trans, '1138')
+    True
+
+    >>> sellable.status = Sellable.STATUS_BLOCKED
+
+    >>> Sellable.get_availables_and_unavailable_by_barcode(trans, '1138')
+    Traceback (most recent call last):
+        ...
+    BarcodeDoesNotExists: The sellable with barcode '1138' doesn't exists or is not available to be sold
+
+
+SaleItem
+============
+
+.. TODO:
+..   def set_unavailable(self):
+..   def cancel(self):
+..   def get_total(self):
+..   def get_quantity_unit_string(self):
+
+
+    >>> trans.close()

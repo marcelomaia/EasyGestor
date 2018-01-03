@@ -1,0 +1,196 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+<title>Instalando o Stoq</title>
+<link rel="stylesheet" type="text/css" href="C.css">
+<script type="text/javascript" src="jquery.js"></script><script type="text/javascript" src="jquery.syntax.js"></script><script type="text/javascript" src="yelp.js"></script>
+</head>
+<body><div class="page">
+<div class="header"><div class="trails"><div class="trail">
+<a class="trail" href="index.html" title="Manual do Stoq">Manual do Stoq</a> » </div></div></div>
+<div class="body">
+<div class="hgroup"><h1 class="title"><span class="title">Instalando o Stoq</span></h1></div>
+<div class="region">
+<div class="contents"><div class="links sectionlinks"><div class="inner">
+<div class="title title-links"><h2><span class="title">Sumário</span></h2></div>
+<div class="region"><ul>
+<li class="links "><a href="installation.html#packages" title="Instalando os pacotes do Stoq">Instalando os pacotes do Stoq</a></li>
+<li class="links "><a href="installation.html#server" title="Configurando o servidor">Configurando o servidor</a></li>
+<li class="links "><a href="installation.html#client" title="Configurando os computadores clientes">Configurando os computadores clientes</a></li>
+</ul></div>
+</div></div></div>
+<div id="packages" class="sect"><div class="inner">
+<div class="hgroup"><h2 class="title"><span class="title">Instalando os pacotes do Stoq</span></h2></div>
+<div class="region"><div class="contents">
+<p class="p">
+      O modo mais fácil de testar/instalar o Stoq é através do CD de
+      demonstração. Você pode baixá-lo por aqui:
+      <span class=" link"><a href="http://www.stoq.com.br/livecd" title="http://www.stoq.com.br/livecd">CD de demonstração do Stoq</a></span>.
+    </p>
+<p class="p">
+      Alternativamente, se você estiver utilizando o
+      <span class=" link"><a href="http://www.ubuntu.com" title="http://www.ubuntu.com">Ubuntu</a></span>, você pode seguir essas
+      instruções:
+      <span class=" link"><a href="http://www.stoq.com.br/ubuntu" title="http://www.stoq.com.br/ubuntu">Instalando o Stoq no Ubuntu</a></span>.
+    </p>
+</div></div>
+</div></div>
+<div id="server" class="sect"><div class="inner">
+<div class="hgroup"><h2 class="title"><span class="title">Configurando o servidor</span></h2></div>
+<div class="region"><div class="contents">
+<p class="p">
+      O Stoq é desenvolvido para ter suporte a vários computadores conectados
+      na mesma base de dados. Isso porque todos os dados ficam armazenados na
+      base de dados <span class=" link"><a href="http://www.postgresql.org" title="http://www.postgresql.org">Postgresql</a></span>.
+    </p>
+<div class="steps"><div class="inner"><div class="region"><ol class="steps">
+<li class="steps">
+<p class="p">
+          No computador que servirá como servidor, instale o postgresql. Caso
+          esteja utilizando o
+          <span class=" link"><a href="http://www.ubuntu.com" title="http://www.ubuntu.com">Ubuntu</a></span>, você pode
+          simplesmente clicar aqui:
+          <span class=" link"><a href="apt:postgresql" title="apt:postgresql">instalar o postgresql</a></span>.
+        </p>
+<div class="note note-important" title="Important"><div class="inner"><div class="region"><div class="contents"><p class="p">
+            Neste computador que está servindo como servidor, a menos que ele
+            também vá ser utilizado como cliente (isto é, algum usuário vai
+            utilizar o Stoq nesse computador) não é necessário instalar os
+            <span class=" link"><a href="#packages" title="Instalando os pacotes do Stoq">pacotes do Stoq</a></span>.
+          </p></div></div></div></div>
+</li>
+<li class="steps">
+<p class="p">
+          Após a instalação, é preciso criar um usuário no postgres para que
+          possamos realizar a conexão em nossas estações. No Ubuntu, você pode
+          utilizar o seguinte comando:
+        </p>
+<div class="list"><div class="inner"><div class="region"><ul class="list"><li class="list"><p class="p">
+              <span class=" cmd">sudo -u postgres createuser $USER -dsP</span>
+              (substitua $USER pelo nome de usuário desejado).
+            </p></li></ul></div></div></div>
+</li>
+<li class="steps"><p class="p">
+          Pronto! O servidor está configurado e você já pode começar a
+          <span class=" link"><a href="#client" title="Configurando os computadores clientes">configurar os computadores clientes</a></span>.
+        </p></li>
+</ol></div></div></div>
+</div></div>
+</div></div>
+<div id="client" class="sect"><div class="inner">
+<div class="hgroup"><h2 class="title"><span class="title">Configurando os computadores clientes</span></h2></div>
+<div class="region"><div class="contents">
+<p class="p">
+      Caso você esteja reconfigurando uma instalação existente ou mesmo tenha
+      instalado o Stoq utilizando o
+      <span class=" link"><a href="http://www.stoq.com.br/livecd" title="http://www.stoq.com.br/livecd">CD de demonstração</a></span>,
+      será necessário forçar a execução do
+      <span class=" link"><a href="overview.html#wizzard" title="overview#wizzard">assistente</a></span> de configuração. Para
+      isso, rode o Stoq em um terminal com o seguinte comando:
+    </p>
+<div class="list"><div class="inner"><div class="region"><ul class="list"><li class="list"><p class="p"><span class=" cmd">stoq --wizard</span></p></li></ul></div></div></div>
+<p class="p">
+      A opção <span class=" cmd">--wizard</span> deve ser utilizada apenas neste momento, já
+      que após realizar os passos abaixo, a configuração antiga será
+      substituída pela nova.
+    </p>
+<div class="steps"><div class="inner"><div class="region"><ol class="steps">
+<li class="steps"><p class="p">
+          Abra o <span class=" app">Stoq</span> em seu computador. Tenha certeza de ter
+          <span class=" link"><a href="#packages" title="Instalando os pacotes do Stoq">instalado seus pacotes</a></span> antes.
+        </p></li>
+<li class="steps"><p class="p">
+          Ao abrir o aplicativo pela primeira vez, você será apresentado a um
+          <span class=" link"><a href="overview.html#wizzard" title="overview#wizzard">assistente</a></span> de configuração.
+        </p></li>
+<li class="steps">
+<p class="p">
+          O assistente te perguntará onde está localizada a
+          base de dados. Escolha a opção <span class=" gui">Configurar manualmente</span>
+          e preencha os dados de acordo com os dados de seu
+          <span class=" link"><a href="#server" title="Configurando o servidor">servidor</a></span>. Caso não exista uma base com o
+          mesmo nome do <span class=" gui">Nome do banco</span>, uma nova base será criada
+          para você.
+        </p>
+<div class="note note-important" title="Important"><div class="inner"><div class="region"><div class="contents"><p class="p">
+            Em casos simples, onde apenas um computador será utilizado para
+            toda a empresa, você pode simplesmente escolher a opção
+            <span class=" gui">Eu quero usar o Stoq apenas neste computador</span>. Esta opção
+            irá criar um usuário e uma base de dados automáticamente para você,
+            te livrando do trabalho de
+            <span class=" link"><a href="#server" title="Configurando o servidor">configurar um servidor</a></span>.
+          </p></div></div></div></div>
+</li>
+<li class="steps">
+<p class="p">
+          Caso a base de dados seja nova, o assistente irá te perguntar sobre o
+          tipo de base de dados. Existem 2 tipos de bases que podem ser
+          criadas:
+        </p>
+<div class="list"><div class="inner"><div class="region"><ul class="list">
+<li class="list"><p class="p">
+              <span class=" em">Base de produção</span>: Uma base vazia, pronta para ser
+              utilizada em produção na sua empresa.
+            </p></li>
+<li class="list"><p class="p">
+              <span class=" em">Base de demonstração</span>: Esta é aconselhada para quem
+              nunca utilizou o Stoq antes. O Stoq será configurado com vários
+              dados de exemplos para você poder testar a vontade! Aproveite
+              para <span class=" link"><a href="product-new.html" title="Cadastrando um produto">criar novos produtos</a></span>,
+              <span class=" link"><a href="sale-new.html" title="Realizando uma venda">realizar vendas</a></span>,
+              <span class=" link"><a href="stock-decrease.html" title="Saída manual de estoque">realizar baixas de estoque</a></span>,
+              etc. Aprenda o máximo que puder!!
+            </p></li>
+</ul></div></div></div>
+<p class="p">
+          Além disso, você será questinado sobre a ativação de
+          <span class=" link"><a href="plugin.html" title="Plugins">plugins</a></span>, a criação de um usuário
+          administrador e o cadastro de
+          <span class=" link"><a href="branch.html" title="Filiais">da empresa</a></span>.
+        </p>
+</li>
+<li class="steps"><p class="p">
+          Após a finalização do assistente, o Stoq foi configurado com sucesso
+          em seu computador e está pronto para ser utilizado em sua empresa!
+        </p></li>
+</ol></div></div></div>
+</div></div>
+</div></div>
+<div class="sect sect-links">
+<div class="hgroup"></div>
+<div class="contents">
+<div class="links seealsolinks"><div class="inner">
+<div class="title"><h2><span class="title">More Information</span></h2></div>
+<div class="region"><ul><li class="links ">
+<a href="index.html" title="Manual do Stoq">Manual do Stoq</a><span class="desc"> — Manual do Stoq</span>
+</li></ul></div>
+</div></div>
+<div class="links seealsolinks"><div class="inner">
+<div class="title"><h2><span class="title">See Also</span></h2></div>
+<div class="region"><ul>
+<li class="links ">
+<a href="faq.html" title="Perguntas frequentes">Perguntas frequentes</a><span class="desc"> — 
+      Perguntas frequentes do Stoq.
+    </span>
+</li>
+<li class="links ">
+<a href="about.html" title="Sobre o Stoq">Sobre o Stoq</a><span class="desc"> — 
+      Sobre o Stoq.
+    </span>
+</li>
+<li class="links ">
+<a href="overview.html" title="Visão geral">Visão geral</a><span class="desc"> — 
+      Visão geral do Stoq.
+    </span>
+</li>
+</ul></div>
+</div></div>
+</div>
+</div>
+</div>
+<div class="clear"></div>
+</div>
+<div class="footer"></div>
+</div></body>
+</html>

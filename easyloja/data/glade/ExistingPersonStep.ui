@@ -1,0 +1,115 @@
+<?xml version="1.0"?>
+<!--*- mode: xml -*-->
+<interface>
+  <object class="GtkWindow" id="ExistingPersonStep">
+    <property name="default_height">250</property>
+    <property name="default_width">440</property>
+    <child>
+      <object class="GtkVBox" id="vbox1">
+        <property name="visible">True</property>
+        <child>
+          <object class="ProxyLabel" id="question_label">
+            <property name="data_type">unicode</property>
+            <property name="label" translatable="yes">É um desses ?</property>
+            <property name="visible">True</property>
+          </object>
+        </child>
+        <child>
+          <object class="GtkTable" id="table1">
+            <property name="column_spacing">5</property>
+            <property name="n_columns">3</property>
+            <property name="n_rows">3</property>
+            <property name="row_spacing">5</property>
+            <property name="visible">True</property>
+            <child>
+              <object class="ProxyLabel" id="kiwilabel2">
+                <property name="data_type">unicode</property>
+                <property name="visible">True</property>
+              </object>
+            </child>
+            <child>
+              <object class="ProxyLabel" id="kiwilabel3">
+                <property name="data_type">unicode</property>
+                <property name="visible">True</property>
+              </object>
+              <packing>
+                <property name="bottom_attach">2</property>
+                <property name="top_attach">1</property>
+              </packing>
+            </child>
+            <child>
+              <object class="ProxyLabel" id="kiwilabel4">
+                <property name="data_type">unicode</property>
+                <property name="visible">True</property>
+              </object>
+              <packing>
+                <property name="bottom_attach">3</property>
+                <property name="top_attach">2</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkRadioButton" id="existing_person_check">
+                <property name="label" translatable="yes">Cliente existente</property>
+                <property name="visible">True</property>
+              </object>
+              <packing>
+                <property name="left_attach">1</property>
+                <property name="right_attach">2</property>
+              </packing>
+            </child>
+            <child>
+              <object class="ObjectList" id="person_list">
+                <property name="selection_mode">single</property>
+              </object>
+              <packing>
+                <property name="bottom_attach">2</property>
+                <property name="left_attach">1</property>
+                <property name="right_attach">3</property>
+                <property name="top_attach">1</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkRadioButton" id="new_person_check">
+                <property name="active">False</property>
+                <property name="group">existing_person_check</property>
+                <property name="label" translatable="yes">Não, é um novo cliente</property>
+                <property name="visible">True</property>
+              </object>
+              <packing>
+                <property name="bottom_attach">3</property>
+                <property name="left_attach">1</property>
+                <property name="right_attach">2</property>
+                <property name="top_attach">2</property>
+              </packing>
+            </child>
+            <child>
+              <object class="ProxyLabel" id="kiwilabel5">
+                <property name="data_type">unicode</property>
+                <property name="visible">True</property>
+              </object>
+              <packing>
+                <property name="left_attach">2</property>
+                <property name="right_attach">3</property>
+              </packing>
+            </child>
+            <child>
+              <object class="ProxyLabel" id="kiwilabel7">
+                <property name="data_type">unicode</property>
+                <property name="visible">True</property>
+              </object>
+              <packing>
+                <property name="bottom_attach">3</property>
+                <property name="left_attach">2</property>
+                <property name="right_attach">3</property>
+                <property name="top_attach">2</property>
+              </packing>
+            </child>
+          </object>
+          <packing>
+            <property name="position">1</property>
+          </packing>
+        </child>
+      </object>
+    </child>
+  </object>
+</interface>

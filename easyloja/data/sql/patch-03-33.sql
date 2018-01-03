@@ -1,0 +1,1 @@
+ALTER TABLE person_adapt_to_branch  ADD COLUMN name text;

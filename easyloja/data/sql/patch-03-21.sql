@@ -1,0 +1,1 @@
+ALTER TABLE receiving_order ADD COLUMN freight_due_date timestamp;

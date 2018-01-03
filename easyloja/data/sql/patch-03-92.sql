@@ -1,0 +1,1 @@
+alter table nfce_branch_series add column number int;

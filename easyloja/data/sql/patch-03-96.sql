@@ -1,0 +1,1 @@
+ALTER TABLE nfce_branch_series ADD COLUMN is_active BOOLEAN default TRUE;

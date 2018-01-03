@@ -1,0 +1,158 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+<title>Retornando uma venda</title>
+<link rel="stylesheet" type="text/css" href="C.css">
+<script type="text/javascript" src="jquery.js"></script><script type="text/javascript" src="jquery.syntax.js"></script><script type="text/javascript" src="yelp.js"></script>
+</head>
+<body><div class="page">
+<div class="header"><div class="trails">
+<div class="trail">
+<a class="trail" href="index.html" title="Manual do Stoq">Manual do Stoq</a> » <a class="trail" href="app-till.html" title="Aplicativo Caixa">Aplicativo Caixa</a> » <a class="trail" href="sale.html" title="Vendas">Vendas</a> » </div>
+<div class="trail">
+<a class="trail" href="index.html" title="Manual do Stoq">Manual do Stoq</a> » <a class="trail" href="app-pos.html" title="Aplicativo Ponto de vendas">Aplicativo Ponto de vendas</a> » <a class="trail" href="sale.html" title="Vendas">Vendas</a> » </div>
+<div class="trail">
+<a class="trail" href="index.html" title="Manual do Stoq">Manual do Stoq</a> » <a class="trail" href="app-sales.html" title="Aplicativo Vendas">Aplicativo Vendas</a> » <a class="trail" href="sale.html" title="Vendas">Vendas</a> » </div>
+</div></div>
+<div class="body">
+<div class="hgroup"><h1 class="title"><span class="title">Retornando uma venda</span></h1></div>
+<div class="region">
+<div class="contents">
+<p class="p">
+    Este processo é utilizado para devolver uma venda, isto
+    é, retornar os produtos ao <span class=" link"><a href="stock.html" title="Estoque">estoque</a></span> e devolver a
+    <span class=" link"><a href="account-receivable.html" title="Conta a receber">valor recebido</a></span> por esta ao
+    <span class=" link"><a href="client.html" title="Clientes">cliente</a></span>.
+  </p>
+<div class="note note-tip" title="Tip"><div class="inner"><div class="region"><div class="contents"><p class="p">
+      Caso o cliente pretenda realizar uma nova compra, você pode optar por
+      fazer uma <span class=" link"><a href="sale-trade.html" title="Trocando uma venda">troca</a></span>.
+    </p></div></div></div></div>
+<div class="steps"><div class="inner"><div class="region"><ol class="steps">
+<li class="steps"><p class="p">
+        Abra o <span class=" link"><a href="app-sales.html" title="Aplicativo Vendas">Aplicativo Vendas</a></span> ou o <span class=" link"><a href="app-till.html" title="Aplicativo Caixa">Aplicativo Caixa</a></span>.
+      </p></li>
+<li class="steps"><p class="p">
+        Na <span class=" link"><a href="overview.html#search" title="Pesquisas">pesquisa</a></span> do aplicativo,
+        <span class=" link"><a href="sale-search.html" title="Pesquisando por uma venda">pesquise pela venda</a></span> em questão.
+      </p></li>
+<li class="steps">
+<p class="p">
+        Após ter a venda dejada selecionada, selecione o menu
+        <span class=" guiseq"><span class=" gui">Venda</span> ▸ <span class=" gui">Devolver...</span></span>.
+      </p>
+<div class="note note-tip" title="Tip"><div class="inner"><div class="region"><div class="contents"><p class="p">
+          Alternativamente você pode realizar o mesmo através da
+          <span class=" link"><a href="overview.html#toolbar" title="Barra de ferramentas">barra de ferramentas</a></span> no botão
+          <span class=" gui">Retornar</span>.
+        </p></div></div></div></div>
+</li>
+<li class="steps">
+<p class="p">
+        Um <span class=" link"><a href="overview.html#wizard" title="Assistentes">assistente</a></span> será aberto:
+      </p>
+<div class="steps"><div class="inner"><div class="region"><ol class="steps">
+<li class="steps"><p class="p">
+            No primeiro passo você deve selecionar quais produtos e quantidades
+            serão devolvidos. Note que ao menos 1 unidade de 1 produto deve
+            ser selecionado aqui. Você pode alterar a quantidade clicando duas
+            vezes na coluna <span class=" gui">Quantidade</span> do produto.
+          </p></li>
+<li class="steps">
+<p class="p">
+            No segundo passo você deve informar o número da
+            <span class=" gui">Nota fiscal</span> (este é o número da nota fiscal de devolução,
+            ou seja, da entrada dos produtos) e a <span class=" gui">Razão</span> da devolução.
+          </p>
+<p class="p">
+            O sumário indicado representa:
+          </p>
+<div class="list"><div class="inner"><div class="region"><ul class="list">
+<li class="list"><p class="p">
+                <span class=" gui">Total da venda</span>: O total da venda, excluindo produtos
+                devolvidos anteriormente.
+              </p></li>
+<li class="list"><p class="p">
+                <span class=" gui">Já pago</span>: O total pago da venda pelo cliente. Ele
+                pode não ser igual ao <span class=" gui">Total da venda</span> quando, por
+                exemplo, o mesmo realizou um pagamento em cheque e este não
+                foi descontado.
+              </p></li>
+<li class="list"><p class="p">
+                <span class=" gui">Total devolvido</span>: O total dos produtos devolvidos
+                selecionado no primeiro passo.
+              </p></li>
+<li class="list">
+<p class="p">
+                <span class=" gui">Diferença</span>/<span class=" gui">Faltando</span>/<span class=" gui">Pago em excesso</span>:
+                Este aparecerá em uma dessas 3 formas de acordo com o que
+                ele está representando. Esse calculo é realizado da seguinte forma:
+              </p>
+<div class="list"><div class="inner"><div class="region"><ul class="list"><li class="list"><p class="p">
+                    <span class=" gui">Diferença</span> = <span class=" gui">Total da venda</span> -
+                    <span class=" gui">Já pago</span> - <span class=" gui">Total devolvido</span>
+                  </p></li></ul></div></div></div>
+<p class="p">
+                Se essa diferença for igual a 0 (ex. O cliente comprou R$100,00
+                em produtos, pagou R$50,00 na hora e R$50,00 ainda estão para
+                ser pagos e ele está devolvendo um total de R$50,00 em produtos)
+                qualquer pagamento devedor do cliente será cancelado e ele não
+                deve mais nada em relação a venda.
+              </p>
+<p class="p">
+                Se foi pago em excesso (ex. O cliente comprou R$100,00 em
+                produtos, já pagou esses R$100,00 e está devolvendo R$50,00)
+                um pagamento de estorno será gerado neste valor. Você pode
+                verificá-lo depois no <span class=" link"><a href="app-payable.html" title="Aplicativo Contas a pagar">Aplicativo Contas a pagar</a></span>. Neste caso,
+                ao marcar a opção "Depositar crédito na conta do cliente", um
+                crédito ao cliente será criado e este pode ser utilizado pelo
+                cliente para comprar futuras.
+              </p>
+<p class="p">
+                Se está faltando (ex. O cliente comprou R$100,00 em
+                produtos, os pagamentos ainda não caíram e está devolvendo
+                R$50,00) você será direcionado para um passo extra para
+                ajustar a nova dívida, por exemplo, cancelando um pagamento
+                em cheque antigo e gerando um novo com o novo valor.
+              </p>
+</li>
+</ul></div></div></div>
+</li>
+</ol></div></div></div>
+</li>
+<li class="steps"><p class="p">
+        Pronto! Sua venda foi retornada com sucesso no Stoq.
+      </p></li>
+</ol></div></div></div>
+</div>
+<div class="sect sect-links">
+<div class="hgroup"></div>
+<div class="contents">
+<div class="links seealsolinks"><div class="inner">
+<div class="title"><h2><span class="title">More Information</span></h2></div>
+<div class="region"><ul><li class="links ">
+<a href="sale.html" title="Vendas">Vendas</a><span class="desc"> — 
+      <span class=" link"><a href="sale-new.html" title="Realizando uma venda">Realizando uma venda</a></span>,
+      <span class=" link"><a href="sale-search.html" title="Pesquisando por uma venda">Pesquisando por uma venda</a></span>,
+      <span class=" link"><a href="sale-confirm.html" title="Confirmando uma venda">Confirmando uma venda</a></span>,
+      <span class=" link"><a href="sale-receive.html" title="sale-receive">sale-receive</a></span>...
+    </span>
+</li></ul></div>
+</div></div>
+<div class="links seealsolinks"><div class="inner">
+<div class="title"><h2><span class="title">See Also</span></h2></div>
+<div class="region"><ul><li class="links ">
+<a href="sale-trade.html" title="Trocando uma venda">Trocando uma venda</a><span class="desc"> — 
+      Trocando uma venda no Stoq
+    </span>
+</li></ul></div>
+</div></div>
+</div>
+</div>
+</div>
+<div class="clear"></div>
+</div>
+<div class="footer"></div>
+</div></body>
+</html>

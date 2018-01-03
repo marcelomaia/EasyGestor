@@ -1,0 +1,71 @@
+.. -*- Mode: doctest -*-
+
+Doctest for domain/base.txt
+
+The `base
+<http://www.async.com.br/projects/stoq/docs/package/public/stoqlib.domain.base-module.html>`_
+module has all abstract mixin classes used to build all domain classes.
+
+These classes are mixin for domain components, domain adapters and domain
+interfaces. The component model is based on top of twisted components and
+the persistent layer use SQLObject to store all domain information on SQL
+database.
+
+AbstractModel is the base abstract class of all domain classes: base adapted
+classes (Domain, InheritableModel), adapter classes (ModelAdapter,
+InheritableModelAdapter).
+
+ComponetizedModel and ConnMetaInterface are especializated versions of base
+twisted classes:Componetized and MetaInterface, and have some mofications to
+be used on stoq, and to be compatible with SQLObject.
+
+We need to import modules and classes inherited from classes defined in
+stoqlib/domain/base.py.
+
+    >>> from stoqlib.database.runtime import new_transaction
+    >>> from stoqlib.domain.product import Product
+
+Create a new transaction object:
+
+    >>> trans = new_transaction()
+
+To create a unique code for a ProductAdaptToSellable object, I use datetime
+module
+
+    >>> import datetime
+    >>> product_barcode = 'test_code' + str(datetime.datetime.now())
+    >>> description = 'Red Mustang, 1960'
+
+To create a sellable you need to pass in the required information.
+
+    >>> from stoqlib.domain.sellable import Sellable
+    >>> sellable = Sellable(description=description,
+    ...                     price=1500.45,
+    ...                     connection=trans,
+    ...                     barcode=product_barcode)
+
+Create a new instance of Product class:
+
+    >>> test_product = Product(sellable=sellable, connection=trans)
+
+To clone a domain class instance, you need to use the clone method.
+
+    >>> test_product_clone = test_product.clone()
+
+This new product is an entire new object and have a different registry on
+the database:
+
+    >>> assert test_product is not test_product_clone
+
+To get the current connection of a given instance you must call
+get_connection method.
+
+    >>> assert trans is test_product.get_connection()
+
+Cloned instances must have the same connection attribute of your original
+instance.
+
+    >>> assert (test_product.get_connection() is
+    ...         test_product_clone.get_connection())
+
+    >>> trans.close()

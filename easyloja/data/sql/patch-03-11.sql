@@ -1,0 +1,1 @@
+alter table product_history add column quantity_increased numeric(20,3);
