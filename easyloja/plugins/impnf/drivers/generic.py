@@ -75,7 +75,8 @@ class GENERICSERIAL(GenericPrinter):
 
 
 class GENERICSPOOLER(GenericPrinter):
-    def __init__(self, port, dll):
+    def __init__(self, port, spooler_printer):
+        self.spooler_printer = spooler_printer
         self.sumatra_path = environ.find_resource('sumatraPDF', 'SumatraPDF.exe')
 
     def write_text(self, txt):
@@ -107,10 +108,8 @@ class GENERICSPOOLER(GenericPrinter):
         usando agora o SumatraPDF
         https://www.sumatrapdfreader.org/docs/Command-line-arguments-0c53a79e91394eccb7535ef6fed0678e.html
         """
-        conn = get_connection()
-        printer = sysparam(conn).CUSTOM_PRINTER_FOR_NFCE
         if os.path.exists(filename):
             cmd = '{exe} -print-to {printer} {fname}'.format(exe=self.sumatra_path,
-                                                             printer=printer,
+                                                             printer=self.spooler_printer,
                                                              fname=filename)
             proc = subprocess.Popen(cmd.split(' '), shell=False, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)

@@ -1,0 +1,1 @@
+ALTER TABLE impnf ADD COLUMN spooler_printer text;

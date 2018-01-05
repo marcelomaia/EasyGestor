@@ -63,7 +63,8 @@ class PrintSolution(object):
         nfp = NonFiscalPrinter(brand=printer_db.brand,
                                model=printer_db.printer_model,
                                port=printer_db.port,
-                               dll=printer_db.dll)
+                               dll=printer_db.dll,
+                               spooler_printer=printer_db.spooler_printer)
         log.debug("IMPRESSAO NF.: {}".format(header_txt + body_text + footer_text))
         txt = strip_accents(header_txt + body_text + footer_text)
         nfp.write_text(txt)
@@ -87,7 +88,8 @@ class PrintSolution(object):
         nfp = NonFiscalPrinter(brand=printer_db.brand,
                                model=printer_db.printer_model,
                                port=printer_db.port,
-                               dll=printer_db.dll)
+                               dll=printer_db.dll,
+                               spooler_printer=printer_db.spooler_printer)
         log.debug("IMPRESSAO SANGRIA/SUPRIMENTO.: {}".format(body_text + footer_text))
         txt = strip_accents(body_text + footer_text)
         nfp.write_text(txt)
@@ -106,7 +108,8 @@ class PrintSolution(object):
         nfp = NonFiscalPrinter(brand=printer_db.brand,
                                model=printer_db.printer_model,
                                port=printer_db.port,
-                               dll=printer_db.dll)
+                               dll=printer_db.dll,
+                               spooler_printer=printer_db.spooler_printer)
         log.debug("IMPRESSAO CONTAS A PAGAR E RECEBER.: {}".format(body_text + footer_text))
         txt = strip_accents(body_text + footer_text)
         nfp.write_text(txt)
@@ -125,7 +128,8 @@ class PrintSolution(object):
         nfp = NonFiscalPrinter(brand=printer_db.brand,
                                model=printer_db.printer_model,
                                port=printer_db.port,
-                               dll=printer_db.dll)
+                               dll=printer_db.dll,
+                               spooler_printer=printer_db.spooler_printer)
         log.debug("IMPRESSAO CONTAS A PAGAR E RECEBER.: {}".format(body_text + footer_text))
         txt = strip_accents(body_text + footer_text)
         nfp.write_text(txt)
@@ -140,7 +144,8 @@ class PrintSolution(object):
         nfp = NonFiscalPrinter(brand=printer_db.brand,
                                model=printer_db.printer_model,
                                port=printer_db.port,
-                               dll=printer_db.dll)
+                               dll=printer_db.dll,
+                               spooler_printer=printer_db.spooler_printer)
         log.debug("ABRINDO GAVETA NF.")
         nfp.open_drawer()
         nfp.close_port()
@@ -159,7 +164,8 @@ class PrintSolution(object):
         nfp = NonFiscalPrinter(brand=printer_db.brand,
                                model=printer_db.printer_model,
                                port=printer_db.port,
-                               dll=printer_db.dll)
+                               dll=printer_db.dll,
+                               spooler_printer=printer_db.spooler_printer)
         txt = strip_accents(header + body)
         nfp.write_text(txt)
         nfp.cut_paper()
@@ -448,7 +454,8 @@ def salesperson_stock_report(open_date, close_date):
     nfp = NonFiscalPrinter(brand=printer_db.brand,
                            model=printer_db.printer_model,
                            port=printer_db.port,
-                           dll=printer_db.dll)
+                           dll=printer_db.dll,
+                           spooler_printer=printer_db.spooler_printer)
     despesa_src_str = strip_accents(s)
     log.debug("IMPRESSAO NF.: {}".format(despesa_src_str))
     nfp.write_text(despesa_src_str)
@@ -565,7 +572,8 @@ def salesperson_financial_report(open_date, close_date):
     nfp = NonFiscalPrinter(brand=printer_db.brand,
                            model=printer_db.printer_model,
                            port=printer_db.port,
-                           dll=printer_db.dll)
+                           dll=printer_db.dll,
+                           spooler_printer=printer_db.spooler_printer)
     despesa_src_str = strip_accents(s)
     log.debug("IMPRESSAO NF.: {}".format(despesa_src_str))
     nfp.write_text(despesa_src_str)
@@ -713,7 +721,8 @@ def gerencial_report(open_date, close_date):
     nfp = NonFiscalPrinter(brand=printer_db.brand,
                            model=printer_db.printer_model,
                            port=printer_db.port,
-                           dll=printer_db.dll)
+                           dll=printer_db.dll,
+                           spooler_printer=printer_db.spooler_printer)
     despesa_src_str = strip_accents(s)
     log.debug("IMPRESSAO NF.: {}".format(despesa_src_str))
     nfp.write_text(despesa_src_str)

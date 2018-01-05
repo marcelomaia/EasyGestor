@@ -13,6 +13,7 @@ class Impnf(Domain):
     printer_model = UnicodeCol(default=u'')
     dll = UnicodeCol(default=u'')
     port = UnicodeCol(default=u'')
+    spooler_printer = UnicodeCol(default=u'')
     is_default = BoolCol(default=False)
     station = ForeignKey('BranchStation')
 

@@ -24,9 +24,9 @@ _ = stoqlib_gettext
 class ImpnfEditor(BaseEditor):
     gladefile = 'ImpnfEditor'
     model_type = Impnf
-    size = (600, 300)
+    size = (600, 350)
     model_name = 'Impressora não fiscal'
-    proxy_widgets = ('name', 'brand', 'printer_model',
+    proxy_widgets = ('name', 'brand', 'printer_model', 'spooler_printer',
                      'dll', 'port', 'is_default', 'station')
 
     def create_model(self, trans):
@@ -35,6 +35,7 @@ class ImpnfEditor(BaseEditor):
                       brand=u'daruma',
                       printer_model=u'DR700',
                       dll=u'',
+                      spooler_printer=u'',
                       port=port,
                       is_default=False,
                       station=get_current_station(self.conn),
@@ -56,7 +57,9 @@ class ImpnfEditor(BaseEditor):
         self.brand.prefill(brands)
         self.port.prefill(ports)
         self.station.prefill(stations)
-
+        if self.model.spooler_printer:
+            self.spooler_printer.show()
+            self.kiwilabel9.show()
         self.add_proxy(self.model, ImpnfEditor.proxy_widgets)
 
     #
@@ -81,11 +84,20 @@ class ImpnfEditor(BaseEditor):
         value = widget.read()
         self.image_default.set_from_stock(icon_dict.get(value), gtk.ICON_SIZE_BUTTON)
 
+    def on_printer_model__content_changed(self, widget):
+        if self.printer_model.read() == 'GENERICSPOOLER':
+            self.spooler_printer.show()
+            self.kiwilabel9.show()
+        else:
+            self.spooler_printer.hide()
+            self.kiwilabel9.hide()
+
     def on_test_button__clicked(self, widget):
         nfp = NonFiscalPrinter(brand=self.model.brand,
                                model=self.model.printer_model,
                                port=self.model.port,
-                               dll=self.model.dll)
+                               dll=self.model.dll,
+                               spooler_printer=self.model.spooler_printer)
         nfp.test_printer()
 
 

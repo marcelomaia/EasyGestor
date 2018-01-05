@@ -15,10 +15,13 @@ class NonFiscalPrinter(GenericPrinter):
         npf.open_drawer()
     """
 
-    def __init__(self, brand, model, port, dll):
+    def __init__(self, brand, model, port, dll, spooler_printer):
         module = __import__(brand, None, None)
         self._printerClass = getattr(module, model.upper())
-        self._printer = self._printerClass(port, dll)
+        if model.upper() == 'GENERICSPOOLER':
+            self._printer = self._printerClass(port, spooler_printer)
+        else:
+            self._printer = self._printerClass(port, dll)
 
     def open_drawer(self):
         self._printer.open_drawer()
