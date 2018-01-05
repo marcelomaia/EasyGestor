@@ -254,7 +254,8 @@ class PaymentEditor(BaseEditor):
             label = _("Details")
         else:
             label = _("Details")
-            widgets = [self.repeat, self.end_date]
+            if self.model.status != Payment.STATUS_PAID:
+                widgets = [self.repeat, self.end_date]
         self.details_button = self.add_button(label)
         self.details_button.connect('clicked',
                                     self._on_details_button__clicked)
