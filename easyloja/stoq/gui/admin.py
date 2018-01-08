@@ -83,7 +83,7 @@ class Tasks(object):
 
         self.theme = gtk.icon_theme_get_default()
         manager = get_plugin_manager()
-        self.is_nfce_active = manager.is_active('nfce')
+        self.is_nfce_active = manager.is_active('nfe2') or manager.is_active('nfce')
 
     def set_model(self, model):
         self.model = model
