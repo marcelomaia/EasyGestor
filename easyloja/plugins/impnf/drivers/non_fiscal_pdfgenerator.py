@@ -74,6 +74,10 @@ class PDFGen(object):
         lines = text.split(NEW_LINE)
         for line in lines:
             y -= linespace
+            if y < height_footer + linespace:
+                self.canvas.showPage()
+                self.canvas.setFont(*DEFAULT_FONT)
+                y = height_doc
             self.draw_left_text(x, y, line)
         return y
 
