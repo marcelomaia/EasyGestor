@@ -45,7 +45,7 @@ class ProductInformationSlave(BaseEditorSlave):
     gladefile = 'ProductInformationSlave'
     model_type = Product
     proxy_widgets = ['location', 'part_number', 'manufacturer', 'width', 'cest',
-                     'height', 'depth', 'weight', 'ncm', 'ex_tipi', 'genero',
+                     'height', 'depth', 'weight', 'ncm', 'ex_tipi', 'genero', 'weighable'
                      # 'product_type'
                      ]
     storable_widgets = ['minimum_quantity', 'maximum_quantity']

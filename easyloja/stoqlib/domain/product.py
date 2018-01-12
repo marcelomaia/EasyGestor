@@ -181,6 +181,7 @@ class Product(Domain):
     weight = DecimalCol(default=0)
     quality_tests = MultipleJoin('ProductQualityTest')  # Used for composed products only
     production_time = IntCol(default=1)
+    weighable = BoolCol(default=True)
 
     # Tax details
     icms_template = ForeignKey('ProductIcmsTemplate', default=None)
