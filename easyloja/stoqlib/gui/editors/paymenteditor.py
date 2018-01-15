@@ -157,7 +157,8 @@ class PaymentEditor(BaseEditor):
                        self.add_person, self.repeat, self.method]
         bill = PaymentMethod.get_by_name(self.conn, 'bill')
         if get_plugin_manager().is_active('boleto') and self.model.method == bill:
-            widgets.remove(self.value)
+            if self.value in widgets:
+                widgets.remove(self.value)
         for widget in widgets:
             widget.set_sensitive(True)
         self.details_button.hide()
@@ -266,7 +267,8 @@ class PaymentEditor(BaseEditor):
                                     self._on_details_button__clicked)
         bill = PaymentMethod.get_by_name(self.conn, 'bill')
         if get_plugin_manager().is_active('boleto') and self.model.method == bill:
-            widgets.remove(self.value)
+            if self.value in widgets:
+                widgets.remove(self.value)
         for widget in widgets:
             widget.set_sensitive(False)
         # se já tem pessoa nao permite a sua edição, por padrão vem habilitado
