@@ -155,7 +155,8 @@ class PaymentEditor(BaseEditor):
     def can_edit_details(self):
         widgets = [self.value, self.due_date,
                        self.add_person, self.repeat, self.method]
-        if get_plugin_manager().is_active('boleto'):
+        bill = PaymentMethod.get_by_name(self.conn, 'bill')
+        if get_plugin_manager().is_active('boleto') and self.model.method == bill:
             widgets.remove(self.value)
         for widget in widgets:
             widget.set_sensitive(True)
@@ -263,7 +264,8 @@ class PaymentEditor(BaseEditor):
         self.details_button = self.add_button(label)
         self.details_button.connect('clicked',
                                     self._on_details_button__clicked)
-        if get_plugin_manager().is_active('boleto'):
+        bill = PaymentMethod.get_by_name(self.conn, 'bill')
+        if get_plugin_manager().is_active('boleto') and self.model.method == bill:
             widgets.remove(self.value)
         for widget in widgets:
             widget.set_sensitive(False)
