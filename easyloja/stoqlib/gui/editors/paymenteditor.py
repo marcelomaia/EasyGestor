@@ -59,6 +59,7 @@ from stoqlib.gui.wizards.personwizard import run_person_role_dialog
 from stoqlib.lib.defaults import (INTERVALTYPE_WEEK,
                                   INTERVALTYPE_MONTH)
 from stoqlib.lib.parameters import sysparam
+from stoqlib.lib.pluginmanager import get_plugin_manager
 from stoqlib.lib.translation import stoqlib_gettext
 from kiwi.ui.dialogs import info
 from stoqlib.lib.validators import validate_cpf, validate_cnpj, validate_phone_number, validate_email
@@ -152,8 +153,11 @@ class PaymentEditor(BaseEditor):
                     self.model.value)
 
     def can_edit_details(self):
-        for widget in [self.value, self.due_date,
-                       self.add_person, self.repeat, self.method]:
+        widgets = [self.value, self.due_date,
+                       self.add_person, self.repeat, self.method]
+        if get_plugin_manager().is_active('boleto'):
+            widgets.remove(self.value)
+        for widget in widgets:
             widget.set_sensitive(True)
         self.details_button.hide()
         self.edit_person.set_sensitive(bool(self.person.get_selected()))
@@ -259,6 +263,8 @@ class PaymentEditor(BaseEditor):
         self.details_button = self.add_button(label)
         self.details_button.connect('clicked',
                                     self._on_details_button__clicked)
+        if get_plugin_manager().is_active('boleto'):
+            widgets.remove(self.value)
         for widget in widgets:
             widget.set_sensitive(False)
         # se já tem pessoa nao permite a sua edição, por padrão vem habilitado

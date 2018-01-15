@@ -27,6 +27,7 @@ by scales"""
 from kiwi.datatypes import Decimal
 
 from stoqlib.lib.translation import stoqlib_gettext
+from stoqlib.database.orm import AND
 
 _ = stoqlib_gettext
 
@@ -73,8 +74,17 @@ class BarcodeInfo:
 
 
 def parse_barcode(barcode, fmt=BarcodeInfo.OPTION_4_DIGITS_PRICE):
+    from stoqlib.database.runtime import get_connection
+    from stoqlib.domain.product import Product
+    from stoqlib.domain.sellable import Sellable
     if not barcode.startswith('2') or len(barcode) != 13:
         return None
+    product = [p for p in Product.select(AND(Sellable.q.barcode == barcode, Product.q.sellableID == Sellable.q.id),
+                                         connection=get_connection())]
+    if product:
+        if product[0].weighable is False:
+            # barcode starts with 2 but is not weighable
+            return None
 
     digits = BarcodeInfo.digits[fmt]
     mode = BarcodeInfo.modes[fmt]
