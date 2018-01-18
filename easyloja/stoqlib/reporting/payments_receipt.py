@@ -29,7 +29,7 @@ from kiwi.currency import currency
 from stoqlib.api import api
 from stoqlib.domain.interfaces import ICompany, IIndividual
 from stoqlib.lib.cardinal_formatters import get_price_cardinal
-from stoqlib.lib.formatters import get_formatted_price
+from stoqlib.lib.formatters import get_formatted_price, format_phone_number
 from stoqlib.lib.message import yesno
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.reporting.base.default_style import TABLE_LINE_BLANK
@@ -171,6 +171,15 @@ class InPaymentReceipt(BasePaymentReceipt):
             return u'; '.join([p.sellable.description for p in sale.get_items()])
         return None
 
+    def get_salesperson(self):
+        sale = self.payment.group.sale
+        if not sale:
+            return None
+        salesperson = sale.salesperson
+        if salesperson:
+            return salesperson.person
+        return None
+
     def get_recipient(self):
         if self.order:
             drawee = self.order.branch.person
@@ -204,6 +213,17 @@ class InPaymentReceipt(BasePaymentReceipt):
         self.add_column_table(data, cols, do_header=False,
                               highlight=HIGHLIGHT_NEVER,
                               table_line=TABLE_LINE_BLANK)
+        person_salesperson = self.get_salesperson()
+        if person_salesperson:
+            self.add_paragraph(_('Vendedor'), style='Normal-Bold')
+            data = [
+                [_("Nome:"), person_salesperson.name],
+                [_("Fone:"), format_phone_number(person_salesperson.phone_number)],
+                [_("Celular:"), format_phone_number(person_salesperson.mobile_number)],
+            ]
+            self.add_column_table(data, cols, do_header=False,
+                                  highlight=HIGHLIGHT_NEVER,
+                                  table_line=TABLE_LINE_BLANK)
         if self.payment.notes:
             self.add_paragraph(_('Obs: {}'.format(self.payment.notes)), style='Italic')
         sale_items = self.get_items_descriptions()
