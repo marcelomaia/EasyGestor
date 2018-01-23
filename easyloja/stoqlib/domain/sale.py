@@ -464,6 +464,7 @@ class Sale(Domain):
     change = PriceCol(default=0)
     invoice_number = IntCol(default=None)
     operation_nature = UnicodeCol(default='')
+    year = IntCol(default=datetime.date.today().year)
     cfop = ForeignKey("CfopData")
     client = ForeignKey('PersonAdaptToClient', default=None)
     salesperson = ForeignKey('PersonAdaptToSalesPerson')
@@ -541,9 +542,8 @@ class Sale(Domain):
                             second=59)
         query = AND(cls.q.open_date >= begin, cls.q.open_date <= end)
         retval = (cls.select(query, connection=conn).
-                  max('daily_code') or 0)+1
+                  max('daily_code') or 0) + 1
         return retval
-
 
     @classmethod
     def get_last_invoice_number_from_branch(cls, conn, branch):
@@ -661,7 +661,7 @@ class Sale(Domain):
                                   u'referente à venda #{}'.format(item.sellable.description, item.sale.id),
                            connection=conn)
         for component in ProductComponent.selectBy(product=product, connection=conn):
-            sd.add_sellable(sellable=component.component.sellable, quantity=component.quantity*quantity)
+            sd.add_sellable(sellable=component.component.sellable, quantity=component.quantity * quantity)
         sd.confirm()
 
     def confirm(self):

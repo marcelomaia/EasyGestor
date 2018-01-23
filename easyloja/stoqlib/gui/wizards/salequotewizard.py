@@ -83,7 +83,7 @@ _ = stoqlib_gettext
 class StartSaleQuoteStep(WizardEditorStep):
     gladefile = 'SalesPersonStep'
     model_type = Sale
-    proxy_widgets = ('client', 'salesperson', 'expire_date',
+    proxy_widgets = ('client', 'salesperson', 'expire_date', 'year',
                      'operation_nature', 'client_category', 'transporter')
     cfop_widgets = ('cfop',)
 
@@ -115,6 +115,10 @@ class StartSaleQuoteStep(WizardEditorStep):
             self.cfop_lbl.hide()
             self.cfop.hide()
             self.create_cfop.hide()
+
+        if not self.model.client:
+            self.year.hide()
+            self.year_label.hide()
 
         self._fill_clients_category_combo()
         self._fill_clients_combo()
@@ -157,6 +161,20 @@ class StartSaleQuoteStep(WizardEditorStep):
         items = [(c.get_description(), c) for c in cats]
         items.insert(0, ['', None])
         self.client_category.prefill(items)
+
+    def _get_location_data(self, person):
+        address = person.get_main_address()
+        location = address.city_location
+        return location
+
+    def _same_state(self):
+        issuer = self.model.branch.person
+        recipient = self.model.client.person
+        issuer_loc = self._get_location_data(issuer)
+        recip_loc = self._get_location_data(recipient)
+        if issuer_loc.state == recip_loc.state:
+            return True
+        return False
 
     def post_init(self):
         self.toogle_client_details()
@@ -214,6 +232,12 @@ class StartSaleQuoteStep(WizardEditorStep):
         if not client:
             return
         self.client_category.select(client.category)
+        if not self._same_state():
+            self.year.show()
+            self.year_label.show()
+        else:
+            self.year.hide()
+            self.year_label.hide()
 
     def _validate_person(self, person):
         validpn =validate_phone_number(person.phone_number)

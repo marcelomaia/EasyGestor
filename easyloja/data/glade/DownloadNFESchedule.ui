@@ -4,18 +4,15 @@
   <!-- interface-requires kiwiwidgets 0.0 -->
   <!-- interface-naming-policy project-wide -->
   <object class="GtkWindow" id="DownloadNFESchedule">
-    <property name="can_focus">False</property>
     <child>
       <object class="GtkTable" id="table1">
         <property name="visible">True</property>
-        <property name="can_focus">False</property>
         <property name="n_rows">6</property>
         <property name="n_columns">4</property>
         <property name="column_spacing">6</property>
         <child>
           <object class="ProxyLabel" id="series_label">
             <property name="visible">True</property>
-            <property name="can_focus">False</property>
             <property name="xalign">1</property>
             <property name="label" translatable="yes">Série</property>
           </object>
@@ -27,7 +24,6 @@
         <child>
           <object class="ProxyEntry" id="series">
             <property name="visible">True</property>
-            <property name="can_focus">True</property>
             <property name="invisible_char">●</property>
             <property name="primary_icon_activatable">False</property>
             <property name="secondary_icon_activatable">False</property>
@@ -46,7 +42,6 @@
         <child>
           <object class="ProxyLabel" id="start_date_lbl">
             <property name="visible">True</property>
-            <property name="can_focus">False</property>
             <property name="xalign">1</property>
             <property name="label" translatable="yes">Data início:</property>
           </object>
@@ -58,7 +53,6 @@
         <child>
           <object class="ProxyLabel" id="end_date_lbl">
             <property name="visible">True</property>
-            <property name="can_focus">False</property>
             <property name="xalign">1</property>
             <property name="label" translatable="yes">Data fim:</property>
           </object>
@@ -72,7 +66,6 @@
         <child>
           <object class="ProxyDateEntry" id="start_date">
             <property name="visible">True</property>
-            <property name="can_focus">False</property>
             <property name="data_type">datetime</property>
             <property name="model_attribute">start_date</property>
           </object>
@@ -86,7 +79,6 @@
         <child>
           <object class="ProxyDateEntry" id="end_date">
             <property name="visible">True</property>
-            <property name="can_focus">False</property>
             <property name="data_type">datetime</property>
             <property name="model_attribute">end_date</property>
           </object>
@@ -100,7 +92,6 @@
         <child>
           <object class="ProxyLabel" id="start_number_lbl">
             <property name="visible">True</property>
-            <property name="can_focus">False</property>
             <property name="xalign">1</property>
             <property name="label" translatable="yes">Numero início:</property>
           </object>
@@ -112,7 +103,6 @@
         <child>
           <object class="ProxyLabel" id="end_number_lbl">
             <property name="visible">True</property>
-            <property name="can_focus">False</property>
             <property name="xalign">1</property>
             <property name="label" translatable="yes">Numero fim:</property>
           </object>
@@ -126,7 +116,6 @@
         <child>
           <object class="ProxyLabel" id="kiwilabel4">
             <property name="visible">True</property>
-            <property name="can_focus">False</property>
             <property name="xalign">1</property>
             <property name="label" translatable="yes">Filtrar por:</property>
           </object>
@@ -140,7 +129,6 @@
         <child>
           <object class="ProxyComboBox" id="filter_type">
             <property name="visible">True</property>
-            <property name="can_focus">False</property>
             <property name="data_type">object</property>
             <property name="model_attribute">filter_type</property>
           </object>
@@ -154,7 +142,6 @@
         <child>
           <object class="ProxyComboBox" id="doc_type">
             <property name="visible">True</property>
-            <property name="can_focus">False</property>
             <property name="data_type">object</property>
             <property name="model_attribute">doc_type</property>
           </object>
@@ -168,7 +155,6 @@
         <child>
           <object class="ProxyLabel" id="kiwilabel3">
             <property name="visible">True</property>
-            <property name="can_focus">False</property>
             <property name="xalign">1</property>
             <property name="label" translatable="yes">Tipo doc:</property>
           </object>
@@ -182,7 +168,6 @@
         <child>
           <object class="ProxyLabel" id="kiwilabel1">
             <property name="visible">True</property>
-            <property name="can_focus">False</property>
             <property name="xalign">1</property>
             <property name="label" translatable="yes">Filial:</property>
           </object>
@@ -194,7 +179,6 @@
         <child>
           <object class="ProxyLabel" id="branch_name">
             <property name="visible">True</property>
-            <property name="can_focus">False</property>
             <property name="use_markup">True</property>
             <property name="data_type">unicode</property>
             <property name="model_attribute">branch_name</property>
@@ -209,7 +193,6 @@
         <child>
           <object class="ProxyEntry" id="start_number">
             <property name="visible">True</property>
-            <property name="can_focus">True</property>
             <property name="invisible_char">●</property>
             <property name="primary_icon_activatable">False</property>
             <property name="secondary_icon_activatable">False</property>
@@ -228,7 +211,6 @@
         <child>
           <object class="ProxyEntry" id="end_number">
             <property name="visible">True</property>
-            <property name="can_focus">True</property>
             <property name="invisible_char">●</property>
             <property name="primary_icon_activatable">False</property>
             <property name="secondary_icon_activatable">False</property>
@@ -247,7 +229,6 @@
         <child>
           <object class="ProxyLabel" id="kiwilabel2">
             <property name="visible">True</property>
-            <property name="can_focus">False</property>
             <property name="xalign">1</property>
             <property name="label" translatable="yes">Caminho:</property>
           </object>
@@ -259,7 +240,6 @@
         <child>
           <object class="ProxyEntry" id="path">
             <property name="visible">True</property>
-            <property name="can_focus">True</property>
             <property name="invisible_char">●</property>
             <property name="primary_icon_activatable">False</property>
             <property name="secondary_icon_activatable">False</property>
