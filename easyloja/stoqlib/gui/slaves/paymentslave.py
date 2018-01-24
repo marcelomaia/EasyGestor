@@ -853,8 +853,9 @@ class CardMethodSlave(BaseEditorSlave):
     def on_credit_provider__changed(self, combo):
         self._setup_max_installments()
         if self.model.provider:
-            self.model.due_date = self.model.provider.payment_day
-            self.due_date.set_value(self.model.provider.payment_day)
+            today_day = datetime.datetime.now().day
+            self.model.due_date = today_day
+            self.due_date.set_value(today_day)
 
     def on_installments_number__validate(self, entry, installments):
         max_installments = self.installments_number.get_range()[1]
