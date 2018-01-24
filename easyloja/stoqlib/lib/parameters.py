@@ -790,6 +790,13 @@ _details = [
         _('Permite mudar o preço dos produtos/serviços na cotação'),
         bool, initial=True),
 
+    ParameterDetails(
+        'XML_DOWNLOAD_PATH',
+        _('NFe'),
+        _('Pasta de download dos xmls das notas fiscais.'),
+        _('Nesta pasta serão salvos os documentos fiscais em formato XML.'),
+        DirectoryParameter, initial='/'),
+
 ]
 
 
