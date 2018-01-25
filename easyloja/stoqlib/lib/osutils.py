@@ -26,8 +26,18 @@ import errno
 import fnmatch
 import os
 import platform
+import subprocess
 
 _system = platform.system()
+
+
+def open_path(path):
+    if _system == "Windows":
+        os.startfile(path)
+    elif _system == "Darwin":
+        subprocess.Popen(["open", path])
+    else:
+        subprocess.Popen(["xdg-open", path])
 
 
 def _get_xdg_dir(envname, default):
@@ -56,9 +66,9 @@ def get_application_dir(appname="stoq"):
         appdir = os.path.join(os.environ['APPDATA'], appname)
     elif _system == 'Darwin':
         appdir = os.path.join(os.environ['HOME'], 'Library',
-            'Application Support', 'Stoq')
+                              'Application Support', 'Stoq')
     else:
-        raise SystemExit("unknown system: %s" % (_system, ))
+        raise SystemExit("unknown system: %s" % (_system,))
     if not os.path.exists(appdir):
         os.makedirs(appdir)
     return appdir
@@ -77,7 +87,7 @@ def get_documents_dir():
     elif _system == 'Darwin':
         return os.path.join(os.environ['HOME'], 'Documents')
     else:
-        raise SystemExit("unknown system: %s" % (_system, ))
+        raise SystemExit("unknown system: %s" % (_system,))
 
 
 def get_username():
@@ -87,14 +97,14 @@ def get_username():
     elif _system == 'Windows':
         return os.environ['USERNAME']
     else:
-        raise SystemExit("unknown system: %s" % (_system, ))
+        raise SystemExit("unknown system: %s" % (_system,))
 
 
 def read_registry_key(root, key, value):
     """Reads a registry key and return it's value.
     None is returned if the value couldn't be read
     """
-    if platform.system() != 'Windows':
+    if _system != 'Windows':
         return None
     import exceptions
     import _winreg
@@ -110,7 +120,7 @@ def read_registry_key(root, key, value):
         k = _winreg.OpenKey(root, key)
         reg_value, key_type = _winreg.QueryValueEx(k, value)
     except exceptions.WindowsError:
-        #log.info('Error while reading %s/%s/%s: %r' % (root, k, value, e))
+        # log.info('Error while reading %s/%s/%s: %r' % (root, k, value, e))
         return None
     return reg_value
 
@@ -125,7 +135,7 @@ def list_recursively(directory, pattern):
         for filename in fnmatch.filter(filenames, pattern):
             # skip backup files
             if (filename.startswith('.#') or
-                filename.endswith('~')):
+                    filename.endswith('~')):
                 continue
             matches.append(os.path.join(root, filename))
     return matches
