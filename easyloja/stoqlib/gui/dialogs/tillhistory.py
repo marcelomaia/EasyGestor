@@ -23,34 +23,83 @@
 ##
 """ Implementation of classes related to till operations.  """
 
-
 import datetime
-
 import gtk
+
 from kiwi.datatypes import currency
+from kiwi.ui.objectlist import SearchColumn
 from kiwi.ui.search import DateSearchFilter, Today
 from kiwi.ui.widgets.list import Column, ColoredColumn
-
 from stoqlib.api import api
+from stoqlib.database.orm import INNERJOINOn, Viewable, LEFTJOINOn
+from stoqlib.domain.fiscal import CfopData
+from stoqlib.domain.payment.group import PaymentGroup
+from stoqlib.domain.payment.payment import Payment
+from stoqlib.domain.person import PersonAdaptToBranch, PersonAdaptToSalesPerson, Person
+from stoqlib.domain.sale import Sale
+from stoqlib.domain.station import BranchStation
+from stoqlib.domain.till import Till
 from stoqlib.domain.till import TillEntry
+from stoqlib.gui.base.dialogs import run_dialog, get_current_toplevel
 from stoqlib.gui.base.gtkadds import change_button_appearance
 from stoqlib.gui.base.search import SearchDialog
-from stoqlib.gui.base.dialogs import run_dialog, get_current_toplevel
 from stoqlib.gui.editors.tilleditor import (CashAdvanceEditor, CashInEditor,
                                             CashOutEditor)
 from stoqlib.gui.printing import print_report
 from stoqlib.gui.stockicons import (STOQ_MONEY, STOQ_MONEY_ADD,
                                     STOQ_MONEY_REMOVE)
-from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.lib.defaults import payment_value_colorize
+from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.reporting.till import TillHistoryReport
 
 _ = stoqlib_gettext
 
 
+class TillFiscalOperationsView(Viewable):
+    """Stores informations about till payment tables
+
+    @ivar date:         the date when the entry was created
+    @ivar description:  the entry description
+    @ivar value:        the entry value
+    @ivar station_name: the value of name branch_station name column
+    """
+    columns = dict(
+        id=TillEntry.q.id,
+        date=TillEntry.q.date,
+        description=TillEntry.q.description,
+        value=TillEntry.q.value,
+        cfop=CfopData.q.code,
+        station_name=BranchStation.q.name,
+        branch_id=PersonAdaptToBranch.q.id,
+        status=Till.q.status,
+        salesperson_name=Person.q.name,
+    )
+
+    joins = [
+        LEFTJOINOn(None, Till,
+                   Till.q.id == TillEntry.q.tillID),
+        LEFTJOINOn(None, Payment,
+                   Payment.q.id == TillEntry.q.paymentID),
+        INNERJOINOn(None, BranchStation,
+                    BranchStation.q.id == Till.q.stationID),
+        INNERJOINOn(None, PersonAdaptToBranch,
+                    PersonAdaptToBranch.q.id == BranchStation.q.branchID),
+        LEFTJOINOn(None, PaymentGroup,
+                   PaymentGroup.q.id == Payment.q.groupID),
+        LEFTJOINOn(None, Sale,
+                   Sale.q.groupID == PaymentGroup.q.id),
+        LEFTJOINOn(None, PersonAdaptToSalesPerson,
+                   PersonAdaptToSalesPerson.q.id == Sale.q.salespersonID),
+        LEFTJOINOn(None, Person,
+                   Person.q.id == PersonAdaptToSalesPerson.q.originalID),
+        LEFTJOINOn(None, CfopData,
+                   CfopData.q.id == Sale.q.cfopID),
+    ]
+
+
 class TillHistoryDialog(SearchDialog):
-    size = (780, -1)
-    table = TillEntry
+    size = (900, -1)
+    table = TillFiscalOperationsView
     selection_mode = gtk.SELECTION_MULTIPLE
     searchbar_labels = _('Till Entries matching:')
     title = _('Till history')
@@ -61,12 +110,16 @@ class TillHistoryDialog(SearchDialog):
 
     def get_columns(self, *args):
         return [Column('id', _('Number'), data_type=int, width=100,
-                        format='%03d', sorted=True),
-                Column('date', _('Date'),
-                       data_type=datetime.date, width=110),
+                       format='%03d', sorted=True),
+                SearchColumn('date', _('Date'),
+                             data_type=datetime.date, width=110),
                 Column('description', _('Description'), data_type=str,
                        expand=True,
                        width=300),
+                SearchColumn('station_name', title=_('Station'), data_type=str,
+                             width=120),
+                SearchColumn('salesperson_name', title=_('Salesperson'), data_type=str,
+                             width=120),
                 ColoredColumn('value', _('Value'), data_type=currency,
                               color='red', data_func=payment_value_colorize,
                               width=140)]
