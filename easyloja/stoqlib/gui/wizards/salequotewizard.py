@@ -240,7 +240,7 @@ class StartSaleQuoteStep(WizardEditorStep):
             self.year_label.hide()
 
     def _validate_person(self, person):
-        validpn =validate_phone_number(person.phone_number)
+        validpn = validate_phone_number(person.phone_number)
         validemail = validate_email(person.email)
         if not validpn or not validemail:
             return False
@@ -263,13 +263,17 @@ class StartSaleQuoteStep(WizardEditorStep):
 
         if individual is not None and sysparam(self.conn).COMPLETE_REGISTER_INDIVIDUAL:
             if not validate_cpf(individual.cpf):
+                self.model.client = None
                 return info('cpf invalido')
             elif not self._validate_person(person):
+                self.model.client = None
                 return info('dados incompletos do cliente PF')
         elif company is not None and sysparam(self.conn).COMPLETE_REGISTER_COMPANY:
             if not validate_cnpj(company.cnpj):
+                self.model.client = None
                 return info('cnpj invalido')
             elif not self._validate_person(person):
+                self.model.client = None
                 return info('dados incompletos do cliente PJ')
 
         if self.model.client:
