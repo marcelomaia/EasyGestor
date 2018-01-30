@@ -8,7 +8,8 @@ from stoqlib.database.runtime import get_connection, get_current_user, get_curre
 from stoqlib.domain.interfaces import ICompany, ISalesPerson
 from stoqlib.domain.payment.method import PaymentMethod
 from stoqlib.domain.sale import Sale
-from stoqlib.domain.till import Till, TillEntry
+from stoqlib.domain.till import Till
+from stoqlib.gui.dialogs.tillhistory import TillFiscalOperationsView
 from stoqlib.lib.formatters import format_phone_number
 from stoqlib.lib.parameters import sysparam
 
@@ -402,6 +403,7 @@ def salesperson_stock_report(open_date, close_date):
     cd = close_date
     conn = get_connection()
     user = get_current_user(conn)
+    station=get_current_station(conn)
     salesperson = ISalesPerson(user)
 
     sales = Sale.select(AND(Sale.q.open_date >= od,
@@ -423,10 +425,7 @@ def salesperson_stock_report(open_date, close_date):
             else:
                 sellable_qqtt_dict[sellalble] = qtty
 
-    s = "Início: %s" \
-        "\nFim: %s\n" % (od.strftime('%d/%m/%y - %H:%M:%S'),
-                         cd.strftime('%d/%m/%y - %H:%M:%S'))
-    s += "%s%s" % ('=' * 38, '\n')
+
     sold_items = ""
 
     # sort items
@@ -439,11 +438,17 @@ def salesperson_stock_report(open_date, close_date):
                                                  sellable[2],)
         produto += "%s%s" % ('=' * 19, '\n')
         sold_items += produto
-
+    s = "==RELATORIO DE CONTAGEM DE ESTOQUE==\n" \
+        "Vendedor: {vendedor}\n" \
+        "Estação: {estacao}\n" \
+        "Início: {inicio}\n" \
+        "Fim: {fim}\n".format(vendedor=salesperson.person.name,
+                              estacao=station.name,
+                              inicio=od.strftime('%d/%m/%y - %H:%M:%S'),
+                              fim=cd.strftime('%d/%m/%y - %H:%M:%S'))
+    s += "%s%s" % ('=' * 38, '\n')
     s += sold_items
     s += "%s%s" % ('=' * 38, '\n')
-    s += "%s" % '_' * 40
-    s += "Vendedor {}\n".format(salesperson.person.name)
     s += "\n\t\tAssinatura"
 
     ps = PrintSolution(conn, '')
@@ -464,103 +469,120 @@ def salesperson_stock_report(open_date, close_date):
 
 
 def salesperson_financial_report(open_date, close_date):
-    # TODO refatorar isso aqui...
+    """
+    Relatorio financeiro para as vendas de um vendedor
+    numa determinada estacao
+    """
     od = open_date
     cd = close_date
     conn = get_connection()
-    # colocar vendedor na busca
+    station = get_current_station(conn)
     user = get_current_user(conn)
     salesperson = ISalesPerson(user)
-    sales = Sale.select(AND(Sale.q.open_date >= od,
-                            Sale.q.confirm_date <= cd,
-                            Sale.q.salesperson == salesperson,
-                            OR(Sale.q.status == Sale.STATUS_CONFIRMED,
-                               Sale.q.status == Sale.STATUS_PAID)),
-                        connection=conn)
+    # historico de caixa
+    till_history = TillFiscalOperationsView.select(
+        AND(TillFiscalOperationsView.q.date >= od,
+            TillFiscalOperationsView.q.date <= cd,
+            TillFiscalOperationsView.q.station_id <= station.id,
+            TillFiscalOperationsView.q.salesperson_id == salesperson.id),
+        connection=conn)
+
     quantidade_entrada = {}
-    total = 0
-    discounts = 0
 
     # contadores por tipo de pagamento
-    for sale in sales:
-        payments = sale.group.payments
-        for payment in payments:
-            method = PaymentMethod.get(payment.methodID, connection=conn)
-            if quantidade_entrada.get(method):
-                quantidade_entrada[method] = quantidade_entrada[method] + payment.value
-            else:
-                quantidade_entrada[method] = payment.value
+    for th in till_history:
+        # sangria ou suprimento vem method name = None
+        if not th.method_name:
+            continue
+        if quantidade_entrada.get(th.method_name):
+            quantidade_entrada[th.method_name] = quantidade_entrada[th.method_name] + th.value
+        else:
+            quantidade_entrada[th.method_name] = th.value
 
-    # contadores de totais de itens
-    for sale in sales:
-        total += sale.total_amount
-        discounts += sale.discount_value
+    total = 0
+    discounts = 0
+    # total de valor
+    for th in till_history:
+        total += th.value or 0
+        discounts += th.discount_value or 0
 
-    s = "Início: %s" \
-        "\nFim: %s\n" % (od.strftime('%d/%m/%y - %H:%M:%S'),
-                         cd.strftime('%d/%m/%y - %H:%M:%S'))
-    s += "%s%s" % ('=' * 38, '\n')
     payment_values = ""
 
     # sort payments
-    d_sorted_by_value_payments = sorted(
-        [(strip_accents(key.description), value) for (key, value) in quantidade_entrada.items()])
+    d_sorted_by_value_payments = sorted([(strip_accents(key), value) for (key, value) in quantidade_entrada.items()])
 
     for payment in d_sorted_by_value_payments:
-        produto = "%s - Total: %s\n" % (payment[0],
-                                        payment[1],)
-        produto += "%s%s" % ('=' * 19, '\n')
-        payment_values += produto
+        payment_str = "{} : {}\n".format(payment[0],
+                                         payment[1], )
+        payment_str += "{}\n".format('-' * 19, '\n')
+        payment_values += payment_str
 
     # Sangrias
     despesa_src_str = '%%%s%%' % 'Despesa:'
     sangria_valor = 0
-    last_till = Till.get_current(conn)
+    sangria_str = ''
 
-    if not last_till:
-        return
-
-    despesa_results = TillEntry.select(AND(LIKE(TillEntry.q.description, despesa_src_str),
-                                           TillEntry.q.tillID == last_till.id,
-                                           TillEntry.q.date > open_date,
-                                           TillEntry.q.date <= close_date))
+    despesa_results = TillFiscalOperationsView.select(AND(LIKE(TillFiscalOperationsView.q.description, despesa_src_str),
+                                                          TillFiscalOperationsView.q.date > open_date,
+                                                          TillFiscalOperationsView.q.date <= close_date,
+                                                          TillFiscalOperationsView.q.station_id <= station.id,
+                                                          ))
     try:
-        for value in [p.value for p in despesa_results]:
+        for value, description in [(p.value, p.description) for p in despesa_results]:
             sangria_valor += value
+            sangria_str += '{description}: {value}\n'.format(description=description, value=value)
     except:
         pass
-    sangria_str = "Total de Sangria %s\n" % sangria_valor
+    sangria_str += "Total de Sangria %s\n" % sangria_valor
 
+    suprimento_str = ''
     # Suprimentos
     suprimento_src_str = '%%%s%%' % 'Suprimento:'
     suprimento_valor = 0
-    suprimento_results = TillEntry.select(AND(LIKE(TillEntry.q.description, suprimento_src_str),
-                                              TillEntry.q.tillID == last_till.id,
-                                              TillEntry.q.date > open_date,
-                                              TillEntry.q.date <= close_date))
+    suprimento_results = TillFiscalOperationsView.select(AND(LIKE(TillFiscalOperationsView.q.description,
+                                                                  suprimento_src_str),
+                                                             TillFiscalOperationsView.q.date > open_date,
+                                                             TillFiscalOperationsView.q.date <= close_date,
+                                                             TillFiscalOperationsView.q.station_id <= station.id,
+                                                             ))
 
     try:
-        for value in [p.value for p in suprimento_results]:
+        for value, description in [(p.value, p.description) for p in suprimento_results]:
             suprimento_valor += value
+            suprimento_str += '{description}: {value}\n'.format(description=description, value=value)
     except:
         pass
 
-    suprimento_str = "Total de Suprimento %s\n" % suprimento_valor
+    suprimento_str += "Total de Suprimento %s\n" % suprimento_valor
 
-    # Caixa iniciado
-    caixa_iniciado_vlr = last_till.get_initial_cash_amount()
-    caixa_iniciado_str = "Caixa iniciado com a quantia de %s\n" % caixa_iniciado_vlr
+    last_till = Till.get_current(conn)
+    caixa_iniciado_str = ''
+    caixa_iniciado_vlr = 0
+    if last_till:
+        # Caixa iniciado
+        caixa_iniciado_vlr = last_till.get_initial_cash_amount()
+        caixa_iniciado_str = "Caixa iniciado com a quantia de %s\n" % caixa_iniciado_vlr
 
-    s += "%s%s" % ('=' * 38, '\n')
-    s += "Descontos: %.2f\n" % discounts
-    s += "Total: %.2f\n" % total
-    s += "%s%s" % ('=' * 38, '\n')
+    s = "===RELATORIO DE MOVIMENTAÇÃO DE CAIXA==\n" \
+        "Vendedor: {vendedor}\n" \
+        "Estação: {estacao}\n" \
+        "Início: {inicio}\n" \
+        "Fim: {fim}\n".format(vendedor=salesperson.person.name,
+                              estacao=station.name,
+                              inicio=od.strftime('%d/%m/%y - %H:%M:%S'),
+                              fim=cd.strftime('%d/%m/%y - %H:%M:%S'))
+    s += '==========FORMAS DE PAGAMENTO==========\n'
     s += payment_values
+    s += '===============TOTAIS==================\n'
+    s += "Descontos efetuados: %.2f\n" % discounts
+    s += "Total geral: %.2f\n" % total
+    s += '==============SANGRIAS=================\n'
     s += sangria_str
+    s += '=============SUPRIMENTOS===============\n'
     s += suprimento_str
     s += caixa_iniciado_str
     s += "%s" % '_' * 40
-    s += "\nVendedor: {}\n".format(salesperson.person.name)
+    s += "\nValor esperado na contagem: {}\n".format(total + suprimento_valor - abs(sangria_valor) + caixa_iniciado_vlr)
     s += "%s" % '_' * 40
     s += "\n\t\tAssinatura"
 
@@ -590,95 +612,90 @@ def print_report3(till):
 
 
 def gerencial_report(open_date, close_date):
-    # TODO refatorar isso aqui...
+    """Lista todas as vendas e todas as sangrias sem filtrar por vendedor e por estação"""
     od = open_date
     cd = close_date
     conn = get_connection()
-    sales = Sale.select(AND(Sale.q.open_date >= od,
-                            Sale.q.confirm_date <= cd,
-                            OR(Sale.q.status == Sale.STATUS_CONFIRMED,
-                               Sale.q.status == Sale.STATUS_PAID)),
-                        connection=conn)
+    till_history = TillFiscalOperationsView.select(AND(TillFiscalOperationsView.q.date >= od,
+                                                       TillFiscalOperationsView.q.date <= cd),
+                                                   connection=conn)
     quantidade_entrada = {}
-    total = 0
-    discounts = 0
 
     # contadores por tipo de pagamento
-    for sale in sales:
-        payments = sale.group.payments
-        for payment in payments:
-            method = PaymentMethod.get(payment.methodID, connection=conn)
-            if quantidade_entrada.get(method):
-                quantidade_entrada[method] = quantidade_entrada[method] + payment.value
-            else:
-                quantidade_entrada[method] = payment.value
+    for th in till_history:
+        if not th.method_name:
+            continue
+        if quantidade_entrada.get(th.method_name):
+            quantidade_entrada[th.method_name] = quantidade_entrada[th.method_name] + th.value
+        else:
+            quantidade_entrada[th.method_name] = th.value
 
+    total = 0
+    discounts = 0
     # contadores de totais de itens
-    for sale in sales:
-        total += sale.total_amount
-        discounts += sale.discount_value
+    for th in till_history:
+        total += th.value or 0
+        discounts += th.discount_value or 0
 
-    s = "Início: %s" \
-        "\nFim: %s\n" % (od.strftime('%d/%m/%y - %H:%M:%S'),
-                         cd.strftime('%d/%m/%y - %H:%M:%S'))
-    s += "%s%s" % ('=' * 38, '\n')
     payment_values = ""
 
     # sort payments
     d_sorted_by_value_payments = sorted(
-        [(strip_accents(key.description), value) for (key, value) in quantidade_entrada.items()])
+        [(key, value) for (key, value) in quantidade_entrada.items()])
 
     for payment in d_sorted_by_value_payments:
-        produto = "%s - Total: %s\n" % (payment[0],
-                                        payment[1],)
+        produto = "{} : {}\n".format(payment[0],
+                                     payment[1])
         produto += "%s%s" % ('=' * 19, '\n')
         payment_values += produto
 
     # Sangrias
     despesa_src_str = '%%%s%%' % 'Despesa:'
     sangria_valor = 0
-    last_till = Till.get_current(conn)
+    sangria_str = ''
 
-    if not last_till:
-        return
-
-    despesa_results = TillEntry.select(AND(LIKE(TillEntry.q.description, despesa_src_str),
-                                           TillEntry.q.tillID == last_till.id,
-                                           TillEntry.q.date > open_date,
-                                           TillEntry.q.date <= close_date))
+    despesa_results = TillFiscalOperationsView.select(
+        AND(LIKE(TillFiscalOperationsView.q.description, despesa_src_str),
+            TillFiscalOperationsView.q.date > open_date,
+            TillFiscalOperationsView.q.date <= close_date))
     try:
-        for value in [p.value for p in despesa_results]:
+        for value, description in [(p.value, p.description) for p in despesa_results]:
             sangria_valor += value
+            sangria_str += '{description}: {value}\n'.format(description=description, value=value)
     except:
         pass
-    sangria_str = "Total de Sangria %s\n" % sangria_valor
+    sangria_str += "Total de Sangria %s\n" % sangria_valor
+
+    suprimento_str = ''
 
     # Suprimentos
     suprimento_src_str = '%%%s%%' % 'Suprimento:'
     suprimento_valor = 0
-    suprimento_results = TillEntry.select(AND(LIKE(TillEntry.q.description, suprimento_src_str),
-                                              TillEntry.q.tillID == last_till.id,
-                                              TillEntry.q.date > open_date,
-                                              TillEntry.q.date <= close_date))
+    suprimento_results = TillFiscalOperationsView.select(
+        AND(LIKE(TillFiscalOperationsView.q.description, suprimento_src_str),
+            TillFiscalOperationsView.q.date > open_date,
+            TillFiscalOperationsView.q.date <= close_date))
 
     try:
-        for value in [p.value for p in suprimento_results]:
+        for value, description in [(p.value, p.description) for p in suprimento_results]:
             suprimento_valor += value
+            suprimento_str += '{description}: {value}\n'.format(description=description, value=value)
     except:
         pass
 
-    suprimento_str = "Total de Suprimento %s\n" % suprimento_valor
-
-    # Caixa iniciado
-    caixa_iniciado_vlr = last_till.get_initial_cash_amount()
-    caixa_iniciado_str = "Caixa iniciado com a quantia de %s\n" % caixa_iniciado_vlr
+    suprimento_str += "Total de Suprimento %s\n" % suprimento_valor
 
     sold_items = ""
     sellable_qqtt_dict = {}
 
     # contadores de totais de itens
-    for sale in sales:
-        sale_items = sale.get_items()
+    sales = Sale.select(AND(Sale.q.open_date >= od,
+                            Sale.q.confirm_date <= cd,
+                            OR(Sale.q.status == Sale.STATUS_CONFIRMED,
+                               Sale.q.status == Sale.STATUS_PAID)),
+                        connection=conn)
+    for th in sales:
+        sale_items = th.get_items()
         for si in sale_items:
             qtty = si.quantity
             sellalble = si.sellable
@@ -697,20 +714,29 @@ def gerencial_report(open_date, close_date):
         produto += "%s%s" % ('=' * 19, '\n')
         sold_items += produto
 
+    s = "===RELATORIO DE GERAL DOS CAIXAS==\n" \
+        "Vendedor: {vendedor}\n" \
+        "Estação: {estacao}\n" \
+        "Início: {inicio}\n" \
+        "Fim: {fim}\n".format(vendedor='TODOS',
+                              estacao='TODAS',
+                              inicio=od.strftime('%d/%m/%y - %H:%M:%S'),
+                              fim=cd.strftime('%d/%m/%y - %H:%M:%S'))
+    s += '======CONTADORES DE ITENS VENDIDOS=====\n'
     s += sold_items
-    s += "%s%s\n" % ('=' * 38, '\n')
-    s += "%s" % '_' * 40
-    s += "\n%s%s" % ('=' * 38, '\n')
-    s += "\nDescontos: %.2f\n" % discounts
-    s += "Total: %.2f\n" % total
-    s += "%s%s" % ('=' * 38, '\n')
+    s += '\n\n==========FORMAS DE PAGAMENTO==========\n'
     s += payment_values
+    s += '===============TOTAIS==================\n'
+    s += "Descontos efetuados: %.2f\n" % discounts
+    s += "Total geral: %.2f\n" % total
+    s += '==============SANGRIAS=================\n'
     s += sangria_str
+    s += '=============SUPRIMENTOS===============\n'
     s += suprimento_str
-    s += caixa_iniciado_str
     s += "%s" % '_' * 40
+    s += "\nValor esperado na contagem: {}\n".format(
+        total + suprimento_valor - abs(sangria_valor))
     s += "%s" % '_' * 40
-    s += "\nAdministrador \n"
     s += "\n\t\tAssinatura"
 
     ps = PrintSolution(conn, '')

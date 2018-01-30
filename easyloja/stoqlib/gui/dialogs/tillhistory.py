@@ -34,8 +34,9 @@ from stoqlib.api import api
 from stoqlib.database.orm import INNERJOINOn, Viewable, LEFTJOINOn
 from stoqlib.domain.fiscal import CfopData
 from stoqlib.domain.payment.group import PaymentGroup
+from stoqlib.domain.payment.method import PaymentMethod, CreditCardData
 from stoqlib.domain.payment.payment import Payment
-from stoqlib.domain.person import PersonAdaptToBranch, PersonAdaptToSalesPerson, Person
+from stoqlib.domain.person import PersonAdaptToBranch, PersonAdaptToSalesPerson, Person, PersonAdaptToCreditProvider
 from stoqlib.domain.sale import Sale
 from stoqlib.domain.station import BranchStation
 from stoqlib.domain.till import Till
@@ -70,9 +71,17 @@ class TillFiscalOperationsView(Viewable):
         value=TillEntry.q.value,
         cfop=CfopData.q.code,
         station_name=BranchStation.q.name,
+        station_id=BranchStation.q.id,
         branch_id=PersonAdaptToBranch.q.id,
         status=Till.q.status,
         salesperson_name=Person.q.name,
+        salesperson_id=PersonAdaptToSalesPerson.q.id,
+        discount_value=Sale.q.discount_value,
+        # payment data
+        method_id=PaymentMethod.q.id,
+        method_name=PaymentMethod.q.description,
+        card_type=CreditCardData.q.card_type,
+        card_provider_name=PersonAdaptToCreditProvider.q.short_name,
     )
 
     joins = [
@@ -80,6 +89,12 @@ class TillFiscalOperationsView(Viewable):
                    Till.q.id == TillEntry.q.tillID),
         LEFTJOINOn(None, Payment,
                    Payment.q.id == TillEntry.q.paymentID),
+        LEFTJOINOn(None, PaymentMethod,
+                   PaymentMethod.q.id == Payment.q.methodID),
+        LEFTJOINOn(None, CreditCardData,
+                   CreditCardData.q.paymentID == Payment.q.id),
+        LEFTJOINOn(None, PersonAdaptToCreditProvider,
+                   CreditCardData.q.providerID == PersonAdaptToCreditProvider.q.id),
         INNERJOINOn(None, BranchStation,
                     BranchStation.q.id == Till.q.stationID),
         INNERJOINOn(None, PersonAdaptToBranch,
@@ -120,9 +135,14 @@ class TillHistoryDialog(SearchDialog):
                              width=120),
                 SearchColumn('salesperson_name', title=_('Salesperson'), data_type=str,
                              width=120),
+                SearchColumn('method_name', title=_('Forma de pagamento'), data_type=str,
+                             width=120),
                 ColoredColumn('value', _('Value'), data_type=currency,
                               color='red', data_func=payment_value_colorize,
                               width=140)]
+
+    def _get_card_description(self, arg):
+        return CreditCardData.types.get(arg)
 
     def create_filters(self):
         self.set_text_field_columns(['description'])
