@@ -403,7 +403,7 @@ def salesperson_stock_report(open_date, close_date):
     cd = close_date
     conn = get_connection()
     user = get_current_user(conn)
-    station=get_current_station(conn)
+    station = get_current_station(conn)
     salesperson = ISalesPerson(user)
 
     sales = Sale.select(AND(Sale.q.open_date >= od,
@@ -424,7 +424,6 @@ def salesperson_stock_report(open_date, close_date):
                 sellable_qqtt_dict[sellalble] = sellable_qqtt_dict[sellalble] + qtty
             else:
                 sellable_qqtt_dict[sellalble] = qtty
-
 
     sold_items = ""
 
@@ -634,6 +633,8 @@ def gerencial_report(open_date, close_date):
     discounts = 0
     # contadores de totais de itens
     for th in till_history:
+        if not th.salesperson_id:
+            continue
         total += th.value or 0
         discounts += th.discount_value or 0
 
@@ -651,11 +652,15 @@ def gerencial_report(open_date, close_date):
 
     # Sangrias
     despesa_src_str = '%%%s%%' % 'Despesa:'
+    quantia_removida_str = '%%%s%%' % 'Quantia removida'
+
     sangria_valor = 0
     sangria_str = ''
 
     despesa_results = TillFiscalOperationsView.select(
-        AND(LIKE(TillFiscalOperationsView.q.description, despesa_src_str),
+        AND(OR(
+            LIKE(TillFiscalOperationsView.q.description, despesa_src_str),
+            LIKE(TillFiscalOperationsView.q.description, quantia_removida_str)),
             TillFiscalOperationsView.q.date > open_date,
             TillFiscalOperationsView.q.date <= close_date))
     try:
@@ -670,9 +675,12 @@ def gerencial_report(open_date, close_date):
 
     # Suprimentos
     suprimento_src_str = '%%%s%%' % 'Suprimento:'
+    caixa_iniciado_str = '%%%s%%' % 'Caixa iniciado'
     suprimento_valor = 0
     suprimento_results = TillFiscalOperationsView.select(
-        AND(LIKE(TillFiscalOperationsView.q.description, suprimento_src_str),
+        AND(OR
+            (LIKE(TillFiscalOperationsView.q.description, suprimento_src_str),
+             LIKE(TillFiscalOperationsView.q.description, caixa_iniciado_str)),
             TillFiscalOperationsView.q.date > open_date,
             TillFiscalOperationsView.q.date <= close_date))
 
