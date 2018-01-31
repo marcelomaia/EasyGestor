@@ -482,7 +482,7 @@ def salesperson_financial_report(open_date, close_date):
     till_history = TillFiscalOperationsView.select(
         AND(TillFiscalOperationsView.q.date >= od,
             TillFiscalOperationsView.q.date <= cd,
-            TillFiscalOperationsView.q.station_id <= station.id,
+            TillFiscalOperationsView.q.station_id == station.id,
             TillFiscalOperationsView.q.salesperson_id == salesperson.id),
         connection=conn)
 
@@ -521,11 +521,12 @@ def salesperson_financial_report(open_date, close_date):
     sangria_valor = 0
     sangria_str = ''
 
-    despesa_results = TillFiscalOperationsView.select(AND(LIKE(TillFiscalOperationsView.q.description, despesa_src_str),
-                                                          TillFiscalOperationsView.q.date > open_date,
-                                                          TillFiscalOperationsView.q.date <= close_date,
-                                                          TillFiscalOperationsView.q.station_id <= station.id,
-                                                          ))
+    despesa_results = TillFiscalOperationsView.select(
+        AND(LIKE(TillFiscalOperationsView.q.description, despesa_src_str),
+            TillFiscalOperationsView.q.date > open_date,
+            TillFiscalOperationsView.q.date <= close_date,
+            TillFiscalOperationsView.q.station_id == station.id,
+            ))
     try:
         for value, description in [(p.value, p.description) for p in despesa_results]:
             sangria_valor += value
@@ -542,7 +543,7 @@ def salesperson_financial_report(open_date, close_date):
                                                                   suprimento_src_str),
                                                              TillFiscalOperationsView.q.date > open_date,
                                                              TillFiscalOperationsView.q.date <= close_date,
-                                                             TillFiscalOperationsView.q.station_id <= station.id,
+                                                             TillFiscalOperationsView.q.station_id == station.id,
                                                              ))
 
     try:
