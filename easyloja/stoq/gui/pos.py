@@ -46,7 +46,8 @@ from stoqdrivers.enum import UnitType
 from stoqlib.api import api
 from stoqlib.database.orm import AND
 from stoqlib.database.orm import STARTSWITH, LIKE, OR, LOWER
-from stoqlib.database.runtime import get_current_branch, get_connection, new_transaction, get_current_station
+from stoqlib.database.runtime import get_current_branch, get_connection, new_transaction, get_current_station, \
+    get_current_user
 from stoqlib.domain.devices import DeviceSettings
 from stoqlib.domain.events import SalesNFCEEvent, SaleSEmitEvent, TillOpenDrawer, SalesNFCEReprintEvent, \
     ValidateItemNFCEEvent, CreatedOutPaymentEvent, CreatedInPaymentEvent, TillAddTillEntryEvent, SaleSLastEmitEvent
@@ -90,6 +91,7 @@ from stoqlib.lib.formatters import format_quantity, get_formatted_price
 from stoqlib.lib.message import warning, info, yesno, marker
 from stoqlib.lib.osutils import get_application_dir
 from stoqlib.lib.parameters import sysparam
+from stoqlib.lib.permissions import permission_required
 from stoqlib.lib.pluginmanager import get_plugin_manager
 
 _ = gettext.gettext
@@ -122,7 +124,6 @@ def tohex(c):
         if item[1] == '100':
             s[item[0]] = 'ff'
     return ''.join(s)
-
 
 class SellableImageViewer(GladeDelegate, RunnableView):
     title = _("Sellable Image Viewer")
@@ -1296,6 +1297,7 @@ class PosApp(AppWindow):
     # Actions
     #
 
+    @permission_required("POS_CANCEL_ORDER")
     def on_CancelOrder__activate(self, action):
         secure_mode = sysparam(self.conn).NFCE_SECURE_MODE
         if secure_mode:
@@ -1516,3 +1518,4 @@ class PosApp(AppWindow):
             SaleSEmitEvent.emit(sale)
         except:
             pass
+

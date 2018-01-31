@@ -107,6 +107,13 @@ class UserProfile(Domain):
             has_permission=True,
             connection=self.get_connection()))
 
+    def check_action_permission(self, action):
+        """
+        :param action:action requested by the current user
+        :return: true if the user is able to execute, False if dont
+        """
+        return True
+
 
 def update_profile_applications(conn, profile=None):
     """This method checks for all available applications and perform a
