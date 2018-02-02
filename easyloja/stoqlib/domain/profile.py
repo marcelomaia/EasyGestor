@@ -57,6 +57,21 @@ class ProfileSettings(Domain):
         setting.has_permission = permission
 
 
+class ProfileActionSettings(Domain):
+
+
+    action_name = UnicodeCol()
+    has_permission = BoolCol(default=False)
+    user_profile = ForeignKey('UserProfile')
+
+    @classmethod
+    def set_permission(cls, conn, profile, action, permission):
+        setting = cls.selectOneBy(user_profile=profile,
+                                  action_name=action,
+                                  connection=conn)
+        setting.has_permission = permission
+
+
 class UserProfile(Domain):
     """User profile definition."""
 
