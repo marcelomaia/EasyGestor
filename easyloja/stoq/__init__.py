@@ -10,7 +10,7 @@ major_version = 1
 minor_version = 5
 micro_version = 8
 extra_version = 9
-release_date = (2017, 1, 23)
+release_date = (2017, 2, 2)
 stable = True
 
 version = '%d.%d.%d' % (major_version, minor_version, micro_version)
