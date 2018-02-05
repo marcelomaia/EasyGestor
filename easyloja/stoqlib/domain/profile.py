@@ -86,10 +86,15 @@ class UserProfile(Domain):
                                 has_full_permission=False):
         profile = cls(connection=conn, name=name)
         descr = get_utility(IApplicationDescriptions)
+        action_descr = get_utility(IActionDescriptions)
         for app_dir in descr.get_application_names():
             ProfileSettings(connection=conn,
                             has_permission=has_full_permission,
                             app_dir_name=app_dir, user_profile=profile)
+        for action_dir in action_descr.get_action_names():
+            ProfileSettings(connection=conn,
+                            has_permission=has_full_permission,
+                            action_name=app_dir, user_profile=profile)
         return profile
 
     @classmethod
