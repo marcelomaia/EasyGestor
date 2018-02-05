@@ -271,14 +271,17 @@ class PrintSolution(object):
         txt = ''
         for sale_item in self.sale.get_items():
             description = sale_item.sellable.description
+            code = sale_item.sellable.code
             quantity = sale_item.quantity
             price = sale_item.price
             total = sale_item.get_total()
             notes = sale_item.notes
             if notes is None:
-                txt += "{}\n\t{} x R$ {}  R$ {} \n\n".format(description[:38], quantity, price, total)
+                txt += "{}-{}\n\t{} x R$ {}  R$ {} \n\n".format(
+                    code, description[:38], quantity, price, total)
             else:
-                txt += "{}\n\t{} x R$ {}  R$ {} \nnotas: {}\n\n".format(description[:38], quantity, price, total, notes)
+                txt += "{}-{}\n\t{} x R$ {}  R$ {} \nnotas: {}\n\n".format(
+                    code, description[:38], quantity, price, total, notes)
         txt += self.line
         return txt
 
