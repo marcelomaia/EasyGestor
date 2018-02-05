@@ -93,7 +93,7 @@ class UserProfile(Domain):
                             has_permission=has_full_permission,
                             app_dir_name=app_dir, user_profile=profile)
         for action_dir in action_descr.get_action_names():
-            ProfileSettings(connection=conn,
+            ProfileActionSettings(connection=conn,
                             has_permission=has_full_permission,
                             action_name=action_dir, user_profile=profile)
         return profile
