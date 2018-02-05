@@ -6,9 +6,7 @@ from kiwi.log import Logger
 from stoqlib.database.orm import AND, OR, LIKE
 from stoqlib.database.runtime import get_connection, get_current_user, get_current_station
 from stoqlib.domain.interfaces import ICompany, ISalesPerson
-from stoqlib.domain.payment.method import PaymentMethod
 from stoqlib.domain.sale import Sale
-# from stoqlib.domain.till import Till
 from stoqlib.gui.dialogs.tillhistory import TillFiscalOperationsView
 from stoqlib.lib.formatters import format_phone_number
 from stoqlib.lib.parameters import sysparam
