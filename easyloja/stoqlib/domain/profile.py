@@ -127,7 +127,11 @@ class UserProfile(Domain):
         :param action:action requested by the current user
         :return: true if the user is able to execute, False if dont
         """
-        return True
+        return bool(ProfileActionSettings.selectOneBy(
+            user_profile=self,
+            action_name=app_name,
+            has_permission=True,
+            connection=self.get_connection()))
 
 
 def update_profile_applications(conn, profile=None):
