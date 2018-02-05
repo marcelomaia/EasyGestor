@@ -28,9 +28,9 @@ from kiwi.component import get_utility
 from kiwi.datatypes import ValidationError
 from kiwi.ui.widgets.checkbutton import ProxyCheckButton
 
-from stoqlib.domain.profile import UserProfile, ProfileSettings
+from stoqlib.domain.profile import UserProfile, ProfileSettings, ProfileActionSettings
 from stoqlib.gui.editors.baseeditor import BaseEditor
-from stoqlib.lib.interfaces import IApplicationDescriptions
+from stoqlib.lib.interfaces import IApplicationDescriptions, IActionDescriptions
 from stoqlib.lib.translation import stoqlib_gettext
 
 
@@ -96,6 +96,43 @@ class UserProfileEditor(BaseEditor):
 
         # Scroll to the bottom of the scrolled window
         vadj = self.scrolled_window.get_vadjustment()
+        vadj.set_value(vadj.upper)
+        self.setup_actions_slaves()
+
+    def setup_actions_slaves(self):
+        settings = {}
+        for setting in self.model.action_settings:
+            settings[setting.action_name] = setting
+
+        actions = get_utility(IActionDescriptions)
+        for (name, full_name) in actions.get_descriptions():
+            # Create the user interface for each application which is
+            # a HBox, a CheckButton and an Image
+            box = gtk.HBox()
+            box.show()
+
+            button = ProxyCheckButton()
+            button.set_label(full_name)
+            button.data_type = bool
+            button.model_attribute = 'has_permission'
+            button.show()
+            box.pack_start(button, padding=6)
+
+
+            self.actions_vbox.pack_start(box, False)
+
+            model = settings.get(name)
+            if model is None:
+                model = ProfileActionSettings(connection=self.conn,
+                                        has_permission=False,
+                                        action_name=name,
+                                        user_profile=self.model)
+
+            setattr(self, name, button)
+            self.add_proxy(model, [name])
+
+        # Scroll to the bottom of the scrolled window
+        vadj = self.scrolled_window1.get_vadjustment()
         vadj.set_value(vadj.upper)
 
     #

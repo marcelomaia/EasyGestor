@@ -1296,13 +1296,12 @@ class PosApp(AppWindow):
     #
     # Actions
     #
-
-    @permission_required("POS_CANCEL_ORDER")
+    @permission_required('cancel_order')
     def on_CancelOrder__activate(self, action):
-        secure_mode = sysparam(self.conn).NFCE_SECURE_MODE
-        if secure_mode:
-            if not run_dialog(UserPassword, get_current_toplevel(), self.conn, UserPassword.ADM):
-                return
+        # secure_mode = sysparam(self.conn).NFCE_SECURE_MODE
+        # if secure_mode:
+        #     if not run_dialog(UserPassword, get_current_toplevel(), self.conn, UserPassword.ADM):
+        #         return
         self._cancel_order()
 
     def on_Clients__activate(self, action):
@@ -1404,9 +1403,11 @@ class PosApp(AppWindow):
     def on_remove_item_button__clicked(self, button):
         self._remove_selected_item()
 
+    @permission_required("reprint_nonfiscal")
     def on_impnf_button__clicked(self, button):
         self._reprint_last_non_fiscal_sale()
 
+    @permission_required("reprint_nfce")
     def on_nfce_button__clicked(self, button):
         self._reprint_last_fiscal_sale()
 
@@ -1416,11 +1417,12 @@ class PosApp(AppWindow):
     def on_checkout_button__clicked(self, button):
         self._checkout()
 
+    @permission_required("cancel_order")
     def on_cancel_button__clicked(self, button):
-        secure_mode = sysparam(self.conn).NFCE_SECURE_MODE
-        if secure_mode:
-            if not run_dialog(UserPassword, get_current_toplevel(), self.conn, UserPassword.ADM):
-                return
+        # secure_mode = sysparam(self.conn).NFCE_SECURE_MODE
+        # if secure_mode:
+        #     if not run_dialog(UserPassword, get_current_toplevel(), self.conn, UserPassword.ADM):
+        #         return
         self._cancel_order()
 
     def on_sellable_search_button__clicked(self, button):

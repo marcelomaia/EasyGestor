@@ -29,7 +29,7 @@ from kiwi.component import get_utility
 from stoqlib.database.orm import (orm_name, UnicodeCol, ForeignKey,
                                   MultipleJoin, BoolCol)
 from stoqlib.domain.base import Domain
-from stoqlib.lib.interfaces import IApplicationDescriptions
+from stoqlib.lib.interfaces import IApplicationDescriptions, IActionDescriptions
 from stoqlib.lib.translation import stoqlib_gettext as _
 
 
@@ -76,6 +76,7 @@ class UserProfile(Domain):
     """User profile definition."""
 
     name = UnicodeCol()
+    action_settings = MultipleJoin('ProfileActionSettings')
     if orm_name == 'storm':
         profile_settings = MultipleJoin('ProfileSettings', 'user_profileID')
     else:
@@ -94,7 +95,7 @@ class UserProfile(Domain):
         for action_dir in action_descr.get_action_names():
             ProfileSettings(connection=conn,
                             has_permission=has_full_permission,
-                            action_name=app_dir, user_profile=profile)
+                            action_name=action_dir, user_profile=profile)
         return profile
 
     @classmethod
@@ -127,14 +128,14 @@ class UserProfile(Domain):
             has_permission=True,
             connection=self.get_connection()))
 
-    def check_action_permission(self, action):
+    def check_action_permission(self, action_name):
         """
         :param action:action requested by the current user
         :return: true if the user is able to execute, False if dont
         """
         return bool(ProfileActionSettings.selectOneBy(
             user_profile=self,
-            action_name=app_name,
+            action_name=action_name,
             has_permission=True,
             connection=self.get_connection()))
 

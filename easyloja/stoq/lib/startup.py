@@ -45,7 +45,7 @@ from stoqlib.exceptions import (DatabaseError, StoqlibError,
                                 DatabaseInconsistency)
 from stoqlib.lib.configparser import register_config, StoqConfig
 from stoqlib.lib.crashreport import collect_traceback
-from stoqlib.lib.interfaces import  IApplicationDescriptions
+from stoqlib.lib.interfaces import IApplicationDescriptions, IActionDescriptions
 from stoqlib.lib.message import error
 from stoqlib.lib.osutils import read_registry_key
 
@@ -129,7 +129,9 @@ def setup(config=None, options=None, register_station=True, check_schema=True,
     register_config(config)
 
     from stoq.lib.applist import ApplicationDescriptions
+    from stoq.lib.actionslist import ActionDescriptions
     provide_utility(IApplicationDescriptions, ApplicationDescriptions())
+    provide_utility(IActionDescriptions, ActionDescriptions())
 
     if register_station:
         try:

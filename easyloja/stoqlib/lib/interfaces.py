@@ -73,6 +73,19 @@ class IApplicationDescriptions(Interface):
         """
 
 
+class IActionDescriptions(Interface):
+
+    def get_action_names():
+        """
+        lorem ipsum
+        """
+
+    def get_descriptions():
+        """
+        lorem ipsum
+        """
+
+
 class ISystemNotifier(Interface):
 
     def info(short, description):
