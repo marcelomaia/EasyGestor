@@ -8,7 +8,7 @@ from stoqlib.database.runtime import get_connection, get_current_user, get_curre
 from stoqlib.domain.interfaces import ICompany, ISalesPerson
 from stoqlib.domain.payment.method import PaymentMethod
 from stoqlib.domain.sale import Sale
-from stoqlib.domain.till import Till
+# from stoqlib.domain.till import Till
 from stoqlib.gui.dialogs.tillhistory import TillFiscalOperationsView
 from stoqlib.lib.formatters import format_phone_number
 from stoqlib.lib.parameters import sysparam
@@ -518,15 +518,18 @@ def salesperson_financial_report(open_date, close_date):
 
     # Sangrias
     despesa_src_str = '%%%s%%' % 'Despesa:'
+    quantia_removida_src_str = '%%%s%%' % 'Quantia removida'
     sangria_valor = 0
     sangria_str = ''
 
     despesa_results = TillFiscalOperationsView.select(
-        AND(LIKE(TillFiscalOperationsView.q.description, despesa_src_str),
+        AND(
+            OR(LIKE(TillFiscalOperationsView.q.description, despesa_src_str),
+               LIKE(TillFiscalOperationsView.q.description, quantia_removida_src_str)),
             TillFiscalOperationsView.q.date > open_date,
             TillFiscalOperationsView.q.date <= close_date,
             TillFiscalOperationsView.q.station_id == station.id,
-            ))
+        ))
     try:
         for value, description in [(p.value, p.description) for p in despesa_results]:
             sangria_valor += value
@@ -536,15 +539,18 @@ def salesperson_financial_report(open_date, close_date):
     sangria_str += "Total de Sangria %s\n" % sangria_valor
 
     suprimento_str = ''
+
     # Suprimentos
     suprimento_src_str = '%%%s%%' % 'Suprimento:'
+    caixa_iniciado_str = '%%%s%%' % 'Caixa iniciado'
     suprimento_valor = 0
-    suprimento_results = TillFiscalOperationsView.select(AND(LIKE(TillFiscalOperationsView.q.description,
-                                                                  suprimento_src_str),
-                                                             TillFiscalOperationsView.q.date > open_date,
-                                                             TillFiscalOperationsView.q.date <= close_date,
-                                                             TillFiscalOperationsView.q.station_id == station.id,
-                                                             ))
+    suprimento_results = TillFiscalOperationsView.select(
+        AND(OR
+            (LIKE(TillFiscalOperationsView.q.description, suprimento_src_str),
+             LIKE(TillFiscalOperationsView.q.description, caixa_iniciado_str)),
+            TillFiscalOperationsView.q.date > open_date,
+            TillFiscalOperationsView.q.station_id == station.id,
+            TillFiscalOperationsView.q.date <= close_date))
 
     try:
         for value, description in [(p.value, p.description) for p in suprimento_results]:
@@ -554,14 +560,6 @@ def salesperson_financial_report(open_date, close_date):
         pass
 
     suprimento_str += "Total de Suprimento %s\n" % suprimento_valor
-
-    last_till = Till.get_current(conn)
-    caixa_iniciado_str = ''
-    caixa_iniciado_vlr = 0
-    if last_till:
-        # Caixa iniciado
-        caixa_iniciado_vlr = last_till.get_initial_cash_amount()
-        caixa_iniciado_str = "Caixa iniciado com a quantia de %s\n" % caixa_iniciado_vlr
 
     s = "===RELATORIO DE MOVIMENTAÇÃO DE CAIXA==\n" \
         "Vendedor: {vendedor}\n" \
@@ -580,9 +578,8 @@ def salesperson_financial_report(open_date, close_date):
     s += sangria_str
     s += '=============SUPRIMENTOS===============\n'
     s += suprimento_str
-    s += caixa_iniciado_str
     s += "%s" % '_' * 40
-    s += "\nValor esperado na contagem: {}\n".format(total + suprimento_valor - abs(sangria_valor) + caixa_iniciado_vlr)
+    s += "\nValor esperado na contagem: {}\n".format(total + suprimento_valor - abs(sangria_valor))
     s += "%s" % '_' * 40
     s += "\n\t\tAssinatura"
 
