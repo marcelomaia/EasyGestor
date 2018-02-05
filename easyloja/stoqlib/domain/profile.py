@@ -57,6 +57,21 @@ class ProfileSettings(Domain):
         setting.has_permission = permission
 
 
+class ProfileActionSettings(Domain):
+
+
+    action_name = UnicodeCol()
+    has_permission = BoolCol(default=False)
+    user_profile = ForeignKey('UserProfile')
+
+    @classmethod
+    def set_permission(cls, conn, profile, action, permission):
+        setting = cls.selectOneBy(user_profile=profile,
+                                  action_name=action,
+                                  connection=conn)
+        setting.has_permission = permission
+
+
 class UserProfile(Domain):
     """User profile definition."""
 
@@ -71,10 +86,15 @@ class UserProfile(Domain):
                                 has_full_permission=False):
         profile = cls(connection=conn, name=name)
         descr = get_utility(IApplicationDescriptions)
+        action_descr = get_utility(IActionDescriptions)
         for app_dir in descr.get_application_names():
             ProfileSettings(connection=conn,
                             has_permission=has_full_permission,
                             app_dir_name=app_dir, user_profile=profile)
+        for action_dir in action_descr.get_action_names():
+            ProfileSettings(connection=conn,
+                            has_permission=has_full_permission,
+                            action_name=app_dir, user_profile=profile)
         return profile
 
     @classmethod
@@ -104,6 +124,17 @@ class UserProfile(Domain):
         return bool(ProfileSettings.selectOneBy(
             user_profile=self,
             app_dir_name=app_name,
+            has_permission=True,
+            connection=self.get_connection()))
+
+    def check_action_permission(self, action):
+        """
+        :param action:action requested by the current user
+        :return: true if the user is able to execute, False if dont
+        """
+        return bool(ProfileActionSettings.selectOneBy(
+            user_profile=self,
+            action_name=app_name,
             has_permission=True,
             connection=self.get_connection()))
 
