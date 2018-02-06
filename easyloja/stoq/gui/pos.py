@@ -1432,6 +1432,7 @@ class PosApp(AppWindow):
         self.run_dialog(ProductSearch, self.conn, hide_footer=True,
                         hide_toolbar=True, hide_cost_column=True)
 
+    @permission_required('add_remove_till')
     def on_TillAddCash__activate(self, action):
         secure_mode = sysparam(self.conn).NFCE_SECURE_MODE
         if secure_mode:
@@ -1461,6 +1462,7 @@ class PosApp(AppWindow):
         else:
             trans.close()
 
+    @permission_required('add_remove_till')
     def on_TillRemoveCash__activate(self, action):
         secure_mode = sysparam(self.conn).NFCE_SECURE_MODE
         if secure_mode:
