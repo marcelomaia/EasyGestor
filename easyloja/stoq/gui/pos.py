@@ -409,11 +409,12 @@ class PosApp(AppWindow):
 
         return can_change_application
 
+    @permission_required('quit_pos')
     def can_close_application(self):
-        secure_mode = sysparam(self.conn).NFCE_SECURE_MODE
-        if secure_mode:
-            if not run_dialog(UserPassword, get_current_toplevel(), self.conn, UserPassword.ADM):
-                return
+        # secure_mode = sysparam(self.conn).NFCE_SECURE_MODE
+        # if secure_mode:
+        #     if not run_dialog(UserPassword, get_current_toplevel(), self.conn, UserPassword.ADM):
+        #         return
         can_close_application = not self._sale_started
         if not can_close_application:
             if yesno(_('You must finish or cancel the current sale before you '
@@ -1198,9 +1199,9 @@ class PosApp(AppWindow):
         sale.return_(renegotiation)
 
     def _remove_selected_item(self):
-        if not api.sysparam(self.conn).EMPLOYERS_CAN_REMOVE_ITEMS:
-            if not run_dialog(UserPassword, None, self.conn):
-                return
+        # if not api.sysparam(self.conn).EMPLOYERS_CAN_REMOVE_ITEMS:
+        #     if not run_dialog(UserPassword, None, self.conn):
+        #         return
         sale_item = self.sale_items.get_selected()
         # self._coupon_remove_item(sale_item)
         if not sale_item:
@@ -1400,6 +1401,7 @@ class PosApp(AppWindow):
     def on_sale_items__selection_changed(self, sale_items, sale_item):
         self._update_widgets()
 
+    @permission_required('cancel_order_item')
     def on_remove_item_button__clicked(self, button):
         self._remove_selected_item()
 
