@@ -397,6 +397,7 @@ class PosApp(AppWindow):
     def setup_focus(self):
         self.barcode.grab_focus()
 
+    @permission_required('quit_pos')
     def can_change_application(self):
         # Block POS application if we are in the middle of a sale.
         can_change_application = not self._sale_started
@@ -1198,6 +1199,7 @@ class PosApp(AppWindow):
             connection=trans)
         sale.return_(renegotiation)
 
+    @permission_required('cancel_order_item')
     def _remove_selected_item(self):
         # if not api.sysparam(self.conn).EMPLOYERS_CAN_REMOVE_ITEMS:
         #     if not run_dialog(UserPassword, None, self.conn):
@@ -1212,6 +1214,7 @@ class PosApp(AppWindow):
         self._update_widgets()
         self.barcode.grab_focus()
 
+    @permission_required("reprint_nonfiscal")
     def _reprint_last_non_fiscal_sale(self):
         sale = Sale.get_last_sale(self.conn)
         try:
@@ -1219,6 +1222,7 @@ class PosApp(AppWindow):
         except:
             pass
 
+    @permission_required("reprint_nfce")
     def _reprint_last_fiscal_sale(self):
         try:
             SalesNFCEReprintEvent.emit(None)
@@ -1401,15 +1405,12 @@ class PosApp(AppWindow):
     def on_sale_items__selection_changed(self, sale_items, sale_item):
         self._update_widgets()
 
-    @permission_required('cancel_order_item')
     def on_remove_item_button__clicked(self, button):
         self._remove_selected_item()
 
-    @permission_required("reprint_nonfiscal")
     def on_impnf_button__clicked(self, button):
         self._reprint_last_non_fiscal_sale()
 
-    @permission_required("reprint_nfce")
     def on_nfce_button__clicked(self, button):
         self._reprint_last_fiscal_sale()
 
