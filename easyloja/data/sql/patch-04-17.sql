@@ -1,4 +1,5 @@
 DROP TABLE IF EXISTS profile_action_settings;
+DROP SEQUENCE IF EXISTS profile_action_settings_id_seq;
 
 CREATE SEQUENCE profile_action_settings_id_seq
   INCREMENT 1
@@ -27,4 +28,4 @@ CREATE TABLE profile_action_settings
       ON UPDATE NO ACTION ON DELETE NO ACTION,
   CONSTRAINT profile_action_te_created_id_key UNIQUE (te_created_id),
   CONSTRAINT profile_action_te_modified_id_key UNIQUE (te_modified_id)
-)
+);
