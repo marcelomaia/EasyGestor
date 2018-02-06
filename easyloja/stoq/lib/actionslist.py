@@ -10,7 +10,7 @@ _ACTIONS = {
     'reprint_nfce': 'Reimprimir NFC-e',
     'cancel_nfce': 'Cancelar NFC-e',
     'reprint_nonfiscal': 'Reimpressao Nao Fiscal',
-    'nonfiscal_reporter': 'Relatorio Nao Fiscal',
+    'nonfiscal_report': 'Relatorio Nao Fiscal',
     'cancel_nonfiscal': 'Cancelamento N Fiscal',
     'cancel_order': 'Cancelar Venda',
     'cancel_order_item': 'Cancelar Item da Venda',
