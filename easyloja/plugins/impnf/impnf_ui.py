@@ -131,7 +131,6 @@ class ImpnfUI(object):
         if sysparam(self.conn).RESTAURANT_MODE:
             self._print_tab(sale)
 
-    @permission_required('reprint_nonfiscal')
     def _on_SaleSLastEmitEvent(self, sale):
         secure_mode = sysparam(self.conn).NFCE_SECURE_MODE
         log.debug('{} solicitou impressao vendas ou reimpressao do ultimo pedido'.format(
