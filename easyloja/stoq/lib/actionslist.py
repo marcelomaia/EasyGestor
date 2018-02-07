@@ -14,7 +14,8 @@ _ACTIONS = {
     'cancel_nonfiscal': 'Cancelamento N Fiscal',
     'cancel_order': 'Cancelar Venda',
     'cancel_order_item': 'Cancelar Item da Venda',
-    'quit_pos': 'Sair do PDV'
+    'quit_pos': 'Sair do PDV',
+    'add_remove_till': 'Sangria/Suprimento PDV'
 }
 
 
