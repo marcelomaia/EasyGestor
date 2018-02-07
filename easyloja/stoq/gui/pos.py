@@ -125,6 +125,7 @@ def tohex(c):
             s[item[0]] = 'ff'
     return ''.join(s)
 
+
 class SellableImageViewer(GladeDelegate, RunnableView):
     title = _("Sellable Image Viewer")
     domain = 'stoq'
@@ -749,7 +750,7 @@ class PosApp(AppWindow):
 
         if info and sellable:
             self.quantity.set_value(weight)
-        if barcode_data[0] != barcode:
+        if barcode_data[0] != barcode and len(barcode_data) > 1:
             quantity_str = barcode_data[0].replace(',', '.')
             quantity_str = ''.join([p for p in quantity_str if p in '0123456789.'])
             self.quantity.set_value(float(quantity_str))
@@ -1525,4 +1526,3 @@ class PosApp(AppWindow):
             SaleSEmitEvent.emit(sale)
         except:
             pass
-
