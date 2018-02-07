@@ -11,11 +11,14 @@ def permission_required(action):
             conn = get_connection()
             user = get_current_user(conn)
             profile = user.profile
+            action_description = get_action_description(action)
+            print action_description
             if not profile.check_action_permission(action):
-                admin_permission = run_dialog(UserPassword, None, conn)
+                admin_permission = run_dialog(UserPassword, None, conn, action=action,
+                                              action_desc=action_description)
                 if not admin_permission:
-                    action_description = get_action_description(action)
                     warning(u"Voce nao tem permissao para %s" % action_description)
+                    print 'vou retornar false'
                     return False
             return request_method(*args, **kwargs)
         return check_pemission
