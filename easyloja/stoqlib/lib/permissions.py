@@ -18,7 +18,6 @@ def permission_required(action):
                                               action_desc=action_description)
                 if not admin_permission:
                     warning(u"Voce nao tem permissao para %s" % action_description)
-                    print 'vou retornar false'
                     return False
             return request_method(*args, **kwargs)
         return check_pemission
