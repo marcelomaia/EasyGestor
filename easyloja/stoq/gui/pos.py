@@ -406,8 +406,7 @@ class PosApp(AppWindow):
             if yesno(_('You must finish the current sale before you change to '
                        'another application.'),
                      gtk.RESPONSE_NO, _("Cancel sale"), _("Finish sale")):
-                self._cancel_order(show_confirmation=False)
-                return True
+                return self._cancel_order(show_confirmation=False)
 
         return can_change_application
 
@@ -1042,6 +1041,7 @@ class PosApp(AppWindow):
             # when the user activate a row with product in the sellables list.
             return
 
+    @permission_required('cancel_order')
     def _cancel_order(self, show_confirmation=True):
         """
         Cancels the currently opened order.
@@ -1302,7 +1302,6 @@ class PosApp(AppWindow):
     #
     # Actions
     #
-    @permission_required('cancel_order')
     def on_CancelOrder__activate(self, action):
         # secure_mode = sysparam(self.conn).NFCE_SECURE_MODE
         # if secure_mode:

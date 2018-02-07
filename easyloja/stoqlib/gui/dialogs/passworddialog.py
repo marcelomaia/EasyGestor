@@ -16,10 +16,12 @@ class UserPassword(BaseEditor):
                   GERENTE: 'Senha gerente',
                   VENDEDOR: 'Senha vendedor'}
 
-    def __init__(self, conn, profile=ADM, action_requested=None):
+    def __init__(self, conn, profile=ADM, action=None, action_desc=None):
         self.profile = profile
         self.title = self.title_dict.get(self.profile)
-        self.action_requested = action_requested
+        if action:
+            self.title = '%s %s' % (self.title, action_desc)
+        self.action = action
         BaseEditor.__init__(self, conn, model=None)
 
     def create_model(self, trans):
@@ -41,8 +43,8 @@ class UserPassword(BaseEditor):
         h.update(self.model.user.username)
         h.update(self.model.password)
         if h.hexdigest() == self.model.user.password:
-            if self.action_requested:
-                return True if self.model.check_action_permission(self.action_requested) else False
+            if self.action:
+                return True if self.model.user.profile.check_action_permission(self.action) else False
             log.debug('Usuario {} digitou a senha com sucesso'.format(self.model.user.username))
             return True
         else:
