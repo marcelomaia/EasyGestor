@@ -3,7 +3,7 @@
 
 import platform
 
-program_name = "EasyLoja"
+program_name = "EasyGestor"
 program_codename = 'Bacaba'
 website = 'http://ebi.com.br'
 major_version = 1

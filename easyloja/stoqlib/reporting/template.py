@@ -68,7 +68,7 @@ def _get_logotype_path(trans):
 
 class BaseStoqReport(ReportTemplate):
     logo_border = 5 * mm
-    report_name_prefix = "Easyloja - "
+    report_name_prefix = "EasyGestor - "
 
     def __init__(self, *args, **kwargs):
         timestamp = kwargs.get('do_footer', True)
