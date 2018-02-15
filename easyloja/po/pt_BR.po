@@ -584,7 +584,7 @@ msgid ""
 "Creating a new database for Stoq, depending on the speed of your computer "
 "and the server it may take a couple of minutes to finish."
 msgstr ""
-"Criando um banco de dados novo para o EasyLoja. Dependendo da velocidade do seu "
+"Criando um banco de dados novo para o EasyGestor. Dependendo da velocidade do seu "
 "computador e do servidor, isso pode levar alguns minutos para terminar."
 
 #: ../data/glade/CreateDatabaseStep.ui.h:2
@@ -666,7 +666,7 @@ msgstr "Quero configurar manualmente a conexão com o banco de dados."
 
 #: ../data/glade/DatabaseLocationStep.ui.h:3
 msgid "I want to use Stoq just on this computer."
-msgstr "Eu quero usar o EasyLoja apenas neste computador."
+msgstr "Eu quero usar o EasyGestor apenas neste computador."
 
 #: ../data/glade/DatabaseLocationStep.ui.h:4
 #: ../data/glade/InstallationModeStep.ui.h:4
@@ -679,7 +679,7 @@ msgid ""
 "To be able to use Stoq we need make sure that there is a database that we "
 "can connect to."
 msgstr ""
-"Para utilizar o EasyLoja, é preciso ter certeza de que existe um banco de dados "
+"Para utilizar o EasyGestor, é preciso ter certeza de que existe um banco de dados "
 "que nós conseguimos conectar."
 
 #: ../data/glade/DatabaseSettingsStep.ui.h:1
@@ -887,10 +887,10 @@ msgid ""
 "database from another application or would like to customize Stoq, don't "
 "hesitate to <a href=\"http://www.stoq.com.br/contato\">contact us</a>."
 msgstr ""
-"O EasyLoja foi instalado com sucesso no seu sistema!\n"
+"O EasyGestor foi instalado com sucesso no seu sistema!\n"
 "\n"
 "Lembre-se de checar o manual em cada aplicativo, é normal se sentir um pouco "
-"perdido no começo se você nunca utilizou o EasyLoja antes.\n"
+"perdido no começo se você nunca utilizou o EasyGestor antes.\n"
 "\n"
 "Se você está com problemas na instalação, precisa de ajuda importando seu "
 "banco de dados de outra aplicação."
@@ -1086,7 +1086,7 @@ msgid ""
 "the distribution documentation for more information."
 msgstr ""
 "O servidor PostgreSQL não está rodando neste computador. É necessário "
-"instalá-lo e iniciá-lo para o EasyLoja poder executar.\n"
+"instalá-lo e iniciá-lo para o EasyGestor poder executar.\n"
 "\n"
 "Note que algumas distribuições, como Fedora, exigem que você crie o cluster "
 "do banco de dados antes de iniciar o PostgreSQL. Consulte a documentação da "
@@ -1543,7 +1543,7 @@ msgstr "ECF (Suporte a impressoras fiscais)"
 #: ../data/glade/PluginStep.ui.h:3
 msgid "If you just want to test Stoq it is recommended to select no plugin."
 msgstr ""
-"Se você quer apenas testar o EasyLoja, é recomendado não selecionar plugins."
+"Se você quer apenas testar o EasyGestor, é recomendado não selecionar plugins."
 
 #: ../data/glade/PluginStep.ui.h:4
 msgid "NF-e (Eletronic Invoices)"
@@ -2576,7 +2576,7 @@ msgid ""
 "It is always a good idea to <b>create a backup</b> of your database before "
 "updating."
 msgstr ""
-"O EasyLoja já foi atualizado, mas ainda é preciso atualizar o esquema do banco "
+"O EasyGestor já foi atualizado, mas ainda é preciso atualizar o esquema do banco "
 "de dados.\n"
 "\n"
 "\n"
@@ -2619,10 +2619,10 @@ msgid ""
 "database from another application, don't hesitate to <a "
 "href=\"http://www.stoq.com.br/contato\">contact us</a>."
 msgstr ""
-"Obrigado por instalar o EasyLoja, você vai estar pronto para utilizá-lo em "
+"Obrigado por instalar o EasyGestor, você vai estar pronto para utilizá-lo em "
 "alguns minutos.\n"
 "\n"
-"Este assistente irá ajudá-lo a configurar o EasyLoja para criar um novo banco de "
+"Este assistente irá ajudá-lo a configurar o EasyGestor para criar um novo banco de "
 "dados ou conectar em um existente.\n"
 "\n"
 "Se você estiver tendo problemas com a instalação ou precisa de ajuda para "
@@ -2654,7 +2654,7 @@ msgstr "Contas a pagar"
 
 #: ../data/glade/inventory.ui.h:1
 msgid "STOQ - Inventory Application"
-msgstr "EasyLoja - Aplicativo Inventário"
+msgstr "EasyGestor - Aplicativo Inventário"
 
 #: ../data/glade/launcher.ui.h:1
 msgctxt "yes"
@@ -2667,7 +2667,7 @@ msgstr "Adicionar um produto ou serviço pelo código de barras"
 
 #: ../data/glade/pos.ui.h:5
 msgid "STOQ - POS Application"
-msgstr "EasyLoja - Aplicativo PDV"
+msgstr "EasyGestor - Aplicativo PDV"
 
 #: ../data/glade/pos.ui.h:6
 msgid "Search for products and services by barcode or name"
@@ -2699,12 +2699,12 @@ msgstr "vendas"
 
 #: ../data/glade/stock.ui.h:1
 msgid "STOQ - Stock Application"
-msgstr "EasyLoja - Aplicativo Estoque"
+msgstr "EasyGestor - Aplicativo Estoque"
 
 #: ../data/glade/till.ui.h:1
 msgctxt "yes"
 msgid "STOQ - Till Application"
-msgstr "EasyLoja - Aplicativo Caixa"
+msgstr "EasyGestor - Aplicativo Caixa"
 
 #: ../data/glade/till.ui.h:2
 msgctxt "yes"
@@ -4023,7 +4023,7 @@ msgstr "Chat online..."
 
 #: ../stoq/gui/application.py:247
 msgid "Talk about Stoq online"
-msgstr "Falar sobre o EasyLoja on-line"
+msgstr "Falar sobre o EasyGestor on-line"
 
 #: ../stoq/gui/application.py:252 ../stoq/gui/application.py:273
 msgid "Search"
@@ -4065,7 +4065,7 @@ msgid ""
 "be aware that it may behave incorrectly, crash or even loose your data.\n"
 "<b>Do not use in production.</b>"
 msgstr ""
-"Você está usando uma <b>versão instável</b> do EasyLoja que está em "
+"Você está usando uma <b>versão instável</b> do EasyGestor que está em "
 "desenvolvimento,\n"
 "esteja ciente de que esta versão pode se comportar incorretamente, travar ou "
 "mesmo corromper os seus dados\n"
@@ -4087,7 +4087,7 @@ msgstr "Habilitar modo de produção"
 
 #: ../stoq/gui/application.py:373
 msgid "You are using Stoq in demonstration mode."
-msgstr "Você está utilizando o EasyLoja em modo de demonstração."
+msgstr "Você está utilizando o EasyGestor em modo de demonstração."
 
 #: ../stoq/gui/application.py:374
 #, python-format
@@ -4107,7 +4107,7 @@ msgstr "Usuário: %s"
 #: ../stoq/gui/application.py:568
 #, python-format
 msgid "Stoq - %s"
-msgstr "EasyLoja - %s"
+msgstr "EasyGestor - %s"
 
 #: ../stoq/gui/application.py:719
 msgid "Show help for this application"
@@ -4399,7 +4399,7 @@ msgid ""
 "This is the same password you were asked when you installed PostgreSQL on "
 "this computer."
 msgstr ""
-"Para poder criar um novo banco de dados do EasyLoja você precisa informar a "
+"Para poder criar um novo banco de dados do EasyGestor você precisa informar a "
 "senha do usuário <b>postgres</b> do banco de dados PostgreSQL. Esta é a "
 "mesma senha que foi informada no momento da instalação do PostgreSQL nesse "
 "computador."
@@ -4466,7 +4466,7 @@ msgid ""
 "or go back and configure Stoq to connect to another."
 msgstr ""
 "Desculpe, algo deu errado enquanto tentava-se instalar o PostgreSQL, tente "
-"novamente manualmente ou retorne e configure o EasyLoja para se conectar em "
+"novamente manualmente ou retorne e configure o EasyGestor para se conectar em "
 "outro."
 
 #: ../stoq/gui/config.py:621
@@ -4478,7 +4478,7 @@ msgstr ""
 #: ../stoq/gui/config.py:660
 #, python-format
 msgid "Stoq requires PostgresSQL 8.1 or later, but %s found"
-msgstr "EasyLoja requer PostgresSQL 8.1 ou posterior, mas %s foi encontrado"
+msgstr "EasyGestor requer PostgresSQL 8.1 ou posterior, mas %s foi encontrado"
 
 #: ../stoq/gui/config.py:667
 #, python-format
@@ -4559,7 +4559,7 @@ msgstr "Vender com grade"
 
 #: ../stoq/gui/config.py:803
 msgid "Something went wrong while trying to create the Stoq database"
-msgstr "Algo deu errado ao tentar criar o banco de dados do EasyLoja"
+msgstr "Algo deu errado ao tentar criar o banco de dados do EasyGestor"
 
 #: ../stoq/gui/config.py:810
 msgid "Done."
@@ -4572,7 +4572,7 @@ msgstr ""
 
 #: ../stoq/gui/config.py:836
 msgid "Run Stoq"
-msgstr "Rodar o EasyLoja"
+msgstr "Rodar o EasyGestor"
 
 #: ../stoq/gui/config.py:857 ../stoqlib/lib/parameters.py:548
 msgid "Online services"
@@ -4580,7 +4580,7 @@ msgstr "Serviços online"
 
 #: ../stoq/gui/config.py:868
 msgid "Stoq - Installation"
-msgstr "EasyLoja - Instalação"
+msgstr "EasyGestor - Instalação"
 
 #: ../stoq/gui/config.py:980
 msgid "It was not possible to connect to the database."
@@ -4594,7 +4594,7 @@ msgstr "Verifique a configuração do servidor e tente novamente."
 msgid "Database {dbname} at {address}:{port} is not a Stoq database."
 msgstr ""
 "O banco de dados {dbname} em {address}:{port}  não é um banco de dados do "
-"EasyLoja."
+"EasyGestor."
 
 #: ../stoq/gui/config.py:1003
 msgid ""
@@ -4602,8 +4602,8 @@ msgid ""
 "database server {address}, however it is not a Stoq database or it was "
 "corrupted, please select another one."
 msgstr ""
-"O EasyLoja conseguiu conectar no banco de dados {dbname} do servidor {address} "
-"com sucesso, porém, este está corrompido ou não é um banco de dados do EasyLoja. "
+"O EasyGestor conseguiu conectar no banco de dados {dbname} do servidor {address} "
+"com sucesso, porém, este está corrompido ou não é um banco de dados do EasyGestor. "
 "Por favor, selecione outro."
 
 #: ../stoq/gui/financial.py:228 ../stoq/gui/financial.py:246
@@ -5030,7 +5030,7 @@ msgstr "Nenhum produto encontrado no inventário"
 
 #: ../stoq/gui/launcher.py:54
 msgid "Stoq"
-msgstr "EasyLoja"
+msgstr "EasyGestor"
 
 #: ../stoq/gui/payable.py:73 ../stoq/gui/production.py:58
 #: ../stoq/gui/purchase.py:79 ../stoq/gui/receivable.py:76
@@ -6024,7 +6024,7 @@ msgid ""
 "<b>We will not disclose the collected information and we are committed to "
 "keeping your privacy intact.</b>"
 msgstr ""
-"Uma das novas funcionalidades do EasyLoja 1.0 é o suporte a serviços online. "
+"Uma das novas funcionalidades do EasyGestor 1.0 é o suporte a serviços online. "
 "Funcionalidades utilizando os serviços online incluem relatórios de erros e "
 "notificações de atualização. Mais serviços estão em desenvolvimento. Para "
 "podermos oferecer um serviço melhor e identificar devidamente o usuário, nós "
@@ -6036,14 +6036,14 @@ msgstr ""
 #: ../stoq/gui/shell.py:98
 msgid "You need to register a company before start using Stoq"
 msgstr ""
-"Você precisa registrar uma empresa antes de começar a utilizar o EasyLoja"
+"Você precisa registrar uma empresa antes de começar a utilizar o EasyGestor"
 
 #: ../stoq/gui/shell.py:100
 msgid ""
 "Could not find a company. You'll need to register one before start using Stoq"
 msgstr ""
 "Não foi possível encontrar uma empresa. Você precisa registrar uma antes de "
-"começar a utilizar o EasyLoja"
+"começar a utilizar o EasyGestor"
 
 #: ../stoq/gui/shell.py:128
 msgid "Not right now"
@@ -6051,7 +6051,7 @@ msgstr "Não agora"
 
 #: ../stoq/gui/shell.py:131
 msgid "Do you want to enable Stoq online services?"
-msgstr "Você gostaria de habilitar os serviços online do EasyLoja?"
+msgstr "Você gostaria de habilitar os serviços online do EasyGestor?"
 
 #: ../stoq/gui/shell.py:300
 #, python-format
@@ -6302,7 +6302,7 @@ msgstr "Ajuda do caixa"
 #: ../stoq/gui/till.py:146
 #, python-format
 msgid "Stoq - Till for Branch %03d"
-msgstr "EasyLoja - Caixa para filial %03d"
+msgstr "EasyGestor - Caixa para filial %03d"
 
 #: ../stoq/gui/till.py:190 ../stoqlib/gui/dialogs/productstockdetails.py:154
 #: ../stoqlib/gui/search/salesearch.py:76
@@ -6370,7 +6370,7 @@ msgid ""
 "\n"
 "This may take some time."
 msgstr ""
-"A atualização do EasyLoja falhou.\n"
+"A atualização do EasyGestor falhou.\n"
 "\n"
 "Nós vamos tentar restaurar o banco de dados atual.\n"
 "\n"
@@ -6393,7 +6393,7 @@ msgstr ""
 "A atualização do banco de dados do Stoq falhou, mas ele foi restaurado.\n"
 "Um relatório automático do erros foi enviado. Por favor, entre em contato "
 "com a EBI para assistência na recuperação do banco "
-"de dados e para tornar o uso do EasyLoja %s possível novamente.\n"
+"de dados e para tornar o uso do EasyGestor %s possível novamente.\n"
 "\n"
 "Um backup do banco dados foi criado em <b>%s</b>"
 
@@ -6407,15 +6407,15 @@ msgstr "Concluído. Clique em 'Avançar' para continuar"
 
 #: ../stoq/gui/update.py:159
 msgid "Updating Stoq"
-msgstr "Atualizando o EasyLoja"
+msgstr "Atualizando o EasyGestor"
 
 #: ../stoq/gui/welcomedialog.py:55
 msgid "_Start using Stoq"
-msgstr "_Começar a usar EasyLoja"
+msgstr "_Começar a usar EasyGestor"
 
 #: ../stoq/gui/welcomedialog.py:57
 msgid "Welcome to Stoq"
-msgstr "Bem-vindo ao EasyLoja"
+msgstr "Bem-vindo ao EasyGestor"
 
 #: ../stoq/lib/applist.py:42
 msgid ""
@@ -6493,7 +6493,7 @@ msgid ""
 "%s"
 msgstr ""
 "<b>%s</b> não foi encontrado no seu sistema.\n"
-"%s %s ou maior é necessário para executar o EasyLoja.\n"
+"%s %s ou maior é necessário para executar o EasyGestor.\n"
 "\n"
 "Você pode encontrar uma versão recente de %s na sua página em\n"
 " %s"
@@ -6511,7 +6511,7 @@ msgid ""
 "You can find a recent version of %s on it's homepage at\n"
 "%s"
 msgstr ""
-"<b>%s</b> foi encontrado no seu sistema, mas é muito antigo para o EasyLoja "
+"<b>%s</b> foi encontrado no seu sistema, mas é muito antigo para o EasyGestor "
 "executar. %s %s foi encontrado, mas %s é necessário.\n"
 "\n"
 "Você pode encontrar uma versão recente de %s na sua página em\n"
@@ -6531,7 +6531,7 @@ msgid ""
 "%s"
 msgstr ""
 "<b>%s</b> foi encontrado no seu sistema, mas essa versão %s é incompatível "
-"com o EasyLoja. Você precisa rebaixar a versão para %s para o EasyLoja executar.\n"
+"com o EasyGestor. Você precisa rebaixar a versão para %s para o EasyGestor executar.\n"
 "\n"
 "Você pode encontrar uma versão mais antiga de %s na sua página em\n"
 " %s"
@@ -6574,7 +6574,7 @@ msgstr ""
 
 #: ../stoqlib/chart/chartserver.py:45
 msgid "Stoq Chart Server"
-msgstr "Servidor de Gráficos EasyLoja"
+msgstr "Servidor de Gráficos EasyGestor"
 
 #: ../stoqlib/chart/paymentcharts.py:37 ../stoqlib/chart/paymentcharts.py:92
 msgid "Monthly payments"
@@ -6662,8 +6662,8 @@ msgid ""
 "upgrading the server or the client tools."
 msgstr ""
 "A versão do servidor de banco de dados PostgreSQL (%s) e o cliente postgres "
-"(%s) são diferentes. Será possível usar o EasyLoja, mas esse aviso sempre será "
-"exibido ao iniciar o EasyLoja até que a incompatibilidade das versões seja "
+"(%s) são diferentes. Será possível usar o EasyGestor, mas esse aviso sempre será "
+"exibido ao iniciar o EasyGestor até que a incompatibilidade das versões seja "
 "resolvida atualizando o servidor ou o cliente."
 
 #: ../stoqlib/database/migration.py:135
@@ -6718,7 +6718,7 @@ msgid ""
 "\n"
 "Do you want to register it (requires administrator access) ?"
 msgstr ""
-"O computador <u>%s</u> não está registrado no servidor do EasyLoja em %s.\n"
+"O computador <u>%s</u> não está registrado no servidor do EasyGestor em %s.\n"
 "\n"
 "Você deseja registrar (requer acesso de administrador)?"
 
@@ -6742,7 +6742,7 @@ msgstr "ERRO: %s"
 #: ../stoqlib/database/runtime.py:339
 #, python-format
 msgid "The computer <u>%s</u> is not active in Stoq"
-msgstr "O computador <u>%s</u> não está ativo no EasyLoja"
+msgstr "O computador <u>%s</u> não está ativo no EasyGestor"
 
 #: ../stoqlib/database/runtime.py:341
 msgid ""
@@ -7334,7 +7334,7 @@ msgstr "Frete para compras %s"
 msgid ""
 "Stoq still doesn't support sales for branch companies different than the "
 "current one"
-msgstr "O EasyLoja ainda não suporta vendas para filiais diferentes da atual."
+msgstr "O EasyGestor ainda não suporta vendas para filiais diferentes da atual."
 
 #: ../stoqlib/domain/sale.py:132
 #, python-format
@@ -7581,7 +7581,7 @@ msgid ""
 "you need assistance"
 msgstr ""
 "O valor do caixa está negativo, mas isso não deveria acontecer. Entre em "
-"contato com a equipe EasyLoja se precisar de ajuda."
+"contato com a equipe EasyGestor se precisar de ajuda."
 
 #: ../stoqlib/domain/transfer.py:105
 msgid "The item does not belong to this transfer order"
@@ -7891,7 +7891,7 @@ msgid ""
 "Click on details to see the report text."
 msgstr ""
 "Lamentamos informar, mas ocorreu um erro ao executar %s . Ajude-nos a "
-"melhorar EasyLoja enviando um relatório gerado automaticamente sobre o "
+"melhorar EasyGestor enviando um relatório gerado automaticamente sobre o "
 "incidente.\n"
 "Clique em detalhes para ver o texto do relatório."
 
@@ -9364,7 +9364,7 @@ msgid ""
 "products.\n"
 "To avoid this limitation, enable production mode."
 msgstr ""
-"Este é o modo de demonstração do EasyLoja, você não pode criar mais que %d "
+"Este é o modo de demonstração do EasyGestor, você não pode criar mais que %d "
 "produtos.\n"
 "Para evitar essa limitação, habilite o modo de produção."
 
@@ -9479,7 +9479,7 @@ msgstr "Não tributado"
 
 #: ../stoqlib/gui/editors/shortcutseditor.py:116
 msgid "You need to restart Stoq for the changes to take effect"
-msgstr "Você precisa reiniciar o EasyLoja para que as mudanças tenham efeito"
+msgstr "Você precisa reiniciar o EasyGestor para que as mudanças tenham efeito"
 
 #: ../stoqlib/gui/editors/shortcutseditor.py:121
 msgid "Reset defaults"
@@ -9613,9 +9613,9 @@ msgid ""
 "\n"
 "Close the till in Stoq?"
 msgstr ""
-"O caixa no EasyLoja está aberto, mas na ECF está fechado.\n"
+"O caixa no EasyGestor está aberto, mas na ECF está fechado.\n"
 "\n"
-"Fechar o caixa no EasyLoja?"
+"Fechar o caixa no EasyGestor?"
 
 #: ../stoqlib/gui/fiscalprinter.py:274
 msgid ""
@@ -9623,7 +9623,7 @@ msgid ""
 "\n"
 "Close the till in ECF?"
 msgstr ""
-"O Caixa no EasyLoja está fechado mas na ECF está aberto\n"
+"O Caixa no EasyGestor está fechado mas na ECF está aberto\n"
 "\n"
 "Fechar o caixa na ECF?"
 
@@ -10053,7 +10053,7 @@ msgstr ""
 
 #: ../stoqlib/gui/login.py:158
 msgid "Please contact your system administrator or Stoq team."
-msgstr "Por favor, contacte o seu administrador do sistema ou a equipe EasyLoja."
+msgstr "Por favor, contacte o seu administrador do sistema ou a equipe EasyGestor."
 
 #: ../stoqlib/gui/login.py:160
 msgid "User does not have a profile"
@@ -10061,7 +10061,7 @@ msgstr "Usuário não tem perfil"
 
 #: ../stoqlib/gui/login.py:202
 msgid "Stoq - Access Control"
-msgstr "EasyLoja - Controle de acesso"
+msgstr "EasyGestor - Controle de acesso"
 
 #: ../stoqlib/gui/login.py:220
 msgid "specify an username"
@@ -10249,7 +10249,7 @@ msgstr "Removido por"
 
 #: ../stoqlib/gui/search/parametersearch.py:49
 msgid "Stoq System Parameters"
-msgstr "Parâmetros de sistema do EasyLoja"
+msgstr "Parâmetros de sistema do EasyGestor"
 
 #: ../stoqlib/gui/search/parametersearch.py:67
 #: ../stoqlib/gui/wizards/purchasequotewizard.py:355
@@ -11639,7 +11639,7 @@ msgid ""
 "Error: Stoq configuration is not avaiable. Check that the current user has a "
 "configuration file (~/.stoq/stoq.conf)."
 msgstr ""
-"Erro: configuração do EasyLoja não disponível."
+"Erro: configuração do EasyGestor não disponível."
 
 #: ../stoqlib/lib/configparser.py:250
 msgid ""
@@ -11649,7 +11649,7 @@ msgid ""
 msgstr ""
 "\n"
 "\n"
-"Você está executando o EasyLoja usando sudo. Isso não é recomendado."
+"Você está executando o EasyGestor usando sudo. Isso não é recomendado."
 
 #. The country list is part of the evolution source code:
 #. evolution/addressbook/gui/contact-editor/e-contact-editor-address.c
@@ -13003,7 +13003,7 @@ msgid ""
 "image dimension is 171x59 (pixels), if needed, the image will be resized. In "
 "order to use the default logotype leave this field blank"
 msgstr ""
-"Define um logotipo padrão para os relatórios gerados no EasyLoja. É recomendável "
+"Define um logotipo padrão para os relatórios gerados no EasyGestor. É recomendável "
 "Imagens nas dimensões de 171x59 (pixels), se necessário a imagem deve ser "
 "redimensionada. Para utilizar o logotipo padrão deixe o campo em branco."
 
@@ -13519,7 +13519,7 @@ msgstr "Modo de demonstração"
 
 #: ../stoqlib/lib/parameters.py:529
 msgid "If Stoq is used in a demonstration mode"
-msgstr "Se o EasyLoja é utilizado em um modo de demonstração"
+msgstr "Se o EasyGestor é utilizado em um modo de demonstração"
 
 #: ../stoqlib/lib/parameters.py:535
 msgid "Block incomplete purchase payments"
@@ -13794,11 +13794,11 @@ msgstr "Conta bancária mal configurada: %r"
 #: ../stoqlib/reporting/boleto.py:797
 #, python-format
 msgid "Missing stoq support for bank %d"
-msgstr "Suporte EasyLoja para o banco %d está faltando"
+msgstr "Suporte EasyGestor para o banco %d está faltando"
 
 #: ../stoqlib/reporting/boleto.py:813
 msgid "Stoq Retail Managment"
-msgstr "EasyLoja Gestão Comercial"
+msgstr "EasyGestor Gestão Comercial"
 
 #: ../stoqlib/reporting/calls_report.py:37
 msgid "Calls Report"

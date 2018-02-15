@@ -4,7 +4,7 @@
 ;Nsis Generation 2
 ;To use correctly this script you must to create a paste,
 ;in this paste you must put:
-;1 - An EasyLoja paste
+;1 - An EasyGestor paste
 ;2 - A DLLs_32 paste
 ;3 - A DLLs_64 paste
 ;4 - An VBI paste
@@ -12,7 +12,7 @@
 ;
 ;That's all
 
-Name EasyLoja
+Name EasyGestor
 
 # General Symbol Definitions
 !define REGKEY "SOFTWARE\$(^Name)"
@@ -21,10 +21,10 @@ Name EasyLoja
 !define URL ebi.com.br
 
 # MUI Symbol Definitions
-!define MUI_ICON EasyLoja\easyloja.ico
+!define MUI_ICON EasyGestor\easyloja.ico
 !define MUI_FINISHPAGE_RUN $INSTDIR\easyloja.exe
 !define MUI_LICENSEPAGE_CHECKBOX
-!define MUI_UNICON EasyLoja\unistall.ico
+!define MUI_UNICON EasyGestor\unistall.ico
 !define MUI_UNFINISHPAGE_NOAUTOCLOSE
 
 # Included files
@@ -42,7 +42,7 @@ Var StartMenuGroup
 
 # Installer pages
 !insertmacro MUI_PAGE_WELCOME
-!insertmacro MUI_PAGE_LICENSE EasyLoja\license.txt
+!insertmacro MUI_PAGE_LICENSE EasyGestor\license.txt
 !insertmacro MUI_PAGE_COMPONENTS
 !insertmacro MUI_PAGE_DIRECTORY
 !insertmacro MUI_PAGE_INSTFILES
@@ -55,13 +55,13 @@ Var StartMenuGroup
 
 # Installer attributes
 OutFile "Easyloja_${VERSION}.exe"
-InstallDir $PROGRAMFILES\EasyLoja
+InstallDir $PROGRAMFILES\EasyGestor
 CRCCheck on
 XPStyle on
 ShowInstDetails show
 BGGradient 000080 000000 FFFFFF
 VIProductVersion 1.5.7.0
-VIAddVersionKey /LANG=${LANG_PORTUGUESEBR} ProductName EasyLoja
+VIAddVersionKey /LANG=${LANG_PORTUGUESEBR} ProductName EasyGestor
 VIAddVersionKey /LANG=${LANG_PORTUGUESEBR} ProductVersion "${VERSION}"
 VIAddVersionKey /LANG=${LANG_PORTUGUESEBR} CompanyName "${COMPANY}"
 VIAddVersionKey /LANG=${LANG_PORTUGUESEBR} CompanyWebsite "${URL}"
@@ -75,7 +75,7 @@ ShowUninstDetails show
 Section -Main SEC0000
     SetOutPath $INSTDIR
     SetOverwrite on
-    File /r EasyLoja\*
+    File /r EasyGestor\*
     WriteRegStr HKLM "${REGKEY}\Components" Main 1
     SysRestore::StartRestorePoint "$(^Name) Installed"
 SectionEnd
@@ -111,8 +111,8 @@ Section -post SEC0004
     WriteRegDWORD HKLM "SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\$(^Name)" NoRepair 1
 
 
-;    EasyLoja shortcuts
-    createShortCut "$DESKTOP\EasyLoja.lnk" "$INSTDIR\easyloja.exe" "" "$INSTDIR\easyloja.ico" 0
+;    EasyGestor shortcuts
+    createShortCut "$DESKTOP\EasyGestor.lnk" "$INSTDIR\easyloja.exe" "" "$INSTDIR\easyloja.ico" 0
 	createShortCut "$DESKTOP\Ponto de vendas.lnk" "$INSTDIR\easyloja.exe" "pos" "$INSTDIR\icones\PontoDeVendas.ico" 0
 	createShortCut "$DESKTOP\Vendas.lnk" "$INSTDIR\easyloja.exe" "sales" "$INSTDIR\icones\Vendas.ico" 0
 	createShortCut "$DESKTOP\Relatorios.lnk" "$INSTDIR\easyloja.exe" "report" "$INSTDIR\icones\Relatorios.ico" 0
@@ -125,8 +125,8 @@ Section -post SEC0004
 	createShortCut "$DESKTOP\Estoque.lnk" "$INSTDIR\easyloja.exe" "stock" "$INSTDIR\icones\Estoque.ico" 0
 	createShortCut "$DESKTOP\Contas a receber.lnk" "$INSTDIR\easyloja.exe" "receivable" "$INSTDIR\icones\ContasAReceber.ico" 0
 	createShortCut "$DESKTOP\Contas a pagar.lnk" "$INSTDIR\easyloja.exe" "payable" "$INSTDIR\icones\ContasAPagar.ico" 0
-    createShortCut "$STARTMENU\EasyLoja.lnk" "$INSTDIR\easyloja.exe" "" "$INSTDIR\easyloja.ico" 0
-    createShortCut "$SMPROGRAMS\$StartMenuGroup\EasyLoja.lnk" "$INSTDIR\easyloja.exe" "" "$INSTDIR\easyloja.ico" 0
+    createShortCut "$STARTMENU\EasyGestor.lnk" "$INSTDIR\easyloja.exe" "" "$INSTDIR\easyloja.ico" 0
+    createShortCut "$SMPROGRAMS\$StartMenuGroup\EasyGestor.lnk" "$INSTDIR\easyloja.exe" "" "$INSTDIR\easyloja.ico" 0
 
 ;    Creating directory
     CreateDirectory $APPDATA\stoq
@@ -201,9 +201,9 @@ Section -un.post UNSEC0004
     Delete /REBOOTOK $INSTDIR\uninstall.exe
 
     ;   Remove desktop entry and startmenuentry
-    Delete /REBOOTOK $DESKTOP\EasyLoja.lnk
-    Delete /REBOOTOK $STARTMENU\EasyLoja.lnk
-    Delete /REBOOTOK $SMPROGRAMS\$StartMenuGroup\EasyLoja.lnk
+    Delete /REBOOTOK $DESKTOP\EasyGestor.lnk
+    Delete /REBOOTOK $STARTMENU\EasyGestor.lnk
+    Delete /REBOOTOK $SMPROGRAMS\$StartMenuGroup\EasyGestor.lnk
 
     DeleteRegValue HKLM "${REGKEY}" Path
     DeleteRegKey /IfEmpty HKLM "${REGKEY}\Components"
@@ -218,9 +218,9 @@ SectionEnd
 # Installer functions
 Function .onInit
     InitPluginsDir
-    StrCpy $StartMenuGroup EasyLoja
+    StrCpy $StartMenuGroup EasyGestor
     Push $R1
-    File /oname=$PLUGINSDIR\spltmp.bmp EasyLoja\splash.bmp
+    File /oname=$PLUGINSDIR\spltmp.bmp EasyGestor\splash.bmp
     advsplash::show 1000 600 400 -1 $PLUGINSDIR\spltmp
     Pop $R1
     Pop $R1
@@ -229,7 +229,7 @@ FunctionEnd
 # Uninstaller functions
 Function un.onInit
     ReadRegStr $INSTDIR HKLM "${REGKEY}" Path
-    StrCpy $StartMenuGroup EasyLoja
+    StrCpy $StartMenuGroup EasyGestor
     !insertmacro SELECT_UNSECTION Main ${UNSEC0000}
     !insertmacro SELECT_UNSECTION dll32 ${UNSEC0001}
     !insertmacro SELECT_UNSECTION dll64 ${UNSEC0002}

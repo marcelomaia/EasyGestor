@@ -45,7 +45,7 @@ FLOW = OAuth2WebServerFlow(
     client_id='1074741842321-e1l7u0rngcmb8ip0dcn7idfg3ik9uc4n.apps.googleusercontent.com',
     client_secret='GmsydPnPDP-lOaEXvOY9okyr',
     scope='https://www.googleapis.com/auth/calendar',
-    user_agent='EasyLoja/1.0')
+    user_agent='EasyGestor/1.0')
 
 
 # To disable the local server feature, uncomment the following line:

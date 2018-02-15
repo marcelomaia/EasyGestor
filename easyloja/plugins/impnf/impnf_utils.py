@@ -378,13 +378,13 @@ class PrintSolution(object):
         txt += sysparam(self.conn).PROMOTIONAL_MESSAGE + '\n\n'
         if self.sale.client:
             txt += "Assinatura: {}\n".format('___________________________')
-        txt += "EasyLoja Automação (91) 3226-5660\n"
+        txt += "EasyGestor Automação (91) 3226-5660\n"
         return txt
 
     def _signature_footer(self):
         txt = "ASSINATURA\n"
         txt += self.line
-        txt += "EasyLoja Automação (91) 3226-5660\n"
+        txt += "EasyGestor Automação (91) 3226-5660\n"
         return txt
 
     def _get_locations(self):

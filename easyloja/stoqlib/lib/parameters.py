@@ -624,7 +624,7 @@ _details = [
         'NEGATIVE_STOCK',
         _('Purchase'),
         _('Estoque Negativo'),
-        _('O EasyLoja permitira que produtos sem unidades disponiveis possam ser comercializados,'
+        _('O EasyGestor permitira que produtos sem unidades disponiveis possam ser comercializados,'
           'gerando um saldo negativo no estoque'),
         bool, initial=False),
 
