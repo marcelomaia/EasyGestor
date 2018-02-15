@@ -42,7 +42,6 @@ from stoqlib.gui.editors.formfieldeditor import FormFieldEditor
 from stoqlib.gui.editors.invoiceeditor import (InvoiceLayoutDialog)
 from stoqlib.gui.editors.nfeeditor import NFeContractListEditor
 from stoqlib.gui.editors.personeditor import UserEditor
-from stoqlib.gui.editors.sellableeditor import SellableTaxConstantsDialog
 from stoqlib.gui.editors.shortcutseditor import ShortcutsEditor
 from stoqlib.gui.keybindings import get_accels
 from stoqlib.gui.search.eventsearch import EventSearch
@@ -61,8 +60,7 @@ from stoqlib.gui.search.taxclasssearch import TaxTemplatesSearch
 from stoqlib.gui.stockicons import (
     STOQ_ADMIN_APP, STOQ_CLIENTS, STOQ_DEVICES, STOQ_DELIVERY,
     STOQ_DOCUMENTS, STOQ_EDIT, STOQ_FORMS, STOQ_KEYBOARD, STOQ_HR, STOQ_MONEY,
-    STOQ_SUPPLIERS, STOQ_SYSTEM, STOQ_TAXES,
-    STOQ_USER_PROFILES, STOQ_USERS, STOQ_BRANCH, STOQ_TOOL,
+    STOQ_SUPPLIERS, STOQ_SYSTEM, STOQ_USER_PROFILES, STOQ_USERS, STOQ_BRANCH, STOQ_TOOL,
     STOQ_PLUG, STOQ_EVENTS, STOQ_PAYMENT_CATEGORY, STOQ_CFOP, STOQ_BACKUP, STOQ_CONTRACTS)
 from stoqlib.gui.wizards.personwizard import run_person_role_dialog
 from stoqlib.lib.message import info
@@ -110,7 +108,7 @@ class Tasks(object):
             (_('Payment Methods'), 'payment_methods', STOQ_MONEY),
             (_('Parameters'), 'parameters', STOQ_TOOL),
             (_('Plugins'), 'plugins', STOQ_PLUG),
-            (_('Taxes'), 'taxes', STOQ_TAXES),
+            # (_('Taxes'), 'taxes', STOQ_TAXES),
             (_('Tax Classes'), 'tax_templates', STOQ_DOCUMENTS),
             (_('Suppliers'), 'suppliers', STOQ_SUPPLIERS),
             (_('Transporters'), 'transporters', STOQ_DELIVERY),
@@ -251,8 +249,8 @@ class Tasks(object):
     def _open_suppliers(self):
         self.app.run_dialog(SupplierSearch, self.app.conn)
 
-    def _open_taxes(self):
-        self.app.run_dialog(SellableTaxConstantsDialog, self.app.conn)
+    # def _open_taxes(self):
+    #     self.app.run_dialog(SellableTaxConstantsDialog, self.app.conn)
 
     def _open_tax_templates(self):
         self.app.run_dialog(TaxTemplatesSearch, self.app.conn)
