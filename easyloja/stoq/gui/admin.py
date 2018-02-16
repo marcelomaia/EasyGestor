@@ -30,7 +30,6 @@ from kiwi.log import Logger
 from stoq.gui.application import AppWindow
 from stoqlib.api import api
 from stoqlib.gui.dialogs.clientcategorydialog import ClientCategoryDialog
-from stoqlib.gui.dialogs.devices import DeviceSettingsDialog
 from stoqlib.gui.dialogs.paymentcategorydialog import PaymentCategoryDialog
 from stoqlib.gui.dialogs.paymentcostcenterdialog import PaymentCostCenterDialog
 from stoqlib.gui.dialogs.paymentmethod import PaymentMethodsDialog
@@ -58,7 +57,7 @@ from stoqlib.gui.search.profilesearch import UserProfileSearch
 from stoqlib.gui.search.stationsearch import StationSearch
 from stoqlib.gui.search.taxclasssearch import TaxTemplatesSearch
 from stoqlib.gui.stockicons import (
-    STOQ_CLIENT, STOQ_EVENT, STOQ_CLIENTS, STOQ_DEVICES, STOQ_DELIVERY,
+    STOQ_CLIENT, STOQ_EVENT, STOQ_CLIENTS, STOQ_DELIVERY,
     STOQ_DOCUMENTS, STOQ_EDIT, STOQ_FORMS, STOQ_KEYBOARD, STOQ_HR, STOQ_MONEY, STOQ_EMPLOYEE,
     STOQ_SUPPLIERS, STOQ_SYSTEM, STOQ_USER_PROFILES, STOQ_USERS, STOQ_BRANCH, STOQ_TOOL,
     STOQ_PLUG, STOQ_PAYMENT_CATEGORY, STOQ_CFOP, STOQ_BACKUP, STOQ_CONTRACTS)
@@ -95,7 +94,7 @@ class Tasks(object):
             (_('Clients'), 'clients', STOQ_CLIENT),
             (_('C.F.O.P.'), 'cfop', STOQ_CFOP),
             (_('Computers'), 'stations', STOQ_SYSTEM),
-            (_('Devices'), 'devices', STOQ_DEVICES),
+            # (_('Devices'), 'devices', STOQ_DEVICES),
             (_('Employees'), 'employees', STOQ_EMPLOYEE),
             (_('Events'), 'events', STOQ_EVENT),
             (_('Roles'), 'employee_roles', STOQ_USERS),
@@ -175,8 +174,8 @@ class Tasks(object):
         api.finish_transaction(trans, model)
         trans.close()
 
-    def _open_devices(self):
-        self.app.run_dialog(DeviceSettingsDialog, self.app.conn)
+    # def _open_devices(self):
+    #     self.app.run_dialog(DeviceSettingsDialog, self.app.conn)
 
     def _open_employees(self):
         self.app.run_dialog(EmployeeSearch, self.app.conn)
@@ -303,8 +302,8 @@ class AdminApp(AppWindow):
              group.get('search_computers')),
             ("SearchTaxTemplate", None, _('Tax Classes...')),
             ("ConfigureMenu", None, _("_Configure")),
-            ("ConfigureDevices", None, _("Devices..."),
-             group.get('config_devices')),
+            # ("ConfigureDevices", None, _("Devices..."),
+            #  group.get('config_devices')),
             ("ConfigurePaymentMethods", None, _("Payment methods..."),
              group.get('config_payment_methods')),
             ("ConfigurePaymentCategories", None, _("Payment categories..."),
@@ -411,8 +410,8 @@ class AdminApp(AppWindow):
 
     # Configure
 
-    def on_ConfigureDevices__activate(self, action):
-        self.tasks.run_task('devices')
+    # def on_ConfigureDevices__activate(self, action):
+    #     self.tasks.run_task('devices')
 
     def on_ConfigurePaymentMethods__activate(self, action):
         self.tasks.run_task('payment_methods')
