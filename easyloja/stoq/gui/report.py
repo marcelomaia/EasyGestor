@@ -28,19 +28,21 @@ import glib
 import gtk
 
 from kiwi.log import Logger
+from stoq.gui.application import AppWindow
 from stoqlib.chart.chartdialog import SalesChart, PaymentsChart
 from stoqlib.gui.keybindings import get_accels
 from stoqlib.gui.search.commissionsearch import CommissionSearch
-from stoqlib.gui.search.productsearch import ProductsSoldSearch, ProductHistorySearch, ProductStockSearch, ProductsRevenueSearch
+from stoqlib.gui.search.payment_search import DelayedReceivableSearch, DelayedPayableSearch, InPaymentsTotalByClient
+from stoqlib.gui.search.personsearch import BirthdaySearch, ClientSearch
+from stoqlib.gui.search.productsearch import ProductsSoldSearch, ProductHistorySearch, ProductStockSearch, \
+    ProductsRevenueSearch
 from stoqlib.gui.search.purchasesearch import _PurchasedItemsSearch
 from stoqlib.gui.search.salesearch import _SaleSearch, SalesPersonSearch
 from stoqlib.gui.search.servicesearch import ServiceSoldSearch
 from stoqlib.gui.stockicons import (
-    STOQ_BILLS, STOQ_PAYABLE_APP, STOQ_CHECKLIST, STOQ_ADMIN_APP, STOQ_CLIENTS, STOQ_SALES_APP, STOQ_CALENDAR_APP,
-    STOQ_STOCK_APP, STOQ_HR, STOQ_PURCHASE_APP)
-from stoq.gui.application import AppWindow
-from stoqlib.gui.search.payment_search import DelayedReceivableSearch, DelayedPayableSearch, InPaymentsTotalByClient
-from stoqlib.gui.search.personsearch import BirthdaySearch, ClientSearch
+    STOQ_PAYABLE_APP, STOQ_CHECKLIST, STOQ_CLIENTS, STOQ_SALES_APP, STOQ_CALENDAR_APP,
+    STOQ_STOCK_APP, STOQ_HR, STOQ_PURCHASE_APP, STOQ_DELAYED_RECEIVABLE, STOQ_DELAYED_PAYABLE, STOQ_COMISSION,
+    STOQ_GRAPHIC, STOQ_PRODUCT_REVENUE, STOQ_PURCHASE_ITEMS, STOQ_STOCK_ITEMS, STOQ_SALE_SEARCH)
 
 _ = gettext.gettext
 
@@ -65,22 +67,22 @@ class Tasks(object):
     def add_defaults(self):
         items = [
             # financial
-            (_('Delayed Receivable'), 'delayed_receivable', STOQ_BILLS),
-            (_('Delayed Payable'), 'delayed_payable', STOQ_PAYABLE_APP),
-            (_('Search for Commissions'), 'commisions', STOQ_ADMIN_APP),
+            (_('Delayed Receivable'), 'delayed_receivable', STOQ_DELAYED_RECEIVABLE),
+            (_('Delayed Payable'), 'delayed_payable', STOQ_DELAYED_PAYABLE),
+            (_('Search for Commissions'), 'commisions', STOQ_COMISSION),
             # people
             (_('Birthdays'), 'birthday_person', STOQ_CHECKLIST),
             (_('Client Search'), 'clients', STOQ_CLIENTS),
-            (_('Search for Sales'), 'sale_search', STOQ_SALES_APP),
+            (_('Search for Sales'), 'sale_search', STOQ_SALE_SEARCH),
             # products and services
             (_('Service Sold History'), 'service_sold_history', STOQ_CALENDAR_APP),
             (_('Product Sold History'), 'product_sold_history', STOQ_CALENDAR_APP),
             (_('Product History'), 'product_history', STOQ_HR),
-            (_('Itens de estoque'), 'product_stock', STOQ_STOCK_APP),
-            (_('Itens de compra'), 'purchase_search', STOQ_PURCHASE_APP),
-            (_('Grafico de Vendas Anual'), 'annual_sales', STOQ_SALES_APP),
+            (_('Itens de estoque'), 'product_stock', STOQ_STOCK_ITEMS),
+            (_('Itens de compra'), 'purchase_search', STOQ_PURCHASE_ITEMS),
+            (_('Grafico de Vendas Anual'), 'annual_sales', STOQ_GRAPHIC),
             (_('Historico de Pagamentos'), 'annual_payments', STOQ_SALES_APP),
-            (_('Receita por Produto'), 'product_revenue', STOQ_STOCK_APP)
+            (_('Receita por Produto'), 'product_revenue', STOQ_PRODUCT_REVENUE)
         ]
 
         for label, name, pixbuf in items:
@@ -115,9 +117,9 @@ class Tasks(object):
     def run_task(self, name):
         func = getattr(self, '_open_%s' % name, None)
         if not func:
-            logger.info("Couldn't open dialog: %r" % (name, ))
+            logger.info("Couldn't open dialog: %r" % (name,))
             return
-        logger.info("Opening dialog: %r" % (name, ))
+        logger.info("Opening dialog: %r" % (name,))
         func()
 
     def _open_delayed_receivable(self):
@@ -168,13 +170,14 @@ class Tasks(object):
     def _open_product_revenue(self):
         self.app.run_dialog(ProductsRevenueSearch, self.app.conn)
 
+
 class FinancialTasks(Tasks):
     def add_defaults(self):
         items = [
-            (_('Delayed Receivable'), 'delayed_receivable', STOQ_BILLS),
-            (_('Delayed Payable'), 'delayed_payable', STOQ_PAYABLE_APP),
-            (_('Search for Commissions'), 'commisions', STOQ_ADMIN_APP),
-            (_('Grafico de Vendas Anual'), 'annual_sales', STOQ_SALES_APP),
+            (_('Delayed Receivable'), 'delayed_receivable', STOQ_DELAYED_RECEIVABLE),
+            (_('Delayed Payable'), 'delayed_payable', STOQ_DELAYED_PAYABLE),
+            (_('Search for Commissions'), 'commisions', STOQ_COMISSION),
+            (_('Grafico de Vendas Anual'), 'annual_sales', STOQ_GRAPHIC),
             (_('Historico de Pagamentos'), 'annual_payments', STOQ_SALES_APP),
             (_('A receber por Cliente'), 'receivable_per_client', STOQ_PAYABLE_APP)
         ]

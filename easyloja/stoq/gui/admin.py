@@ -58,10 +58,10 @@ from stoqlib.gui.search.profilesearch import UserProfileSearch
 from stoqlib.gui.search.stationsearch import StationSearch
 from stoqlib.gui.search.taxclasssearch import TaxTemplatesSearch
 from stoqlib.gui.stockicons import (
-    STOQ_ADMIN_APP, STOQ_CLIENTS, STOQ_DEVICES, STOQ_DELIVERY,
-    STOQ_DOCUMENTS, STOQ_EDIT, STOQ_FORMS, STOQ_KEYBOARD, STOQ_HR, STOQ_MONEY,
+    STOQ_CLIENT, STOQ_EVENT, STOQ_CLIENTS, STOQ_DEVICES, STOQ_DELIVERY,
+    STOQ_DOCUMENTS, STOQ_EDIT, STOQ_FORMS, STOQ_KEYBOARD, STOQ_HR, STOQ_MONEY, STOQ_EMPLOYEE,
     STOQ_SUPPLIERS, STOQ_SYSTEM, STOQ_USER_PROFILES, STOQ_USERS, STOQ_BRANCH, STOQ_TOOL,
-    STOQ_PLUG, STOQ_EVENTS, STOQ_PAYMENT_CATEGORY, STOQ_CFOP, STOQ_BACKUP, STOQ_CONTRACTS)
+    STOQ_PLUG, STOQ_PAYMENT_CATEGORY, STOQ_CFOP, STOQ_BACKUP, STOQ_CONTRACTS)
 from stoqlib.gui.wizards.personwizard import run_person_role_dialog
 from stoqlib.lib.message import info
 from stoqlib.lib.pluginmanager import get_plugin_manager
@@ -92,12 +92,12 @@ class Tasks(object):
             (_('Branches'), 'branches', STOQ_BRANCH),
             (_('Client Categories'), 'client_categories', STOQ_CLIENTS),
             # (_('Categorias de fornecedores'), 'supplier_categories', STOQ_SUPPLIERS),
-            (_('Clients'), 'clients', STOQ_CLIENTS),
+            (_('Clients'), 'clients', STOQ_CLIENT),
             (_('C.F.O.P.'), 'cfop', STOQ_CFOP),
             (_('Computers'), 'stations', STOQ_SYSTEM),
             (_('Devices'), 'devices', STOQ_DEVICES),
-            (_('Employees'), 'employees', STOQ_ADMIN_APP),
-            (_('Events'), 'events', STOQ_EVENTS),
+            (_('Employees'), 'employees', STOQ_EMPLOYEE),
+            (_('Events'), 'events', STOQ_EVENT),
             (_('Roles'), 'employee_roles', STOQ_USERS),
             (_('Fiscal Books'), 'fiscal_books', STOQ_EDIT),
             # (_('Invoice Printers'), 'invoice_printers', STOQ_FISCAL_PRINTER),
