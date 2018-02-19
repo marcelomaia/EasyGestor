@@ -8,8 +8,8 @@ program_codename = 'Bacaba'
 website = 'http://ebi.com.br'
 major_version = 1
 minor_version = 5
-micro_version = 8
-extra_version = 9
+micro_version = 9
+extra_version = 0
 release_date = (2017, 2, 2)
 stable = True
 
