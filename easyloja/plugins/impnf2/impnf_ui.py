@@ -5,14 +5,13 @@ import os
 import sys
 
 from kiwi.log import Logger
+from kiwi.ui.dialogs import info
 from stoqlib.database.runtime import (get_connection, get_current_station, get_current_user, new_transaction)
 from stoqlib.domain.events import (SaleSEmitEvent, CreatedOutPaymentEvent, CreatedInPaymentEvent,
                                    TillAddCashEvent, TillRemoveCashEvent, SaleSLastEmitEvent)
 from stoqlib.domain.events import (TillOpenDrawer)
 from stoqlib.domain.nfe import NFCEBranchSeries
 from stoqlib.domain.payment.operation import register_payment_operations
-from stoqlib.domain.payment.payment import Payment
-from stoqlib.domain.payment.views import InPaymentView, OutPaymentView
 from stoqlib.domain.renegotiation import RenegotiationData
 from stoqlib.domain.sale import Sale
 from stoqlib.gui.base.dialogs import run_dialog, get_current_toplevel
@@ -21,9 +20,10 @@ from stoqlib.gui.events import StartApplicationEvent
 from stoqlib.gui.stockicons import STOQ_DOLLAR
 from stoqlib.gui.stockicons import STOQ_FISCAL_PRINTER
 from stoqlib.lib.parameters import sysparam
+
 from impnfdialog import RemotePrinterListDialog, ReprintSaleDialog, DateDialog, CancelSaleDialog
-from kiwi.ui.dialogs import info
-from pdfbuilder import build_sale_document
+from pdfbuilder import build_sale_document, build_tab_document
+
 log = Logger("stoq-impnf-plugin")
 
 plugin_root = os.path.dirname(__file__)
@@ -90,9 +90,7 @@ class ImpnfUI(object):
         build_sale_document(sale, self.conn)
 
     def _print_tab(self, sale):
-        print 'xxxx'
-        # ps = PrintSolution(self.conn, sale)
-        # ps.print_tab()
+        build_tab_document(sale, self.conn)
 
     def _get_open_and_close_date(self):
         model = run_dialog(DateDialog, get_current_toplevel(), self.conn)

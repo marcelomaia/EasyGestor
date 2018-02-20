@@ -67,6 +67,12 @@ header_items_c = PS(name='HeaderItems',
                     alignment=TA_CENTER,
                     )
 
+header_items_d = PS(name='HeaderItems',
+                    fontSize=16,
+                    leading=16,
+                    alignment=TA_CENTER,
+                    )
+
 items_1 = PS(name='Items',
              fontSize=7,
              leading=10,
@@ -214,4 +220,48 @@ def build_sale_document(sale, conn):
 
     story.append(Paragraph('<b>{footer}</b>'.format(footer=sysparam(conn).FOOTER_MESSAGE), footer))
     doc = PDFBuilder(os.path.join(get_application_dir(), 'mintoc.pdf'))
+    return doc.multiBuild(story)
+
+def build_tab_document(sale, conn):
+    branch = sale.branch
+    # Build story.
+    story = []
+    story.append(Paragraph('<b>RESTAURANTE</b>', h1_centered))
+    story.append(ReportLine())
+    story.append(Paragraph('Venda: #{sale_id}'.format(sale_id=sale.id), header_items_c))
+    story.append(Paragraph('<b>Pedido: #{daily_code}</b>'.format(daily_code=sale.daily_code), header_items_d))
+    story.append(Paragraph('Atendente: {salesperson}'.format(salesperson=sale.salesperson.person.name),
+                           header_items_d))
+    story.append(Paragraph('Data/Hora: {open_date}'
+                           .format(open_date=sale.open_date.strftime('%d/%m/%Y %X')),
+                           header_items_l))
+    story.append(ReportLine())
+    story.append(Paragraph('<b>|QTD|X|Descricao</b>'
+                           .replace(' ', '&nbsp;'), header_items_l))
+    story.append(ReportLine())
+    for item in sale.get_items():
+        sellable = item.sellable
+        notes = item.notes
+        story.append(
+            Paragraph('{qtd} X {prod}'
+                      .replace(' ', '&nbsp;').format(qtd=align_text('{}'.format(item.quantity), 5, CENTER),
+                                                     prod=align_text(sellable.description,
+                                                                     58, LEFT)), items_1))
+        if notes:
+            story.append(
+                Paragraph('-> <i>{notes}</i>'.format(notes=align_text(notes,
+                                                                      58, LEFT)), items_1))
+
+    story.append(ReportLine())
+    if sale.client:
+        client = sale.client
+        individual = IIndividual(client, None)
+        company = ICompany(client, None)
+        story.append(Paragraph('Cliente: {client}'.format(client=client.person.name), header_items_l))
+        if company:
+            story.append(Paragraph('CNPJ: {cnpj}'.format(cnpj=company.cnpj), header_items_l))
+        else:
+            story.append(Paragraph('CPF: {cpf}'.format(cpf=individual.cpf), header_items_l))
+        story.append(ReportLine())
+    doc = PDFBuilder(os.path.join(get_application_dir(), 'comanda.pdf'))
     return doc.multiBuild(story)
