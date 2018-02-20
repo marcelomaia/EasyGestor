@@ -77,6 +77,17 @@ STOQ_BARCODE = "stoq-barcode"
 STOQ_QUANTITY = "stoq-quantity"
 STOQ_COLOR_PALETE = "stoq-color-palete"
 STOQ_TRADE = "stoq-trade"
+STOQ_EMPLOYEE = "stoq-employee"
+STOQ_CLIENT = "stoq-client"
+STOQ_EVENT = "stoq-event"
+STOQ_GRAPHIC = "stoq-graphic"
+STOQ_COMISSION = "stoq-comission"
+STOQ_DELAYED_PAYABLE = "stoq-delayed-payable"
+STOQ_DELAYED_RECEIVABLE = "stoq-delayed-receivable"
+STOQ_PRODUCT_REVENUE = "stoq-product-revenue"
+STOQ_PURCHASE_ITEMS = "stoq-purchase-item"
+STOQ_STOCK_ITEMS = "stoq-stock-item"
+STOQ_SALE_SEARCH = "stoq-sale-search"
 
 # Add aliases so we don't need to import gtk
 # 16: GTK_ICON_SIZE_MENU
@@ -233,6 +244,28 @@ icon_info = [
      {GTK_ICON_SIZE_DIALOG: "colorpalete.png"}),
     (STOQ_TRADE,
      {GTK_ICON_SIZE_DIALOG: "trade.png"}),
+    (STOQ_EMPLOYEE,
+     {GTK_ICON_SIZE_DIALOG: "employee.png"}),
+    (STOQ_CLIENT,
+     {GTK_ICON_SIZE_DIALOG: "client.png"}),
+    (STOQ_EVENT,
+     {GTK_ICON_SIZE_DIALOG: "event.png"}),
+    (STOQ_GRAPHIC,
+     {GTK_ICON_SIZE_DIALOG: "graphic.png"}),
+    (STOQ_COMISSION,
+     {GTK_ICON_SIZE_DIALOG: "comission.png"}),
+    (STOQ_DELAYED_PAYABLE,
+     {GTK_ICON_SIZE_DIALOG: "delayed_payable.png"}),
+    (STOQ_DELAYED_RECEIVABLE,
+     {GTK_ICON_SIZE_DIALOG: "delayed_receivable.png"}),
+    (STOQ_PRODUCT_REVENUE,
+     {GTK_ICON_SIZE_DIALOG: "product_revenue.png"}),
+    (STOQ_PURCHASE_ITEMS,
+     {GTK_ICON_SIZE_DIALOG: "purchase_item.png"}),
+    (STOQ_STOCK_ITEMS,
+     {GTK_ICON_SIZE_DIALOG: "stock_item.png"}),
+    (STOQ_SALE_SEARCH,
+     {GTK_ICON_SIZE_DIALOG: "sale_search.png"}),
 ]
 
 

@@ -43,8 +43,9 @@ class UserPassword(BaseEditor):
         h.update(self.model.user.username)
         h.update(self.model.password)
         if h.hexdigest() == self.model.user.password:
-            if self.action:
-                return True if self.model.user.profile.check_action_permission(self.action) else False
+            # TODO: revisar essa parte.
+            # if self.action:
+            #     return True if self.model.user.profile.check_action_permission(self.action) else False
             log.debug('Usuario {} digitou a senha com sucesso'.format(self.model.user.username))
             return True
         else:

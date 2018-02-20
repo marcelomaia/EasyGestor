@@ -357,7 +357,7 @@ def _parse_command_line(args):
 
     parser = get_option_parser()
 
-    group = optparse.OptionGroup(parser, 'EasyLoja')
+    group = optparse.OptionGroup(parser, 'EasyGestor')
     group.add_option('', '--wizard',
                      action="store_true",
                      dest="wizard",

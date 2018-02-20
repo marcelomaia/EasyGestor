@@ -16,7 +16,7 @@
               <object class="ProxyLabel" id="title_label">
                 <property name="visible">True</property>
                 <property name="xalign">0</property>
-                <property name="label" translatable="yes">Bem-vindo ao assistente de instalação do EasyLoja.</property>
+                <property name="label" translatable="yes">Bem-vindo ao assistente de instalação do EasyGestor.</property>
                 <property name="use_markup">True</property>
               </object>
               <packing>
@@ -57,8 +57,8 @@
           <object class="GtkLabel" id="label2">
             <property name="visible">True</property>
             <property name="xalign">0</property>
-            <property name="label" translatable="yes">Obrigado por instalar o EasyLoja, você vai estar pronto para utilizá-lo em alguns minutos.
-              Este assistente irá ajudá-lo a configurar o EasyLoja para criar um novo banco de dados ou conectar em um existente.
+            <property name="label" translatable="yes">Obrigado por instalar o EasyGestor, você vai estar pronto para utilizá-lo em alguns minutos.
+              Este assistente irá ajudá-lo a configurar o EasyGestor para criar um novo banco de dados ou conectar em um existente.
               Se você estiver tendo problemas com a instalação ou precisa de ajuda para importar o seus dados de outro aplicativo, (CSV, XLS) não hesite em &lt;a href="http://ebi.com.br"&gt;nos contactar&lt;/a&gt;.</property>
             <property name="use_markup">True</property>
             <property name="wrap">True</property>

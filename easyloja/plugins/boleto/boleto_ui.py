@@ -100,7 +100,7 @@ class BoletoUI(object):
             elif value_cents and bill.status == PaymentIuguBill.STATUS_PENDING:
                 info(u'Boleto foi confirmado pelo banco!\n'
                      u'Valor com multa: R$ {}. \n'
-                     u'Por favor confirme no Easyloja'.format(value_cents / 100.0))
+                     u'Por favor confirme no Easygestor'.format(value_cents / 100.0))
                 bill.status = PaymentIuguBill.STATUS_PAID
                 trans.commit(close=True)
                 return value_cents / 100.0
@@ -144,7 +144,7 @@ class BoletoUI(object):
         info('Boleto cancelado!')
 
     def _on_CheckPaidBillEvent(self, start_date, end_date):
-        # TODO, colocar um dialogo aqui com todos os boletos pendentes em confirmar no easyloja
+        # TODO, colocar um dialogo aqui com todos os boletos pendentes em confirmar no easygestor
         b = Boleto()
         data = b.search_paid_bills(start_date, end_date)
         if data:

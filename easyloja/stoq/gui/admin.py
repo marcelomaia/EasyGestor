@@ -30,7 +30,6 @@ from kiwi.log import Logger
 from stoq.gui.application import AppWindow
 from stoqlib.api import api
 from stoqlib.gui.dialogs.clientcategorydialog import ClientCategoryDialog
-from stoqlib.gui.dialogs.devices import DeviceSettingsDialog
 from stoqlib.gui.dialogs.paymentcategorydialog import PaymentCategoryDialog
 from stoqlib.gui.dialogs.paymentcostcenterdialog import PaymentCostCenterDialog
 from stoqlib.gui.dialogs.paymentmethod import PaymentMethodsDialog
@@ -42,7 +41,6 @@ from stoqlib.gui.editors.formfieldeditor import FormFieldEditor
 from stoqlib.gui.editors.invoiceeditor import (InvoiceLayoutDialog)
 from stoqlib.gui.editors.nfeeditor import NFeContractListEditor
 from stoqlib.gui.editors.personeditor import UserEditor
-from stoqlib.gui.editors.sellableeditor import SellableTaxConstantsDialog
 from stoqlib.gui.editors.shortcutseditor import ShortcutsEditor
 from stoqlib.gui.keybindings import get_accels
 from stoqlib.gui.search.eventsearch import EventSearch
@@ -59,11 +57,10 @@ from stoqlib.gui.search.profilesearch import UserProfileSearch
 from stoqlib.gui.search.stationsearch import StationSearch
 from stoqlib.gui.search.taxclasssearch import TaxTemplatesSearch
 from stoqlib.gui.stockicons import (
-    STOQ_ADMIN_APP, STOQ_CLIENTS, STOQ_DEVICES, STOQ_DELIVERY,
-    STOQ_DOCUMENTS, STOQ_EDIT, STOQ_FORMS, STOQ_KEYBOARD, STOQ_HR, STOQ_MONEY,
-    STOQ_SUPPLIERS, STOQ_SYSTEM, STOQ_TAXES,
-    STOQ_USER_PROFILES, STOQ_USERS, STOQ_BRANCH, STOQ_TOOL,
-    STOQ_PLUG, STOQ_EVENTS, STOQ_PAYMENT_CATEGORY, STOQ_CFOP, STOQ_BACKUP, STOQ_CONTRACTS)
+    STOQ_CLIENT, STOQ_EVENT, STOQ_CLIENTS, STOQ_DELIVERY,
+    STOQ_DOCUMENTS, STOQ_EDIT, STOQ_FORMS, STOQ_KEYBOARD, STOQ_HR, STOQ_MONEY, STOQ_EMPLOYEE,
+    STOQ_SUPPLIERS, STOQ_SYSTEM, STOQ_USER_PROFILES, STOQ_USERS, STOQ_BRANCH, STOQ_TOOL,
+    STOQ_PLUG, STOQ_PAYMENT_CATEGORY, STOQ_CFOP, STOQ_BACKUP, STOQ_CONTRACTS)
 from stoqlib.gui.wizards.personwizard import run_person_role_dialog
 from stoqlib.lib.message import info
 from stoqlib.lib.pluginmanager import get_plugin_manager
@@ -94,12 +91,12 @@ class Tasks(object):
             (_('Branches'), 'branches', STOQ_BRANCH),
             (_('Client Categories'), 'client_categories', STOQ_CLIENTS),
             # (_('Categorias de fornecedores'), 'supplier_categories', STOQ_SUPPLIERS),
-            (_('Clients'), 'clients', STOQ_CLIENTS),
+            (_('Clients'), 'clients', STOQ_CLIENT),
             (_('C.F.O.P.'), 'cfop', STOQ_CFOP),
             (_('Computers'), 'stations', STOQ_SYSTEM),
-            (_('Devices'), 'devices', STOQ_DEVICES),
-            (_('Employees'), 'employees', STOQ_ADMIN_APP),
-            (_('Events'), 'events', STOQ_EVENTS),
+            # (_('Devices'), 'devices', STOQ_DEVICES),
+            (_('Employees'), 'employees', STOQ_EMPLOYEE),
+            (_('Events'), 'events', STOQ_EVENT),
             (_('Roles'), 'employee_roles', STOQ_USERS),
             (_('Fiscal Books'), 'fiscal_books', STOQ_EDIT),
             # (_('Invoice Printers'), 'invoice_printers', STOQ_FISCAL_PRINTER),
@@ -110,7 +107,7 @@ class Tasks(object):
             (_('Payment Methods'), 'payment_methods', STOQ_MONEY),
             (_('Parameters'), 'parameters', STOQ_TOOL),
             (_('Plugins'), 'plugins', STOQ_PLUG),
-            (_('Taxes'), 'taxes', STOQ_TAXES),
+            # (_('Taxes'), 'taxes', STOQ_TAXES),
             (_('Tax Classes'), 'tax_templates', STOQ_DOCUMENTS),
             (_('Suppliers'), 'suppliers', STOQ_SUPPLIERS),
             (_('Transporters'), 'transporters', STOQ_DELIVERY),
@@ -177,8 +174,8 @@ class Tasks(object):
         api.finish_transaction(trans, model)
         trans.close()
 
-    def _open_devices(self):
-        self.app.run_dialog(DeviceSettingsDialog, self.app.conn)
+    # def _open_devices(self):
+    #     self.app.run_dialog(DeviceSettingsDialog, self.app.conn)
 
     def _open_employees(self):
         self.app.run_dialog(EmployeeSearch, self.app.conn)
@@ -251,8 +248,8 @@ class Tasks(object):
     def _open_suppliers(self):
         self.app.run_dialog(SupplierSearch, self.app.conn)
 
-    def _open_taxes(self):
-        self.app.run_dialog(SellableTaxConstantsDialog, self.app.conn)
+    # def _open_taxes(self):
+    #     self.app.run_dialog(SellableTaxConstantsDialog, self.app.conn)
 
     def _open_tax_templates(self):
         self.app.run_dialog(TaxTemplatesSearch, self.app.conn)
@@ -305,8 +302,8 @@ class AdminApp(AppWindow):
              group.get('search_computers')),
             ("SearchTaxTemplate", None, _('Tax Classes...')),
             ("ConfigureMenu", None, _("_Configure")),
-            ("ConfigureDevices", None, _("Devices..."),
-             group.get('config_devices')),
+            # ("ConfigureDevices", None, _("Devices..."),
+            #  group.get('config_devices')),
             ("ConfigurePaymentMethods", None, _("Payment methods..."),
              group.get('config_payment_methods')),
             ("ConfigurePaymentCategories", None, _("Payment categories..."),
@@ -413,8 +410,8 @@ class AdminApp(AppWindow):
 
     # Configure
 
-    def on_ConfigureDevices__activate(self, action):
-        self.tasks.run_task('devices')
+    # def on_ConfigureDevices__activate(self, action):
+    #     self.tasks.run_task('devices')
 
     def on_ConfigurePaymentMethods__activate(self, action):
         self.tasks.run_task('payment_methods')

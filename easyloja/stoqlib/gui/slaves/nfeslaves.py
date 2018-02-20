@@ -185,7 +185,7 @@ class ProductListSlave(ListSlave):
                   Column('unit', data_type=str, title=u'Un.'),
                   Column('total', data_type=currency, title=u'Total'),
                   Column('product', data_type=str, title=u'Código NFe'),
-                  Column('sellable.code', data_type=int, title=u'Código Easyloja')]
+                  Column('sellable.code', data_type=int, title=u'Código Easygestor')]
         return colums
 
     def populate(self):

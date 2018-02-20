@@ -42,11 +42,11 @@
                 <property name="visible">True</property>
                 <property name="xalign">0</property>
                 <property name="yalign">0.49000000953674316</property>
-                <property name="label" translatable="yes">O EasyLoja foi instalado com sucesso no seu sistema!
+                <property name="label" translatable="yes">O EasyGestor foi instalado com sucesso no seu sistema!
 
-Lembre-se de checar o manual em cada aplicativo, é normal se sentir um pouco  perdido no começo se você nunca utilizou o EasyLoja antes. O manual está disponível em PDF e dentro do aplicativo apertando a tecla F1
+Lembre-se de checar o manual em cada aplicativo, é normal se sentir um pouco  perdido no começo se você nunca utilizou o EasyGestor antes. O manual está disponível em PDF e dentro do aplicativo apertando a tecla F1
 
-Se você está com problemas na instalação, precisa de ajuda em importar sua base de outra aplicação ou gostaria de customizar o EasyLoja, não hesite &lt;a href="http://ebi.com.br"&gt;em nos contactar&lt;/a&gt;.</property>
+Se você está com problemas na instalação, precisa de ajuda em importar sua base de outra aplicação ou gostaria de customizar o EasyGestor, não hesite &lt;a href="http://ebi.com.br"&gt;em nos contactar&lt;/a&gt;.</property>
                 <property name="use_markup">True</property>
                 <property name="wrap">True</property>
                 <property name="model_attribute">kiwilabel2</property>

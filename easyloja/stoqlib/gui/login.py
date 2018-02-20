@@ -65,10 +65,10 @@ class LoginDialog(GladeDelegate, RunnableView):
         self.get_toplevel().set_size_request(*self.size)
         self.notification_label.set_text('')
         self.notification_label.set_color('black')
-        filename = environ.find_resource("pixmaps", "stoq_logo.svg")
-
+        pixbuf = gtk.gdk.pixbuf_new_from_file(environ.find_resource("pixmaps", "stoq_logo.png"))
+        pixbuf = pixbuf.scale_simple(180, 70, gtk.gdk.INTERP_BILINEAR)
         gtkimage = gtk.Image()
-        gtkimage.set_from_file(filename)
+        gtkimage.set_from_pixbuf(pixbuf)
 
         self.logo_container.add(gtkimage)
         self.logo_container.show_all()

@@ -36,7 +36,7 @@
           <object class="ProxyLabel" id="header_label">
             <property name="visible">True</property>
             <property name="xalign">0</property>
-            <property name="label" translatable="yes">Para utilizar o EasyLoja, é preciso ter certeza de que existe um banco de dados que nós conseguimos conectar..</property>
+            <property name="label" translatable="yes">Para utilizar o EasyGestor, é preciso ter certeza de que existe um banco de dados que nós conseguimos conectar..</property>
             <property name="wrap">True</property>
           </object>
           <packing>
@@ -52,7 +52,7 @@
             <property name="spacing">6</property>
             <child>
               <object class="GtkRadioButton" id="radio_local">
-                <property name="label" translatable="yes">Eu quero usar o EasyLoja apenas neste computador.</property>
+                <property name="label" translatable="yes">Eu quero usar o EasyGestor apenas neste computador.</property>
                 <property name="visible">True</property>
                 <property name="receives_default">False</property>
                 <property name="use_action_appearance">False</property>

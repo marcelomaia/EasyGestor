@@ -10,51 +10,6 @@ from stoqlib.domain.events import ResultListEvent
 plugin_root = os.path.dirname(__file__)
 sys.path.append(plugin_root)
 
-
-def fill_zeros(value, size, type='price'):
-    desc = value
-    if type == 'price':
-        desc = '{:.2f}'.format(float(value)).replace('.', '')
-    zeros = ''
-    if size > len(desc):
-        dif = size - len(desc)
-        zeros = '0' * dif
-    else:
-        desc = desc[:size]
-    return zeros + desc
-
-
-def fill_spaces(desc, size):
-    spaces = ''
-    if size > len(desc):
-        dif = size - len(desc)
-        spaces = ' ' * dif
-    else:
-        desc = desc[:size]
-    return desc + spaces
-
-
-def extract_digits(value):
-    return ''.join([p for p in value if p in '0123456789'])
-
-
-def remove_accentuation(string):
-    """Remove the accentuantion of a string.
-    @returns: the string without accentuantion.
-    """
-    # Taken from http://www.python.org.br/wiki/RemovedorDeAcentos
-    no_accents = normalize('NFKD', string.decode('utf-8')).encode('ASCII', 'ignore')
-    return no_accents.strip()
-
-
-def get_mgv_path():
-    if platform.system() == 'Windows':
-        path = os.path.join(os.path.join(os.environ['USERPROFILE']), 'Desktop', 'ITENSMGV.txt')
-    else:
-        path = os.path.join(os.path.join(os.environ['HOME']), 'ITENSMGV.txt')
-    return path
-
-
 class BuscaEmpresaUI(object):
     def __init__(self):
         self.conn = get_connection()

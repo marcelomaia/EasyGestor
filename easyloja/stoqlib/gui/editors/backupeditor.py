@@ -10,11 +10,12 @@ log = Logger(__name__)
 
 _app_settings = api.user_settings
 
+
 class BackupSchedule(object):
     schedule = 'weekly'
-    options = {'daily': "schtasks /Create /TN \"Easyloja Backup\" /SC DAILY /ST 09:00 /F /TR \"dump.bat\"",
-               'weekly': "schtasks /Create /TN \"Easyloja Backup\" /SC WEEKLY /ST 09:00 /D MON /F /TR \"dump.bat\"",
-               'monthly': "schtasks /Create /TN \"Easyloja Backup\" /SC MONTHLY /ST 09:00 /D 1 /F /TR \"dump.bat\""}
+    options = {'daily': "schtasks /Create /TN \"Easygestor Backup\" /SC DAILY /ST 09:00 /F /TR \"dump.bat\"",
+               'weekly': "schtasks /Create /TN \"Easygestor Backup\" /SC WEEKLY /ST 09:00 /D MON /F /TR \"dump.bat\"",
+               'monthly': "schtasks /Create /TN \"Easygestor Backup\" /SC MONTHLY /ST 09:00 /D 1 /F /TR \"dump.bat\""}
 
     def create_task(self):
         cmd = self.options[self.schedule]
@@ -29,7 +30,7 @@ class BackupEditor(BaseEditor):
     model_name = 'Configuraçao de Backup'
     model_type = BackupSchedule
     gladefile = 'BackupEditor'
-    proxy_widgets = ('daily_rb', 'weekly_rb', 'monthly_rb', )
+    proxy_widgets = ('daily_rb', 'weekly_rb', 'monthly_rb',)
 
     def __init__(self, conn):
         BaseEditor.__init__(self, conn)
@@ -45,8 +46,8 @@ class BackupEditor(BaseEditor):
     def setup_widgets(self):
         backup_setting = _app_settings.get('backup-mode', default=self.model.schedule)
         widget = getattr(self, '%s_rb' % backup_setting, None)
-		widget.set_active(True)
-		
+        widget.set_active(True)
+
     def create_model(self, conn):
         return BackupSchedule()
 
