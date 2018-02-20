@@ -802,14 +802,14 @@ _details = [
         _('General'),
         _('Configura a nota de cabeçalho.'),
         _('Aqui você pode especificar a nota que sairá no cabeçalho.'),
-        DirectoryParameter, initial='CUPOM NAO FISCAL'),
+        str, initial='CUPOM NAO FISCAL'),
 
     ParameterDetails(
         'FOOTER_MESSAGE',
         _('General'),
         _('Configura a nota de rodapé.'),
         _('Aqui você pode especificar a nota que sairá no rodapé.'),
-        DirectoryParameter, initial='Adicione sua mensagem personalizada nos parâmetros do sistema'),
+        str, initial='Adicione sua mensagem personalizada nos parâmetros do sistema'),
 
 ]
 
