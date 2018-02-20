@@ -797,6 +797,20 @@ _details = [
         _('Nesta pasta serão salvos os documentos fiscais em formato XML.'),
         DirectoryParameter, initial='/'),
 
+    ParameterDetails(
+        'HEADER_MESSAGE',
+        _('General'),
+        _('Configura a nota de cabeçalho.'),
+        _('Aqui você pode especificar a nota que sairá no cabeçalho.'),
+        DirectoryParameter, initial='CUPOM NAO FISCAL'),
+
+    ParameterDetails(
+        'FOOTER_MESSAGE',
+        _('General'),
+        _('Configura a nota de rodapé.'),
+        _('Aqui você pode especificar a nota que sairá no rodapé.'),
+        DirectoryParameter, initial='Adicione sua mensagem personalizada nos parâmetros do sistema'),
+
 ]
 
 

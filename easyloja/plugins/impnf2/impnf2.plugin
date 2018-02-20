@@ -1,0 +1,8 @@
+[Plugin]
+Module=impnf2plugin
+Version=1
+Name=Impressora Não Fiscal
+Name[pt_BR]=Impressora Não Fiscal
+Authors=EBI
+Copyright=Copyright © 2016 EBI - Empresa Brasileira de Informatica
+Website=http://www.ebi.com.br/
