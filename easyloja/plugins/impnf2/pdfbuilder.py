@@ -136,7 +136,7 @@ class PDFBuilder(BaseDocTemplate):
                 self.notify('TOCEntry', (1, text, self.page))
 
 
-def build_sale(sale, conn):
+def build_sale_document(sale, conn):
     branch = sale.branch
     company = ICompany(branch)
     # Build story.

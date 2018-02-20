@@ -23,7 +23,7 @@ from stoqlib.gui.stockicons import STOQ_FISCAL_PRINTER
 from stoqlib.lib.parameters import sysparam
 from impnfdialog import RemotePrinterListDialog, ReprintSaleDialog, DateDialog, CancelSaleDialog
 from kiwi.ui.dialogs import info
-from pdfbuilder import build_sale
+from pdfbuilder import build_sale_document
 log = Logger("stoq-impnf-plugin")
 
 plugin_root = os.path.dirname(__file__)
@@ -87,8 +87,7 @@ class ImpnfUI(object):
         uimanager.add_ui_from_string(ui_string)
 
     def _print_sale(self, sale):
-        print 'entrou'
-        build_sale(sale, self.conn)
+        build_sale_document(sale, self.conn)
 
     def _print_tab(self, sale):
         print 'xxxx'
