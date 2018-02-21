@@ -90,7 +90,7 @@ class ImpnfUI(object):
         build_sale_document(sale, self.conn)
 
     def _print_tab(self, sale):
-        build_tab_document(sale, self.conn)
+        build_tab_document(sale)
 
     def _get_open_and_close_date(self):
         model = run_dialog(DateDialog, get_current_toplevel(), self.conn)

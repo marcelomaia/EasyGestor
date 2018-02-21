@@ -55,6 +55,13 @@ header_items_l = PS(name='HeaderItems',
                     alignment=TA_LEFT,
                     )
 
+header_items_l2 = PS(name='HeaderItems',
+                    fontSize=13,
+                    leading=17,
+                    alignment=TA_LEFT,
+                    )
+
+
 header_items_r = PS(name='HeaderItems',
                     fontSize=8,
                     leading=8,
@@ -82,6 +89,11 @@ items_2 = PS(name='Items',
              fontSize=7,
              leading=10,
              alignment=TA_RIGHT, )
+
+items_3 = PS(name='Items',
+             fontSize=13,
+             leading=17,
+             alignment=TA_LEFT, )
 
 footer = PS(
     name='Footer',
@@ -222,14 +234,16 @@ def build_sale_document(sale, conn):
     doc = PDFBuilder(os.path.join(get_application_dir(), 'mintoc.pdf'))
     return doc.multiBuild(story)
 
-def build_tab_document(sale, conn):
-    branch = sale.branch
-    # Build story.
+def build_tab_document(sale):
     story = []
-    story.append(Paragraph('<b>RESTAURANTE</b>', h1_centered))
+    branch = sale.branch
+    company = ICompany(branch)
+    story.append(Paragraph('<b>{fancy_name}</b>'.format(fancy_name=company.fancy_name), h1_centered))
+    story.append(Paragraph('{address}'.format(address=company.person.get_address_string()), h1_centered))
+    story.append(Paragraph('Fone: {phone}'.format(phone=format_phone_number(company.person.phone_number)), h1_centered))
+    story.append(Paragraph('CNPJ: {cnpj}'.format(cnpj=company.cnpj), h1_left))
     story.append(ReportLine())
-    story.append(Paragraph('Venda: #{sale_id}'.format(sale_id=sale.id), header_items_c))
-    story.append(Paragraph('<b>Pedido: #{daily_code}</b>'.format(daily_code=sale.daily_code), header_items_d))
+    story.append(Paragraph('<b>COMANDA: #{daily_code}</b>'.format(daily_code=sale.daily_code), header_items_d))
     story.append(Paragraph('Atendente: {salesperson}'.format(salesperson=sale.salesperson.person.name),
                            header_items_d))
     story.append(Paragraph('Data/Hora: {open_date}'
@@ -237,31 +251,27 @@ def build_tab_document(sale, conn):
                            header_items_l))
     story.append(ReportLine())
     story.append(Paragraph('<b>|QTD|X|Descricao</b>'
-                           .replace(' ', '&nbsp;'), header_items_l))
+                           .replace(' ', '&nbsp;'), header_items_l2))
     story.append(ReportLine())
     for item in sale.get_items():
         sellable = item.sellable
         notes = item.notes
         story.append(
-            Paragraph('{qtd} X {prod}'
+            Paragraph('<b>{qtd} X {prod}</b>'
                       .replace(' ', '&nbsp;').format(qtd=align_text('{}'.format(item.quantity), 5, CENTER),
                                                      prod=align_text(sellable.description,
-                                                                     58, LEFT)), items_1))
+                                                                     58, LEFT)), items_3))
         if notes:
             story.append(
-                Paragraph('-> <i>{notes}</i>'.format(notes=align_text(notes,
-                                                                      58, LEFT)), items_1))
+                Paragraph('-> {notes}'.replace(' ', '&nbsp;')
+                          .format(notes=align_text(notes,
+                                                   58, LEFT)), items_3))
 
     story.append(ReportLine())
     if sale.client:
         client = sale.client
-        individual = IIndividual(client, None)
-        company = ICompany(client, None)
         story.append(Paragraph('Cliente: {client}'.format(client=client.person.name), header_items_l))
-        if company:
-            story.append(Paragraph('CNPJ: {cnpj}'.format(cnpj=company.cnpj), header_items_l))
-        else:
-            story.append(Paragraph('CPF: {cpf}'.format(cpf=individual.cpf), header_items_l))
+        story.append(Paragraph('Fone: {phone}'.format(phone=client.person.phone_number), header_items_l))
         story.append(ReportLine())
     doc = PDFBuilder(os.path.join(get_application_dir(), 'comanda.pdf'))
     return doc.multiBuild(story)
