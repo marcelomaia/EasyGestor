@@ -314,8 +314,10 @@ def salesperson_stock_report(open_date, close_date, conn):
     story.append(Paragraph('Fone: {phone}'.format(phone=format_phone_number(company.person.phone_number)), h1_centered))
     story.append(Paragraph('CNPJ: {cnpj}'.format(cnpj=company.cnpj), h1_left))
     story.append(ReportLine())
-    story.append(Paragraph('Vendedor: {salesperson}'.format(salesperson=salesperson.person.name),
+    story.append(Paragraph('<b>RELATORIO DE PRODUTOS VENDIDOS</b>',
                            header_items_d))
+    story.append(Paragraph('Vendedor: {salesperson}'.format(salesperson=salesperson.person.name),
+                           header_items_l))
     story.append(Paragraph('Início: {open_date}'
                            .format(open_date=open_date.strftime('%d/%m/%Y %X')),
                            header_items_l))
@@ -328,29 +330,8 @@ def salesperson_stock_report(open_date, close_date, conn):
     for sellable in d_sorted_by_value:
         desc, code, qtty = sellable
         story.append(
-            Paragraph('{qtde} X {prod}-{code}'.format(code=align_text(desc, 10, LEFT),
-                                                      prod=align_text(code, 58, LEFT),
+            Paragraph('{qtde} X {prod}-{code}'.format(code=align_text(code, 10, LEFT),
+                                                      prod=align_text(desc, 58, LEFT),
                                                       qtde=align_text(str(float(qtty)), 10, LEFT)), items_1))
     doc = PDFBuilder(os.path.join(get_application_dir(), 'salespersonstock.pdf'))
     return doc.multiBuild(story)
-
-    # s += sold_items
-    # s += "%s%s" % ('=' * 38, '\n')
-    # s += "%s" % '_' * 40
-    # s += "Vendedor {}\n".format(salesperson.person.name)
-    # s += "\n\t\tAssinatura"
-    #
-    # ps = PrintSolution(conn, '')
-    # printer_db = ps._get_default_printer()
-    # if not printer_db:
-    #     return
-    # Driver instance
-    # nfp = NonFiscalPrinter(brand=printer_db.brand,
-    #                        model=printer_db.printer_model,
-    #                        port=printer_db.port,
-    #                        dll=printer_db.dll)
-    # despesa_src_str = strip_accents(s)
-    # log.debug("IMPRESSAO NF.: {}".format(despesa_src_str))
-    # nfp.write_text(despesa_src_str)
-    # nfp.cut_paper()
-    # nfp.close_port()
