@@ -22,7 +22,7 @@ from stoqlib.gui.stockicons import STOQ_FISCAL_PRINTER
 from stoqlib.lib.parameters import sysparam
 
 from impnfdialog import RemotePrinterListDialog, ReprintSaleDialog, DateDialog, CancelSaleDialog
-from pdfbuilder import build_sale_document, build_tab_document
+from pdfbuilder import build_sale_document, build_tab_document, salesperson_stock_report
 
 log = Logger("stoq-impnf-plugin")
 
@@ -173,12 +173,11 @@ class ImpnfUI(object):
         trans.close()
 
     def _on_PrinterStockReportEvent(self, arg):
-        pass
-        # log.debug('{} solicitou relatorio de estoque'.format(get_current_user(self.conn).username))
-        # dates = self._get_open_and_close_date()
-        # if dates:
-        #     od, cd = dates
-        #     salesperson_stock_report(od, cd)
+        log.debug('{} solicitou relatorio de estoque'.format(get_current_user(self.conn).username))
+        dates = self._get_open_and_close_date()
+        if dates:
+            od, cd = dates
+            salesperson_stock_report(od, cd, self.conn)
 
     def _on_PrinterFinancialReportEvent(self, arg):
         pass

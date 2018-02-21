@@ -8,7 +8,9 @@ from reportlab.platypus import Image
 from reportlab.platypus.doctemplate import PageTemplate, BaseDocTemplate
 from reportlab.platypus.frames import Frame
 from reportlab.platypus.paragraph import Paragraph
-from stoqlib.domain.interfaces import IIndividual, ICompany
+from stoqlib.database.orm import AND, OR
+from stoqlib.database.runtime import get_current_user, get_current_branch
+from stoqlib.domain.interfaces import IIndividual, ICompany, ISalesPerson
 from stoqlib.domain.sale import Sale
 from stoqlib.lib.formatters import format_phone_number
 from stoqlib.lib.osutils import get_application_dir
@@ -56,11 +58,10 @@ header_items_l = PS(name='HeaderItems',
                     )
 
 header_items_l2 = PS(name='HeaderItems',
-                    fontSize=13,
-                    leading=17,
-                    alignment=TA_LEFT,
-                    )
-
+                     fontSize=13,
+                     leading=17,
+                     alignment=TA_LEFT,
+                     )
 
 header_items_r = PS(name='HeaderItems',
                     fontSize=8,
@@ -234,6 +235,7 @@ def build_sale_document(sale, conn):
     doc = PDFBuilder(os.path.join(get_application_dir(), 'mintoc.pdf'))
     return doc.multiBuild(story)
 
+
 def build_tab_document(sale):
     story = []
     branch = sale.branch
@@ -275,3 +277,80 @@ def build_tab_document(sale):
         story.append(ReportLine())
     doc = PDFBuilder(os.path.join(get_application_dir(), 'comanda.pdf'))
     return doc.multiBuild(story)
+
+
+def salesperson_stock_report(open_date, close_date, conn):
+    od = open_date
+    cd = close_date
+    user = get_current_user(conn)
+    salesperson = ISalesPerson(user)
+
+    sales = Sale.select(AND(Sale.q.open_date >= od,
+                            Sale.q.confirm_date <= cd,
+                            Sale.q.salesperson == salesperson,
+                            OR(Sale.q.status == Sale.STATUS_CONFIRMED,
+                               Sale.q.status == Sale.STATUS_PAID)),
+                        connection=conn)
+    sellable_qqtt_dict = {}
+    # contadores de totais de itens
+    for sale in sales:
+        sale_items = sale.get_items()
+        for saler_item in sale_items:
+            qtty = saler_item.quantity
+            sellalble = saler_item.sellable
+            if sellable_qqtt_dict.get(sellalble):
+                sellable_qqtt_dict[sellalble] = sellable_qqtt_dict[sellalble] + qtty
+            else:
+                sellable_qqtt_dict[sellalble] = qtty
+    # sort items
+    d_sorted_by_value = sorted(
+        [(sellable.description, sellable.code, quantity) for (sellable, quantity) in sellable_qqtt_dict.items()])
+
+    story = []
+    branch = get_current_branch(conn)
+    company = ICompany(branch)
+    story.append(Paragraph('<b>{fancy_name}</b>'.format(fancy_name=company.fancy_name), h1_centered))
+    story.append(Paragraph('{address}'.format(address=company.person.get_address_string()), h1_centered))
+    story.append(Paragraph('Fone: {phone}'.format(phone=format_phone_number(company.person.phone_number)), h1_centered))
+    story.append(Paragraph('CNPJ: {cnpj}'.format(cnpj=company.cnpj), h1_left))
+    story.append(ReportLine())
+    story.append(Paragraph('Vendedor: {salesperson}'.format(salesperson=salesperson.person.name),
+                           header_items_d))
+    story.append(Paragraph('Início: {open_date}'
+                           .format(open_date=open_date.strftime('%d/%m/%Y %X')),
+                           header_items_l))
+    story.append(Paragraph('Fim: {close_date}'
+                           .format(close_date=close_date.strftime('%d/%m/%Y %X')),
+                           header_items_l))
+    story.append(ReportLine())
+    story.append(Paragraph('<b>QTDE|X|Descricao-COD</b>', header_items_l))
+    story.append(ReportLine())
+    for sellable in d_sorted_by_value:
+        desc, code, qtty = sellable
+        story.append(
+            Paragraph('{qtde} X {prod}-{code}'.format(code=align_text(desc, 10, LEFT),
+                                                      prod=align_text(code, 58, LEFT),
+                                                      qtde=align_text(str(float(qtty)), 10, LEFT)), items_1))
+    doc = PDFBuilder(os.path.join(get_application_dir(), 'salespersonstock.pdf'))
+    return doc.multiBuild(story)
+
+    # s += sold_items
+    # s += "%s%s" % ('=' * 38, '\n')
+    # s += "%s" % '_' * 40
+    # s += "Vendedor {}\n".format(salesperson.person.name)
+    # s += "\n\t\tAssinatura"
+    #
+    # ps = PrintSolution(conn, '')
+    # printer_db = ps._get_default_printer()
+    # if not printer_db:
+    #     return
+    # Driver instance
+    # nfp = NonFiscalPrinter(brand=printer_db.brand,
+    #                        model=printer_db.printer_model,
+    #                        port=printer_db.port,
+    #                        dll=printer_db.dll)
+    # despesa_src_str = strip_accents(s)
+    # log.debug("IMPRESSAO NF.: {}".format(despesa_src_str))
+    # nfp.write_text(despesa_src_str)
+    # nfp.cut_paper()
+    # nfp.close_port()
