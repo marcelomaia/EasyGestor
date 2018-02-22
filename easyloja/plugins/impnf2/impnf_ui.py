@@ -12,6 +12,8 @@ from stoqlib.domain.events import (SaleSEmitEvent, CreatedOutPaymentEvent, Creat
 from stoqlib.domain.events import (TillOpenDrawer)
 from stoqlib.domain.nfe import NFCEBranchSeries
 from stoqlib.domain.payment.operation import register_payment_operations
+from stoqlib.domain.payment.payment import Payment
+from stoqlib.domain.payment.views import InPaymentView
 from stoqlib.domain.renegotiation import RenegotiationData
 from stoqlib.domain.sale import Sale
 from stoqlib.gui.base.dialogs import run_dialog, get_current_toplevel
@@ -22,7 +24,7 @@ from stoqlib.gui.stockicons import STOQ_FISCAL_PRINTER
 from stoqlib.lib.parameters import sysparam
 
 from impnfdialog import RemotePrinterListDialog, ReprintSaleDialog, DateDialog, CancelSaleDialog
-from pdfbuilder import (build_sale_document, build_tab_document,
+from pdfbuilder import (build_sale_document, build_tab_document, in_payment_report,
                         salesperson_stock_report, salesperson_financial_report)
 
 log = Logger("stoq-impnf-plugin")
@@ -204,19 +206,13 @@ class ImpnfUI(object):
 
     def _on_TillDrawerOpen(self, till=None, value=None, reason=None):
         pass
-        # ps = PrintSolution(self.conn, '')
-        # ps.open_drawer()
-        # if value is not None:
-        #     ps.print_sangria_suprimento(till, value, reason)
 
     def _on_CreatedInPayment(self, payment):
-        pass
-        # log.debug('{} solicitou conta a receber'.format(get_current_user(self.conn).username))
-        # ps = PrintSolution(self.conn, '')
-        # pv = [p for p in InPaymentView.select(Payment.q.id == payment.id, connection=self.conn)]
-        # if pv:
-        #     pv = pv[0]
-        #     ps.print_in_payment(pv)
+        log.debug('{} solicitou conta a receber'.format(get_current_user(self.conn).username))
+        pv = [p for p in InPaymentView.select(Payment.q.id == payment.id, connection=self.conn)]
+        if pv:
+            pv = pv[0]
+            in_payment_report(pv, self.conn)
 
     def _on_CreatedOutPayment(self, payment):
         pass

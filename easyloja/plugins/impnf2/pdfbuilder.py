@@ -460,3 +460,54 @@ def salesperson_financial_report(open_date, close_date, conn):
     story.append(ReportLine())
     doc = PDFBuilder(os.path.join(get_application_dir(), 'salespersonfinancial.pdf'))
     return doc.multiBuild(story)
+
+
+def in_payment_report(paymentview, conn):
+    client_name = paymentview.drawee
+    client_phone = paymentview.drawee_phone
+    client_cnpj = paymentview.client_cnpj
+    client_cpf = paymentview.client_cpf
+    open_date = paymentview.open_date
+    id = paymentview.id
+    description = paymentview.description
+    value = paymentview.value
+    method_description = paymentview.method_description
+    category = paymentview.category
+    station = get_current_station(conn)
+    user = get_current_user(conn)
+    branch = get_current_branch(conn)
+    company = ICompany(branch)
+
+    story = []
+    story.append(Paragraph('<b>{fancy_name}</b>'.format(fancy_name=company.fancy_name), h1_centered))
+    story.append(Paragraph('<b>SUPRIMENTO #{sid}</b>'.format(sid=id), h1_centered))
+    story.append(Paragraph('{address}'.format(address=company.person.get_address_string()), h1_centered))
+    story.append(Paragraph('Fone: {phone}'.format(phone=format_phone_number(company.person.phone_number)), h1_centered))
+    story.append(Paragraph('CNPJ: {cnpj}'.format(cnpj=company.cnpj), h1_left))
+    story.append(ReportLine())
+    story.append(Paragraph('Usuário: {user}'.format(user=user.username),
+                           header_items_d))
+    story.append(Paragraph('Estação: {station}'.format(station=station.name),
+                           header_items_d))
+    story.append(Paragraph('Data/Hora {}'.format(open_date.strftime('%d/%m/%Y %H:%M:%S')),
+                           header_items_d))
+    if category:
+        story.append(Paragraph('{description}: pago em  {method}; categoria: {category}'
+                               .format(category=category, method=method_description, description=description),
+                               header_items_l))
+    else:
+        story.append(Paragraph('{description}: pago em {method}'
+                               .format(method=method_description, description=description.capitalize()),
+                               header_items_l))
+    if client_name:
+        story.append(Paragraph('Cliente: {client}'.format(client=client_name),
+                               header_items_l))
+        story.append(Paragraph('Documento: {doc}'.format(doc=client_cnpj or client_cpf),
+                               header_items_l))
+        story.append(Paragraph('Fone: {phone}'.format(phone=client_phone),
+                               header_items_l))
+    story.append(ReportLine())
+    story.append(Paragraph('Valor: R${:.2f}\n'.format(value),
+                           header_items_l))
+    doc = PDFBuilder(os.path.join(get_application_dir(), 'salespersonfinancial.pdf'))
+    return doc.multiBuild(story)
