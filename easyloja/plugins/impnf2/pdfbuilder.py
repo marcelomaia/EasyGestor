@@ -8,10 +8,11 @@ from reportlab.platypus import Image
 from reportlab.platypus.doctemplate import PageTemplate, BaseDocTemplate
 from reportlab.platypus.frames import Frame
 from reportlab.platypus.paragraph import Paragraph
-from stoqlib.database.orm import AND, OR
-from stoqlib.database.runtime import get_current_user, get_current_branch
+from stoqlib.database.orm import AND, OR, LIKE
+from stoqlib.database.runtime import get_current_user, get_current_branch, get_current_station
 from stoqlib.domain.interfaces import IIndividual, ICompany, ISalesPerson
 from stoqlib.domain.sale import Sale
+from stoqlib.gui.search.tillsearch import TillFiscalOperationsView
 from stoqlib.lib.formatters import format_phone_number
 from stoqlib.lib.osutils import get_application_dir
 from stoqlib.lib.parameters import sysparam
@@ -280,13 +281,11 @@ def build_tab_document(sale):
 
 
 def salesperson_stock_report(open_date, close_date, conn):
-    od = open_date
-    cd = close_date
     user = get_current_user(conn)
     salesperson = ISalesPerson(user)
 
-    sales = Sale.select(AND(Sale.q.open_date >= od,
-                            Sale.q.confirm_date <= cd,
+    sales = Sale.select(AND(Sale.q.open_date >= open_date,
+                            Sale.q.confirm_date <= close_date,
                             Sale.q.salesperson == salesperson,
                             OR(Sale.q.status == Sale.STATUS_CONFIRMED,
                                Sale.q.status == Sale.STATUS_PAID)),
@@ -334,4 +333,116 @@ def salesperson_stock_report(open_date, close_date, conn):
                                                       prod=align_text(desc, 58, LEFT),
                                                       qtde=align_text(str(float(qtty)), 10, LEFT)), items_1))
     doc = PDFBuilder(os.path.join(get_application_dir(), 'salespersonstock.pdf'))
+    return doc.multiBuild(story)
+
+
+def salesperson_financial_report(open_date, close_date, conn):
+    """
+    Relatorio financeiro para as vendas de um vendedor
+    numa determinada estacao
+    """
+    station = get_current_station(conn)
+    user = get_current_user(conn)
+    salesperson = ISalesPerson(user)
+    branch = get_current_branch(conn)
+    # historico de caixa
+    till_history = TillFiscalOperationsView.select(
+        AND(TillFiscalOperationsView.q.date >= open_date,
+            TillFiscalOperationsView.q.date <= close_date,
+            TillFiscalOperationsView.q.station_id == station.id,
+            TillFiscalOperationsView.q.salesperson_id == salesperson.id),
+        connection=conn)
+
+    quantidade_entrada = {}
+
+    # contadores por tipo de pagamento
+    for th in till_history:
+        # sangria ou suprimento vem method name = None
+        if not th.method_name:
+            continue
+        if quantidade_entrada.get(th.method_name):
+            quantidade_entrada[th.method_name] = quantidade_entrada[th.method_name] + th.value
+        else:
+            quantidade_entrada[th.method_name] = th.value
+
+    total = 0
+    discounts = 0
+    # total de valor
+    for th in till_history:
+        total += th.value or 0
+        discounts += th.discount_value or 0
+    story = []
+    company = ICompany(branch)
+    story.append(Paragraph('<b>{fancy_name}</b>'.format(fancy_name=company.fancy_name), h1_centered))
+    story.append(Paragraph('<b>RELATORIO DE MOVIMENTAÇÃO DE CAIXA</b>', h1_centered))
+    story.append(Paragraph('{address}'.format(address=company.person.get_address_string()), h1_centered))
+    story.append(Paragraph('Fone: {phone}'.format(phone=format_phone_number(company.person.phone_number)), h1_centered))
+    story.append(Paragraph('CNPJ: {cnpj}'.format(cnpj=company.cnpj), h1_left))
+    story.append(ReportLine())
+    story.append(Paragraph('Atendente: {salesperson}'.format(salesperson=salesperson.person.name),
+                           header_items_d))
+    story.append(Paragraph('Início: {open_date}'
+                           .format(open_date=open_date.strftime('%d/%m/%Y %X')),
+                           header_items_l))
+    story.append(Paragraph('Fim: {close_date}'
+                           .format(close_date=close_date.strftime('%d/%m/%Y %X')),
+                           header_items_l))
+    story.append(ReportLine())
+
+    payment_values = ""
+
+    # sort payments
+    d_sorted_by_value_payments = sorted([(key, value) for (key, value) in quantidade_entrada.items()])
+
+    for payment in d_sorted_by_value_payments:
+        story.append(Paragraph('{method} : {value}'.format(method=payment[0],
+                                                           value=payment[1]),
+                               header_items_l))
+    story.append(ReportLine())
+
+    # Sangrias
+    despesa_src_str = '%%%s%%' % 'Despesa:'
+    quantia_removida_src_str = '%%%s%%' % 'Quantia removida'
+    sangria_valor = 0
+    sangria_str = ''
+
+    despesa_results = TillFiscalOperationsView.select(
+        AND(
+            OR(LIKE(TillFiscalOperationsView.q.description, despesa_src_str),
+               LIKE(TillFiscalOperationsView.q.description, quantia_removida_src_str)),
+            TillFiscalOperationsView.q.date > open_date,
+            TillFiscalOperationsView.q.date <= close_date,
+            TillFiscalOperationsView.q.station_id == station.id,
+        ))
+    try:
+        for value, description in [(p.value, p.description) for p in despesa_results]:
+            sangria_valor += value
+            story.append(Paragraph('{description}: {value}\n'.format(description=description, value=value),
+                                   header_items_l))
+    except:
+        pass
+
+    suprimento_str = ''
+
+    # Suprimentos
+    suprimento_src_str = '%%%s%%' % 'Suprimento:'
+    caixa_iniciado_str = '%%%s%%' % 'Caixa iniciado'
+    suprimento_valor = 0
+    suprimento_results = TillFiscalOperationsView.select(
+        AND(OR
+            (LIKE(TillFiscalOperationsView.q.description, suprimento_src_str),
+             LIKE(TillFiscalOperationsView.q.description, caixa_iniciado_str)),
+            TillFiscalOperationsView.q.date > open_date,
+            TillFiscalOperationsView.q.station_id == station.id,
+            TillFiscalOperationsView.q.date <= close_date))
+
+    try:
+        for value, description in [(p.value, p.description) for p in suprimento_results]:
+            story.append(Paragraph('{description}: {value}\n'.format(description=description, value=value),
+                                   header_items_l))
+    except:
+        pass
+
+    story.append(ReportLine())
+    doc = PDFBuilder(os.path.join(get_application_dir(), 'salespersonfinancial.pdf'))
     return doc.multiBuild(story)
