@@ -13,7 +13,7 @@ from stoqlib.domain.events import (TillOpenDrawer)
 from stoqlib.domain.nfe import NFCEBranchSeries
 from stoqlib.domain.payment.operation import register_payment_operations
 from stoqlib.domain.payment.payment import Payment
-from stoqlib.domain.payment.views import InPaymentView
+from stoqlib.domain.payment.views import InPaymentView, OutPaymentView
 from stoqlib.domain.renegotiation import RenegotiationData
 from stoqlib.domain.sale import Sale
 from stoqlib.gui.base.dialogs import run_dialog, get_current_toplevel
@@ -25,7 +25,7 @@ from stoqlib.lib.parameters import sysparam
 
 from impnfdialog import RemotePrinterListDialog, ReprintSaleDialog, DateDialog, CancelSaleDialog
 from pdfbuilder import (build_sale_document, build_tab_document, in_payment_report,
-                        salesperson_stock_report, salesperson_financial_report)
+                        salesperson_stock_report, salesperson_financial_report,out_payment_report)
 
 log = Logger("stoq-impnf-plugin")
 
@@ -215,10 +215,8 @@ class ImpnfUI(object):
             in_payment_report(pv, self.conn)
 
     def _on_CreatedOutPayment(self, payment):
-        pass
-        # log.debug('{} solicitou conta a pagar'.format(get_current_user(self.conn).username))
-        # ps = PrintSolution(self.conn, '')
-        # pv = [p for p in OutPaymentView.select(Payment.q.id == payment.id, connection=self.conn)]
-        # if pv:
-        #     pv = pv[0]
-        #     ps.print_out_payment(pv)
+        log.debug('{} solicitou conta a pagar'.format(get_current_user(self.conn).username))
+        pv = [p for p in OutPaymentView.select(Payment.q.id == payment.id, connection=self.conn)]
+        if pv:
+            pv = pv[0]
+            out_payment_report(pv, self.conn)
