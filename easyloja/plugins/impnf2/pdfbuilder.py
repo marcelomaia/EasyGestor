@@ -12,7 +12,7 @@ from stoqlib.database.orm import AND, OR, LIKE
 from stoqlib.database.runtime import get_current_user, get_current_branch, get_current_station
 from stoqlib.domain.interfaces import IIndividual, ICompany, ISalesPerson
 from stoqlib.domain.sale import Sale
-from stoqlib.gui.search.tillsearch import TillFiscalOperationsView
+from stoqlib.gui.dialogs.tillhistory import TillFiscalOperationsView
 from stoqlib.lib.formatters import format_phone_number
 from stoqlib.lib.osutils import get_application_dir
 from stoqlib.lib.parameters import sysparam
@@ -381,6 +381,8 @@ def salesperson_financial_report(open_date, close_date, conn):
     story.append(ReportLine())
     story.append(Paragraph('Atendente: {salesperson}'.format(salesperson=salesperson.person.name),
                            header_items_d))
+    story.append(Paragraph('Estação: {station}'.format(station=station.name),
+                           header_items_d))
     story.append(Paragraph('Início: {open_date}'
                            .format(open_date=open_date.strftime('%d/%m/%Y %X')),
                            header_items_l))
@@ -389,22 +391,25 @@ def salesperson_financial_report(open_date, close_date, conn):
                            header_items_l))
     story.append(ReportLine())
 
-    payment_values = ""
-
+    payment_total = 0
     # sort payments
     d_sorted_by_value_payments = sorted([(key, value) for (key, value) in quantidade_entrada.items()])
-
+    story.append(Paragraph('FORMAS DE PAGAMENTO',
+                           header_items_c))
     for payment in d_sorted_by_value_payments:
-        story.append(Paragraph('{method} : {value}'.format(method=payment[0],
-                                                           value=payment[1]),
+        payment_total += payment[1]
+        story.append(Paragraph('{method} : <b>{value}</b>'.format(method=payment[0],
+                                                                  value=payment[1]),
                                header_items_l))
+    story.append(Paragraph('<b>Total: {total}</b>'.
+                           format(total=payment_total),
+                           header_items_l))
     story.append(ReportLine())
 
     # Sangrias
     despesa_src_str = '%%%s%%' % 'Despesa:'
     quantia_removida_src_str = '%%%s%%' % 'Quantia removida'
     sangria_valor = 0
-    sangria_str = ''
 
     despesa_results = TillFiscalOperationsView.select(
         AND(
@@ -414,15 +419,18 @@ def salesperson_financial_report(open_date, close_date, conn):
             TillFiscalOperationsView.q.date <= close_date,
             TillFiscalOperationsView.q.station_id == station.id,
         ))
+    story.append(Paragraph('SANGRIAS',
+                           header_items_c))
     try:
         for value, description in [(p.value, p.description) for p in despesa_results]:
             sangria_valor += value
-            story.append(Paragraph('{description}: {value}\n'.format(description=description, value=value),
+            story.append(Paragraph('{description}: <b>{value}</b>\n'.format(description=description, value=value),
                                    header_items_l))
     except:
         pass
-
-    suprimento_str = ''
+    story.append(Paragraph('<b>Total de sangria: {total}</b>'.
+                           format(total=sangria_valor),
+                           header_items_l))
 
     # Suprimentos
     suprimento_src_str = '%%%s%%' % 'Suprimento:'
@@ -435,14 +443,20 @@ def salesperson_financial_report(open_date, close_date, conn):
             TillFiscalOperationsView.q.date > open_date,
             TillFiscalOperationsView.q.station_id == station.id,
             TillFiscalOperationsView.q.date <= close_date))
-
+    story.append(ReportLine())
+    story.append(Paragraph('SUPRIMENTOS',
+                           header_items_c))
     try:
         for value, description in [(p.value, p.description) for p in suprimento_results]:
-            story.append(Paragraph('{description}: {value}\n'.format(description=description, value=value),
+            suprimento_valor += value
+            story.append(Paragraph('{description}: <b>{value}</b>\n'.
+                                   format(description=description, value=value),
                                    header_items_l))
     except:
         pass
-
+    story.append(Paragraph('<b>Total de suprimento: {total}</b>'.
+                           format(total=suprimento_valor),
+                           header_items_l))
     story.append(ReportLine())
     doc = PDFBuilder(os.path.join(get_application_dir(), 'salespersonfinancial.pdf'))
     return doc.multiBuild(story)

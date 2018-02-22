@@ -390,187 +390,187 @@ class PrintSolution(object):
         return locations
 
 
-def salesperson_stock_report(open_date, close_date):
-    # TODO refatorar isso aqui...
-    od = open_date
-    cd = close_date
-    conn = get_connection()
-    user = get_current_user(conn)
-    salesperson = ISalesPerson(user)
+# def salesperson_stock_report(open_date, close_date):
+#     # TODO refatorar isso aqui...
+#     od = open_date
+#     cd = close_date
+#     conn = get_connection()
+#     user = get_current_user(conn)
+#     salesperson = ISalesPerson(user)
+#
+#     sales = Sale.select(AND(Sale.q.open_date >= od,
+#                             Sale.q.confirm_date <= cd,
+#                             Sale.q.salesperson == salesperson,
+#                             OR(Sale.q.status == Sale.STATUS_CONFIRMED,
+#                                Sale.q.status == Sale.STATUS_PAID)),
+#                         connection=conn)
+#     sellable_qqtt_dict = {}
+#
+#     # contadores de totais de itens
+#     for sale in sales:
+#         sale_items = sale.get_items()
+#         for si in sale_items:
+#             qtty = si.quantity
+#             sellalble = si.sellable
+#             if sellable_qqtt_dict.get(sellalble):
+#                 sellable_qqtt_dict[sellalble] = sellable_qqtt_dict[sellalble] + qtty
+#             else:
+#                 sellable_qqtt_dict[sellalble] = qtty
+#
+#     s = "Início: %s" \
+#         "\nFim: %s\n" % (od.strftime('%d/%m/%y - %H:%M:%S'),
+#                          cd.strftime('%d/%m/%y - %H:%M:%S'))
+#     s += "%s%s" % ('=' * 38, '\n')
+#     sold_items = ""
+#
+#     # sort items
+#     d_sorted_by_value = sorted(
+#         [(strip_accents(key.description), key.code, value) for (key, value) in sellable_qqtt_dict.items()])
+#
+#     for sellable in d_sorted_by_value:
+#         produto = "%s\nCOD: %s\nQTDE: %.2f\n" % (sellable[0],
+#                                                  sellable[1],
+#                                                  sellable[2],)
+#         produto += "%s%s" % ('=' * 19, '\n')
+#         sold_items += produto
+#
+#     s += sold_items
+#     s += "%s%s" % ('=' * 38, '\n')
+#     s += "%s" % '_' * 40
+#     s += "Vendedor {}\n".format(salesperson.person.name)
+#     s += "\n\t\tAssinatura"
+#
+#     ps = PrintSolution(conn, '')
+#     printer_db = ps._get_default_printer()
+#     if not printer_db:
+#         return
+#     # Driver instance
+#     nfp = NonFiscalPrinter(brand=printer_db.brand,
+#                            model=printer_db.printer_model,
+#                            port=printer_db.port,
+#                            dll=printer_db.dll)
+#     despesa_src_str = strip_accents(s)
+#     log.debug("IMPRESSAO NF.: {}".format(despesa_src_str))
+#     nfp.write_text(despesa_src_str)
+#     nfp.cut_paper()
+#     nfp.close_port()
 
-    sales = Sale.select(AND(Sale.q.open_date >= od,
-                            Sale.q.confirm_date <= cd,
-                            Sale.q.salesperson == salesperson,
-                            OR(Sale.q.status == Sale.STATUS_CONFIRMED,
-                               Sale.q.status == Sale.STATUS_PAID)),
-                        connection=conn)
-    sellable_qqtt_dict = {}
 
-    # contadores de totais de itens
-    for sale in sales:
-        sale_items = sale.get_items()
-        for si in sale_items:
-            qtty = si.quantity
-            sellalble = si.sellable
-            if sellable_qqtt_dict.get(sellalble):
-                sellable_qqtt_dict[sellalble] = sellable_qqtt_dict[sellalble] + qtty
-            else:
-                sellable_qqtt_dict[sellalble] = qtty
-
-    s = "Início: %s" \
-        "\nFim: %s\n" % (od.strftime('%d/%m/%y - %H:%M:%S'),
-                         cd.strftime('%d/%m/%y - %H:%M:%S'))
-    s += "%s%s" % ('=' * 38, '\n')
-    sold_items = ""
-
-    # sort items
-    d_sorted_by_value = sorted(
-        [(strip_accents(key.description), key.code, value) for (key, value) in sellable_qqtt_dict.items()])
-
-    for sellable in d_sorted_by_value:
-        produto = "%s\nCOD: %s\nQTDE: %.2f\n" % (sellable[0],
-                                                 sellable[1],
-                                                 sellable[2],)
-        produto += "%s%s" % ('=' * 19, '\n')
-        sold_items += produto
-
-    s += sold_items
-    s += "%s%s" % ('=' * 38, '\n')
-    s += "%s" % '_' * 40
-    s += "Vendedor {}\n".format(salesperson.person.name)
-    s += "\n\t\tAssinatura"
-
-    ps = PrintSolution(conn, '')
-    printer_db = ps._get_default_printer()
-    if not printer_db:
-        return
-    # Driver instance
-    nfp = NonFiscalPrinter(brand=printer_db.brand,
-                           model=printer_db.printer_model,
-                           port=printer_db.port,
-                           dll=printer_db.dll)
-    despesa_src_str = strip_accents(s)
-    log.debug("IMPRESSAO NF.: {}".format(despesa_src_str))
-    nfp.write_text(despesa_src_str)
-    nfp.cut_paper()
-    nfp.close_port()
-
-
-def salesperson_financial_report(open_date, close_date):
-    # TODO refatorar isso aqui...
-    od = open_date
-    cd = close_date
-    conn = get_connection()
-    # colocar vendedor na busca
-    user = get_current_user(conn)
-    salesperson = ISalesPerson(user)
-    sales = Sale.select(AND(Sale.q.open_date >= od,
-                            Sale.q.confirm_date <= cd,
-                            Sale.q.salesperson == salesperson,
-                            OR(Sale.q.status == Sale.STATUS_CONFIRMED,
-                               Sale.q.status == Sale.STATUS_PAID)),
-                        connection=conn)
-    quantidade_entrada = {}
-    total = 0
-    discounts = 0
-
-    # contadores por tipo de pagamento
-    for sale in sales:
-        payments = sale.group.payments
-        for payment in payments:
-            method = PaymentMethod.get(payment.methodID, connection=conn)
-            if quantidade_entrada.get(method):
-                quantidade_entrada[method] = quantidade_entrada[method] + payment.value
-            else:
-                quantidade_entrada[method] = payment.value
-
-    # contadores de totais de itens
-    for sale in sales:
-        total += sale.total_amount
-        discounts += sale.discount_value
-
-    s = "Início: %s" \
-        "\nFim: %s\n" % (od.strftime('%d/%m/%y - %H:%M:%S'),
-                         cd.strftime('%d/%m/%y - %H:%M:%S'))
-    s += "%s%s" % ('=' * 38, '\n')
-    payment_values = ""
-
-    # sort payments
-    d_sorted_by_value_payments = sorted(
-        [(strip_accents(key.description), value) for (key, value) in quantidade_entrada.items()])
-
-    for payment in d_sorted_by_value_payments:
-        produto = "%s - Total: %s\n" % (payment[0],
-                                        payment[1],)
-        produto += "%s%s" % ('=' * 19, '\n')
-        payment_values += produto
-
-    # Sangrias
-    despesa_src_str = '%%%s%%' % 'Despesa:'
-    sangria_valor = 0
-    last_till = Till.get_current(conn)
-
-    if not last_till:
-        return
-
-    despesa_results = TillEntry.select(AND(LIKE(TillEntry.q.description, despesa_src_str),
-                                           TillEntry.q.tillID == last_till.id,
-                                           TillEntry.q.date > open_date,
-                                           TillEntry.q.date <= close_date))
-    try:
-        for value in [p.value for p in despesa_results]:
-            sangria_valor += value
-    except:
-        pass
-    sangria_str = "Total de Sangria %s\n" % sangria_valor
-
-    # Suprimentos
-    suprimento_src_str = '%%%s%%' % 'Suprimento:'
-    suprimento_valor = 0
-    suprimento_results = TillEntry.select(AND(LIKE(TillEntry.q.description, suprimento_src_str),
-                                              TillEntry.q.tillID == last_till.id,
-                                              TillEntry.q.date > open_date,
-                                              TillEntry.q.date <= close_date))
-
-    try:
-        for value in [p.value for p in suprimento_results]:
-            suprimento_valor += value
-    except:
-        pass
-
-    suprimento_str = "Total de Suprimento %s\n" % suprimento_valor
-
-    # Caixa iniciado
-    caixa_iniciado_vlr = last_till.get_initial_cash_amount()
-    caixa_iniciado_str = "Caixa iniciado com a quantia de %s\n" % caixa_iniciado_vlr
-
-    s += "%s%s" % ('=' * 38, '\n')
-    s += "Descontos: %.2f\n" % discounts
-    s += "Total: %.2f\n" % total
-    s += "%s%s" % ('=' * 38, '\n')
-    s += payment_values
-    s += sangria_str
-    s += suprimento_str
-    s += caixa_iniciado_str
-    s += "%s" % '_' * 40
-    s += "\nVendedor: {}\n".format(salesperson.person.name)
-    s += "%s" % '_' * 40
-    s += "\n\t\tAssinatura"
-
-    ps = PrintSolution(conn, '')
-    printer_db = ps._get_default_printer()
-    if not printer_db:
-        return
-    # Driver instance
-    nfp = NonFiscalPrinter(brand=printer_db.brand,
-                           model=printer_db.printer_model,
-                           port=printer_db.port,
-                           dll=printer_db.dll)
-    despesa_src_str = strip_accents(s)
-    log.debug("IMPRESSAO NF.: {}".format(despesa_src_str))
-    nfp.write_text(despesa_src_str)
-    nfp.cut_paper()
-    nfp.close_port()
+# def salesperson_financial_report(open_date, close_date):
+#     # TODO refatorar isso aqui...
+#     od = open_date
+#     cd = close_date
+#     conn = get_connection()
+#     # colocar vendedor na busca
+#     user = get_current_user(conn)
+#     salesperson = ISalesPerson(user)
+#     sales = Sale.select(AND(Sale.q.open_date >= od,
+#                             Sale.q.confirm_date <= cd,
+#                             Sale.q.salesperson == salesperson,
+#                             OR(Sale.q.status == Sale.STATUS_CONFIRMED,
+#                                Sale.q.status == Sale.STATUS_PAID)),
+#                         connection=conn)
+#     quantidade_entrada = {}
+#     total = 0
+#     discounts = 0
+#
+#     # contadores por tipo de pagamento
+#     for sale in sales:
+#         payments = sale.group.payments
+#         for payment in payments:
+#             method = PaymentMethod.get(payment.methodID, connection=conn)
+#             if quantidade_entrada.get(method):
+#                 quantidade_entrada[method] = quantidade_entrada[method] + payment.value
+#             else:
+#                 quantidade_entrada[method] = payment.value
+#
+#     # contadores de totais de itens
+#     for sale in sales:
+#         total += sale.total_amount
+#         discounts += sale.discount_value
+#
+#     s = "Início: %s" \
+#         "\nFim: %s\n" % (od.strftime('%d/%m/%y - %H:%M:%S'),
+#                          cd.strftime('%d/%m/%y - %H:%M:%S'))
+#     s += "%s%s" % ('=' * 38, '\n')
+#     payment_values = ""
+#
+#     # sort payments
+#     d_sorted_by_value_payments = sorted(
+#         [(strip_accents(key.description), value) for (key, value) in quantidade_entrada.items()])
+#
+#     for payment in d_sorted_by_value_payments:
+#         produto = "%s - Total: %s\n" % (payment[0],
+#                                         payment[1],)
+#         produto += "%s%s" % ('=' * 19, '\n')
+#         payment_values += produto
+#
+#     # Sangrias
+#     despesa_src_str = '%%%s%%' % 'Despesa:'
+#     sangria_valor = 0
+#     last_till = Till.get_current(conn)
+#
+#     if not last_till:
+#         return
+#
+#     despesa_results = TillEntry.select(AND(LIKE(TillEntry.q.description, despesa_src_str),
+#                                            TillEntry.q.tillID == last_till.id,
+#                                            TillEntry.q.date > open_date,
+#                                            TillEntry.q.date <= close_date))
+#     try:
+#         for value in [p.value for p in despesa_results]:
+#             sangria_valor += value
+#     except:
+#         pass
+#     sangria_str = "Total de Sangria %s\n" % sangria_valor
+#
+#     # Suprimentos
+#     suprimento_src_str = '%%%s%%' % 'Suprimento:'
+#     suprimento_valor = 0
+#     suprimento_results = TillEntry.select(AND(LIKE(TillEntry.q.description, suprimento_src_str),
+#                                               TillEntry.q.tillID == last_till.id,
+#                                               TillEntry.q.date > open_date,
+#                                               TillEntry.q.date <= close_date))
+#
+#     try:
+#         for value in [p.value for p in suprimento_results]:
+#             suprimento_valor += value
+#     except:
+#         pass
+#
+#     suprimento_str = "Total de Suprimento %s\n" % suprimento_valor
+#
+#     # Caixa iniciado
+#     caixa_iniciado_vlr = last_till.get_initial_cash_amount()
+#     caixa_iniciado_str = "Caixa iniciado com a quantia de %s\n" % caixa_iniciado_vlr
+#
+#     s += "%s%s" % ('=' * 38, '\n')
+#     s += "Descontos: %.2f\n" % discounts
+#     s += "Total: %.2f\n" % total
+#     s += "%s%s" % ('=' * 38, '\n')
+#     s += payment_values
+#     s += sangria_str
+#     s += suprimento_str
+#     s += caixa_iniciado_str
+#     s += "%s" % '_' * 40
+#     s += "\nVendedor: {}\n".format(salesperson.person.name)
+#     s += "%s" % '_' * 40
+#     s += "\n\t\tAssinatura"
+#
+#     ps = PrintSolution(conn, '')
+#     printer_db = ps._get_default_printer()
+#     if not printer_db:
+#         return
+#     # Driver instance
+#     nfp = NonFiscalPrinter(brand=printer_db.brand,
+#                            model=printer_db.printer_model,
+#                            port=printer_db.port,
+#                            dll=printer_db.dll)
+#     despesa_src_str = strip_accents(s)
+#     log.debug("IMPRESSAO NF.: {}".format(despesa_src_str))
+#     nfp.write_text(despesa_src_str)
+#     nfp.cut_paper()
+#     nfp.close_port()
 
 
 def print_report3(till):
