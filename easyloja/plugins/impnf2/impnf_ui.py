@@ -178,7 +178,7 @@ class ImpnfUI(object):
 
     def _on_ReimprimirNotaNF__activate(self, args):
         secure_mode = sysparam(self.conn).NFCE_SECURE_MODE
-        log.debug('{} solicitou reimpressao impnf'.format(self.username))
+        # log.debug('{} solicitou reimpressao impnf'.format(self.username))
         if secure_mode:
             if not run_dialog(UserPassword, None, self.conn):
                 return

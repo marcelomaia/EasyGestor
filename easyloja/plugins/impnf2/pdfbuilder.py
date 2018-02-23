@@ -195,12 +195,12 @@ def build_sale_document(sale, conn):
     for payment in sale.payments:
         if payment.is_inpayment():
             story.append(
-                Paragraph('{} {}'.format(payment.method.description, payment.base_value),
+                Paragraph('{} R$ {}'.format(payment.method.description, payment.base_value),
                           header_items_l))
     if sale.discount_value:
         story.append(Paragraph('Desconto {}'.format(sale.discount_value)
                                .replace(' ', '&nbsp;'), header_items_l))
-    story.append(Paragraph('<b>Valor total {}</b>'.format(sale.get_total_sale_amount())
+    story.append(Paragraph('<b>Valor total R$ {}</b>'.format(sale.get_total_sale_amount())
                            .replace(' ', '&nbsp;'), header_items_r))
     story.append(ReportLine())
     story.append(Paragraph('Situação: <b>{}</b>'.format(Sale.get_status_name(sale.status))
@@ -250,7 +250,7 @@ def build_tab_document(sale):
     story.append(ReportLine())
     story.append(Paragraph('<b>COMANDA: #{daily_code}</b>'.format(daily_code=sale.daily_code), header_items_d))
     story.append(Paragraph('Atendente: {salesperson}'.format(salesperson=sale.salesperson.person.name),
-                           header_items_d))
+                           header_items_l))
     story.append(Paragraph('Data/Hora: {open_date}'
                            .format(open_date=sale.open_date.strftime('%d/%m/%Y %X')),
                            header_items_l))
@@ -488,25 +488,18 @@ def in_payment_report(paymentview, conn):
 
     story = []
     story.append(Paragraph('<b>{fancy_name}</b>'.format(fancy_name=company.fancy_name), h1_centered))
-    story.append(Paragraph('<b>SUPRIMENTO #{sid}</b>'.format(sid=id), h1_centered))
     story.append(Paragraph('{address}'.format(address=company.person.get_address_string()), h1_centered))
     story.append(Paragraph('Fone: {phone}'.format(phone=format_phone_number(company.person.phone_number)), h1_centered))
     story.append(Paragraph('CNPJ: {cnpj}'.format(cnpj=company.cnpj), h1_left))
     story.append(ReportLine())
     story.append(Paragraph('Usuário: {user}'.format(user=user.username),
-                           header_items_d))
+                           header_items_l))
     story.append(Paragraph('Estação: {station}'.format(station=station.name),
-                           header_items_d))
+                           header_items_l))
     story.append(Paragraph('Data/Hora {}'.format(open_date.strftime('%d/%m/%Y %H:%M:%S')),
-                           header_items_d))
-    if category:
-        story.append(Paragraph('{description}: pago em  {method}; categoria: {category}'
-                               .format(category=category, method=method_description, description=description),
-                               header_items_l))
-    else:
-        story.append(Paragraph('{description}: pago em {method}'
-                               .format(method=method_description, description=description.capitalize()),
-                               header_items_l))
+                           header_items_l))
+    story.append(Paragraph('<b>SUPRIMENTO #{sid}</b>'.format(sid=id), h1_centered))
+    story.append(ReportLine())
     if client_name:
         story.append(Paragraph('Cliente: {client}'.format(client=client_name),
                                header_items_l))
@@ -514,8 +507,16 @@ def in_payment_report(paymentview, conn):
                                header_items_l))
         story.append(Paragraph('Fone: {phone}'.format(phone=client_phone),
                                header_items_l))
-    story.append(ReportLine())
-    story.append(Paragraph('Valor: R${:.2f}\n'.format(value),
+        story.append(ReportLine())
+    if category:
+        story.append(Paragraph('{description}: pago em  {method}; categoria: <b>{category}</b>'
+                               .format(category=category, method=method_description, description=description),
+                               header_items_l))
+    else:
+        story.append(Paragraph('{description}: pago em {method}'
+                               .format(method=method_description, description=description.capitalize()),
+                               header_items_l))
+    story.append(Paragraph('Valor: <b>R${:.2f}</b>'.format(value),
                            header_items_l))
     filename = os.path.join(get_application_dir(), 'inpayment.pdf')
     doc = PDFBuilder(filename)
