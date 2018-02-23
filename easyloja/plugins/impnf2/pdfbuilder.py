@@ -309,7 +309,10 @@ def salesperson_stock_report(open_date, close_date, conn):
     d_sorted_by_value = sorted(
         [(sellable.description, sellable.code, quantity) for (sellable, quantity) in sellable_qqtt_dict.items()])
 
+    logotype_path = get_logotype_path(conn)
     story = []
+    if logotype_path:
+        story.append(Image(logotype_path, width=logo_width, height=logo_height))
     branch = get_current_branch(conn)
     company = ICompany(branch)
     story.append(Paragraph('<b>{fancy_name}</b>'.format(fancy_name=company.fancy_name), h1_centered))
@@ -377,8 +380,11 @@ def salesperson_financial_report(open_date, close_date, conn):
     for th in till_history:
         total += th.value or 0
         discounts += th.discount_value or 0
-    story = []
     company = ICompany(branch)
+    logotype_path = get_logotype_path(conn)
+    story = []
+    if logotype_path:
+        story.append(Image(logotype_path, width=logo_width, height=logo_height))
     story.append(Paragraph('<b>{fancy_name}</b>'.format(fancy_name=company.fancy_name), h1_centered))
     story.append(Paragraph('<b>RELATORIO DE MOVIMENTAÇÃO DE CAIXA</b>', h1_centered))
     story.append(Paragraph('{address}'.format(address=company.person.get_address_string()), h1_centered))
@@ -486,7 +492,10 @@ def in_payment_report(paymentview, conn):
     branch = get_current_branch(conn)
     company = ICompany(branch)
 
+    logotype_path = get_logotype_path(conn)
     story = []
+    if logotype_path:
+        story.append(Image(logotype_path, width=logo_width, height=logo_height))
     story.append(Paragraph('<b>{fancy_name}</b>'.format(fancy_name=company.fancy_name), h1_centered))
     story.append(Paragraph('{address}'.format(address=company.person.get_address_string()), h1_centered))
     story.append(Paragraph('Fone: {phone}'.format(phone=format_phone_number(company.person.phone_number)), h1_centered))
@@ -540,19 +549,31 @@ def out_payment_report(paymentview, conn):
     branch = get_current_branch(conn)
     company = ICompany(branch)
 
+    logotype_path = get_logotype_path(conn)
     story = []
+    if logotype_path:
+        story.append(Image(logotype_path, width=logo_width, height=logo_height))
     story.append(Paragraph('<b>{fancy_name}</b>'.format(fancy_name=company.fancy_name), h1_centered))
-    story.append(Paragraph('<b>SANGRIA #{sid}</b>'.format(sid=id), h1_centered))
     story.append(Paragraph('{address}'.format(address=company.person.get_address_string()), h1_centered))
     story.append(Paragraph('Fone: {phone}'.format(phone=format_phone_number(company.person.phone_number)), h1_centered))
     story.append(Paragraph('CNPJ: {cnpj}'.format(cnpj=company.cnpj), h1_left))
     story.append(ReportLine())
     story.append(Paragraph('Usuário: {user}'.format(user=user.username),
-                           header_items_d))
+                           header_items_l))
     story.append(Paragraph('Estação: {station}'.format(station=station.name),
-                           header_items_d))
+                           header_items_l))
     story.append(Paragraph('Data/Hora {}'.format(open_date.strftime('%d/%m/%Y %H:%M:%S')),
-                           header_items_d))
+                           header_items_l))
+    story.append(Paragraph('<b>SANGRIA #{sid}</b>'.format(sid=id), h1_centered))
+    story.append(ReportLine())
+    if supplier_name:
+        story.append(Paragraph('Fornecedor: {supplier}'.format(supplier=supplier_name),
+                               header_items_l))
+        story.append(Paragraph('Documento: {doc}'.format(doc=client_cnpj or client_cpf),
+                               header_items_l))
+        story.append(Paragraph('Fone: {phone}'.format(phone=supplier_phone),
+                               header_items_l))
+        story.append(ReportLine())
     if category:
         story.append(Paragraph('{description}: pago em  {method}; categoria: {category}'
                                .format(category=category, method=method_description, description=description),
@@ -561,14 +582,6 @@ def out_payment_report(paymentview, conn):
         story.append(Paragraph('{description}: pago em {method}'
                                .format(method=method_description, description=description.capitalize()),
                                header_items_l))
-    if supplier_name:
-        story.append(Paragraph('Fornecedor: {supplier}'.format(supplier=supplier_name),
-                               header_items_l))
-        story.append(Paragraph('Documento: {doc}'.format(doc=client_cnpj or client_cpf),
-                               header_items_l))
-        story.append(Paragraph('Fone: {phone}'.format(phone=supplier_phone),
-                               header_items_l))
-    story.append(ReportLine())
     story.append(Paragraph('Valor: R${:.2f}\n'.format(value),
                            header_items_l))
     filename = os.path.join(get_application_dir(), 'outpayment.pdf')
@@ -583,7 +596,10 @@ def gerencial_report(open_date, close_date, conn):
     user = get_current_user(conn)
     branch = get_current_branch(conn)
     company = ICompany(branch)
+    logotype_path = get_logotype_path(conn)
     story = []
+    if logotype_path:
+        story.append(Image(logotype_path, width=logo_width, height=logo_height))
     story.append(Paragraph('<b>{fancy_name}</b>'.format(fancy_name=company.fancy_name), h1_centered))
     story.append(Paragraph('<b>RELATORIO GERAL CAIXA+PRODUTOS VENDIDOS</b>', h1_centered))
     story.append(Paragraph('{address}'.format(address=company.person.get_address_string()), h1_centered))
