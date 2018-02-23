@@ -512,6 +512,7 @@ def in_payment_report(paymentview, conn):
     doc = PDFBuilder(os.path.join(get_application_dir(), 'salespersonfinancial.pdf'))
     return doc.multiBuild(story)
 
+
 def out_payment_report(paymentview, conn):
     supplier_name = paymentview.supplier_name
     supplier_phone = paymentview.supplier_phone
@@ -560,4 +561,147 @@ def out_payment_report(paymentview, conn):
     story.append(Paragraph('Valor: R${:.2f}\n'.format(value),
                            header_items_l))
     doc = PDFBuilder(os.path.join(get_application_dir(), 'salespersonfinancial.pdf'))
+    return doc.multiBuild(story)
+
+
+def gerencial_report(open_date, close_date, conn):
+    """Lista todas as vendas e todas as sangrias sem filtrar por vendedor e por estação"""
+    station = get_current_station(conn)
+    user = get_current_user(conn)
+    branch = get_current_branch(conn)
+    company = ICompany(branch)
+    story = []
+    story.append(Paragraph('<b>{fancy_name}</b>'.format(fancy_name=company.fancy_name), h1_centered))
+    story.append(Paragraph('<b>RELATORIO GERAL CAIXA+PRODUTOS VENDIDOS</b>', h1_centered))
+    story.append(Paragraph('{address}'.format(address=company.person.get_address_string()), h1_centered))
+    story.append(Paragraph('Fone: {phone}'.format(phone=format_phone_number(company.person.phone_number)), h1_centered))
+    story.append(Paragraph('CNPJ: {cnpj}'.format(cnpj=company.cnpj), h1_left))
+    story.append(ReportLine())
+
+    till_history = TillFiscalOperationsView.select(
+        AND(TillFiscalOperationsView.q.date >= open_date,
+            TillFiscalOperationsView.q.date <= close_date),
+        connection=conn)
+    quantidade_entrada = {}
+
+    # contadores por tipo de pagamento
+    for th in till_history:
+        if not th.method_name:
+            continue
+        if quantidade_entrada.get(th.method_name):
+            quantidade_entrada[th.method_name] = quantidade_entrada[th.method_name] + th.value
+        else:
+            quantidade_entrada[th.method_name] = th.value
+
+    total = 0
+    discounts = 0
+    # contadores de totais de itens
+    for th in till_history:
+        if not th.salesperson_id:
+            continue
+        total += th.value or 0
+        discounts += th.discount_value or 0
+
+    payment_values = ""
+
+    # sort payments
+    d_sorted_by_value_payments = sorted(
+        [(key, value) for (key, value) in quantidade_entrada.items()])
+    payment_total = 0
+    for payment in d_sorted_by_value_payments:
+        payment_total += payment[1]
+        story.append(Paragraph('{method} : <b>{value}</b>'.format(method=payment[0],
+                                                                  value=payment[1]),
+                               header_items_l))
+    story.append(Paragraph('<b>Total: {total}</b>'.
+                           format(total=payment_total),
+                           header_items_l))
+    story.append(ReportLine())
+
+    # Sangrias
+    despesa_src_str = '%%%s%%' % 'Despesa:'
+    quantia_removida_str = '%%%s%%' % 'Quantia removida'
+
+    sangria_valor = 0
+    sangria_str = ''
+
+    despesa_results = TillFiscalOperationsView.select(
+        AND(OR(
+            LIKE(TillFiscalOperationsView.q.description, despesa_src_str),
+            LIKE(TillFiscalOperationsView.q.description, quantia_removida_str)),
+            TillFiscalOperationsView.q.date > open_date,
+            TillFiscalOperationsView.q.date <= close_date))
+    story.append(Paragraph('SANGRIAS',
+                           header_items_c))
+    try:
+        for value, description in [(p.value, p.description) for p in despesa_results]:
+            sangria_valor += value
+            story.append(Paragraph('{description}: <b>{value}</b>\n'.format(description=description, value=value),
+                                   header_items_l))
+    except:
+        pass
+    story.append(Paragraph('<b>Total de sangria: {total}</b>'.
+                           format(total=sangria_valor),
+                           header_items_l))
+
+    suprimento_str = ''
+
+    # Suprimentos
+    suprimento_src_str = '%%%s%%' % 'Suprimento:'
+    caixa_iniciado_str = '%%%s%%' % 'Caixa iniciado'
+    suprimento_valor = 0
+    suprimento_results = TillFiscalOperationsView.select(
+        AND(OR
+            (LIKE(TillFiscalOperationsView.q.description, suprimento_src_str),
+             LIKE(TillFiscalOperationsView.q.description, caixa_iniciado_str)),
+            TillFiscalOperationsView.q.date > open_date,
+            TillFiscalOperationsView.q.date <= close_date))
+
+    story.append(Paragraph('SUPRIMENTOS',
+                           header_items_c))
+    try:
+        for value, description in [(p.value, p.description) for p in suprimento_results]:
+            suprimento_valor += value
+            story.append(Paragraph('{description}: <b>{value}</b>\n'.
+                                   format(description=description, value=value),
+                                   header_items_l))
+    except:
+        pass
+    story.append(Paragraph('<b>Total de suprimento: {total}</b>'.
+                           format(total=suprimento_valor),
+                           header_items_l))
+    story.append(ReportLine())
+
+    sold_items = ""
+    sellable_qqtt_dict = {}
+
+    # contadores de totais de itens
+    sales = Sale.select(AND(Sale.q.open_date >= open_date,
+                            Sale.q.confirm_date <= close_date,
+                            OR(Sale.q.status == Sale.STATUS_CONFIRMED,
+                               Sale.q.status == Sale.STATUS_PAID)),
+                        connection=conn)
+    for th in sales:
+        sale_items = th.get_items()
+        for si in sale_items:
+            qtty = si.quantity
+            sellalble = si.sellable
+            if sellable_qqtt_dict.get(sellalble):
+                sellable_qqtt_dict[sellalble] = sellable_qqtt_dict[sellalble] + qtty
+            else:
+                sellable_qqtt_dict[sellalble] = qtty
+    # sort items
+    d_sorted_by_value = sorted(
+        [(key.description, key.code, value) for (key, value) in sellable_qqtt_dict.items()])
+    story.append(Paragraph('<b>QTDE|X|Descricao-COD</b>', header_items_l))
+    story.append(ReportLine())
+    for sellable in d_sorted_by_value:
+        desc, code, qtty = sellable
+        story.append(
+            Paragraph('{qtde} X {prod}-{code}'.format(code=align_text(code, 10, LEFT),
+                                                      prod=align_text(desc, 58, LEFT),
+                                                      qtde=align_text(str(float(qtty)), 10, LEFT)), items_1))
+
+    story.append(ReportLine())
+    doc = PDFBuilder(os.path.join(get_application_dir(), 'gerencialreport.pdf'))
     return doc.multiBuild(story)

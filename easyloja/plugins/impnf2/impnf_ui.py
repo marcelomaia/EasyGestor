@@ -24,7 +24,7 @@ from stoqlib.gui.stockicons import STOQ_FISCAL_PRINTER
 from stoqlib.lib.parameters import sysparam
 
 from impnfdialog import RemotePrinterListDialog, ReprintSaleDialog, DateDialog, CancelSaleDialog
-from pdfbuilder import (build_sale_document, build_tab_document, in_payment_report,
+from pdfbuilder import (build_sale_document, build_tab_document, in_payment_report, gerencial_report,
                         salesperson_stock_report, salesperson_financial_report,out_payment_report)
 
 log = Logger("stoq-impnf-plugin")
@@ -190,16 +190,15 @@ class ImpnfUI(object):
             salesperson_financial_report(open_date, close_date, self.conn)
 
     def _on_PrinterGerencialReportEvent(self, arg):
-        pass
-        # log.debug('{} solicitou relatorio financeiro e estoque'.format(get_current_user(self.conn).username))
-        # secure_mode = sysparam(self.conn).NFCE_SECURE_MODE
-        # if secure_mode:
-        #     if not run_dialog(UserPassword, None, self.conn):
-        #         return
-        # dates = self._get_open_and_close_date()
-        # if dates:
-        #     od, cd = dates
-        #     gerencial_report(od, cd)
+        log.debug('{} solicitou relatorio financeiro e estoque'.format(get_current_user(self.conn).username))
+        secure_mode = sysparam(self.conn).NFCE_SECURE_MODE
+        if secure_mode:
+            if not run_dialog(UserPassword, None, self.conn):
+                return
+        dates = self._get_open_and_close_date()
+        if dates:
+            od, cd = dates
+            gerencial_report(od, cd, self.conn)
 
     def _on_ConfigureRemotePrinter__activate(self):
         run_dialog(RemotePrinterListDialog, None)
