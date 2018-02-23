@@ -233,8 +233,10 @@ def build_sale_document(sale, conn):
     story.append(Paragraph('Pedido: <b>#{daily_code}</b>'.format(daily_code=sale.daily_code), header_items_c))
 
     story.append(Paragraph('<b>{footer}</b>'.format(footer=sysparam(conn).FOOTER_MESSAGE), footer))
-    doc = PDFBuilder(os.path.join(get_application_dir(), 'mintoc.pdf'))
-    return doc.multiBuild(story)
+    filename = os.path.join(get_application_dir(), 'sale.pdf')
+    doc = PDFBuilder(filename)
+    doc.multiBuild(story)
+    return filename
 
 
 def build_tab_document(sale):
@@ -276,8 +278,10 @@ def build_tab_document(sale):
         story.append(Paragraph('Cliente: {client}'.format(client=client.person.name), header_items_l))
         story.append(Paragraph('Fone: {phone}'.format(phone=client.person.phone_number), header_items_l))
         story.append(ReportLine())
-    doc = PDFBuilder(os.path.join(get_application_dir(), 'comanda.pdf'))
-    return doc.multiBuild(story)
+    filename = os.path.join(get_application_dir(), 'tab.pdf')
+    doc = PDFBuilder(filename)
+    doc.multiBuild(story)
+    return filename
 
 
 def salesperson_stock_report(open_date, close_date, conn):
@@ -332,8 +336,10 @@ def salesperson_stock_report(open_date, close_date, conn):
             Paragraph('{qtde} X {prod}-{code}'.format(code=align_text(code, 10, LEFT),
                                                       prod=align_text(desc, 58, LEFT),
                                                       qtde=align_text(str(float(qtty)), 10, LEFT)), items_1))
-    doc = PDFBuilder(os.path.join(get_application_dir(), 'salespersonstock.pdf'))
-    return doc.multiBuild(story)
+    filename = os.path.join(get_application_dir(), 'salespersonstock.pdf')
+    doc = PDFBuilder(filename)
+    doc.multiBuild(story)
+    return filename
 
 
 def salesperson_financial_report(open_date, close_date, conn):
@@ -458,8 +464,10 @@ def salesperson_financial_report(open_date, close_date, conn):
                            format(total=suprimento_valor),
                            header_items_l))
     story.append(ReportLine())
-    doc = PDFBuilder(os.path.join(get_application_dir(), 'salespersonfinancial.pdf'))
-    return doc.multiBuild(story)
+    filename = os.path.join(get_application_dir(), 'salespersonfinancial.pdf')
+    doc = PDFBuilder(filename)
+    doc.multiBuild(story)
+    return filename
 
 
 def in_payment_report(paymentview, conn):
@@ -509,8 +517,10 @@ def in_payment_report(paymentview, conn):
     story.append(ReportLine())
     story.append(Paragraph('Valor: R${:.2f}\n'.format(value),
                            header_items_l))
-    doc = PDFBuilder(os.path.join(get_application_dir(), 'salespersonfinancial.pdf'))
-    return doc.multiBuild(story)
+    filename = os.path.join(get_application_dir(), 'inpayment.pdf')
+    doc = PDFBuilder(filename)
+    doc.multiBuild(story)
+    return filename
 
 
 def out_payment_report(paymentview, conn):
@@ -560,8 +570,10 @@ def out_payment_report(paymentview, conn):
     story.append(ReportLine())
     story.append(Paragraph('Valor: R${:.2f}\n'.format(value),
                            header_items_l))
-    doc = PDFBuilder(os.path.join(get_application_dir(), 'salespersonfinancial.pdf'))
-    return doc.multiBuild(story)
+    filename = os.path.join(get_application_dir(), 'outpayment.pdf')
+    doc = PDFBuilder(filename)
+    doc.multiBuild(story)
+    return filename
 
 
 def gerencial_report(open_date, close_date, conn):
@@ -703,5 +715,7 @@ def gerencial_report(open_date, close_date, conn):
                                                       qtde=align_text(str(float(qtty)), 10, LEFT)), items_1))
 
     story.append(ReportLine())
-    doc = PDFBuilder(os.path.join(get_application_dir(), 'gerencialreport.pdf'))
-    return doc.multiBuild(story)
+    filename = os.path.join(get_application_dir(), 'gerencial.pdf')
+    doc = PDFBuilder(filename)
+    doc.multiBuild(story)
+    return filename

@@ -2,8 +2,11 @@
 import datetime
 import gtk
 import os
+import platform
 import sys
-
+import time
+import subprocess
+from kiwi.environ import environ
 from kiwi.log import Logger
 from kiwi.ui.dialogs import info
 from stoqlib.database.runtime import (get_connection, get_current_station, get_current_user, new_transaction)
@@ -25,7 +28,7 @@ from stoqlib.lib.parameters import sysparam
 
 from impnfdialog import RemotePrinterListDialog, ReprintSaleDialog, DateDialog, CancelSaleDialog
 from pdfbuilder import (build_sale_document, build_tab_document, in_payment_report, gerencial_report,
-                        salesperson_stock_report, salesperson_financial_report,out_payment_report)
+                        salesperson_stock_report, salesperson_financial_report, out_payment_report)
 
 log = Logger("stoq-impnf-plugin")
 
@@ -89,11 +92,51 @@ class ImpnfUI(object):
         uimanager.insert_action_group(ag, 0)
         uimanager.add_ui_from_string(ui_string)
 
+    def print_file(self, filename):
+        if platform.system() == 'Windows':
+            self._print_on_spooler(filename)
+        else:
+            opener = "open" if sys.platform == "darwin" else "xdg-open"
+            subprocess.call([opener, filename])
+
+    def _print_on_spooler(self, filename):
+        """
+        :param filename:
+        :return:
+        usando agora o SumatraPDF
+        https://www.sumatrapdfreader.org/docs/Command-line-arguments-0c53a79e91394eccb7535ef6fed0678e.html
+        """
+        sumatra_path = environ.find_resource('sumatraPDF', 'SumatraPDF.exe')
+        branch_series = NFCEBranchSeries.selectOneBy(station=get_current_station(self.conn), connection=self.conn)
+        if branch_series.mode != NFCEBranchSeries.SPOOLER:
+            return
+        MAX_RETRIES = 15
+        retry = 1
+        while not os.path.exists(filename):
+            wait = 0.5
+            log.debug('Arquivo: {} não encontrado ainda, aguardando {}s'.format(filename, wait))
+            time.sleep(wait)
+            retry += 1
+            if retry > MAX_RETRIES:
+                log.debug('arquivo não {} encontrado'.format(filename))
+                info('Arquivo pdf não encontrado')
+                return False
+
+        if os.path.exists(filename):
+            cmd = '{exe} -print-to {printer} {fname}'.format(exe=sumatra_path,
+                                                             printer=branch_series.spooler_printer,
+                                                             fname=filename)
+            log.debug('executing %s' % cmd)
+            proc = subprocess.Popen(cmd.split(' '), shell=False, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+        return True
+
     def _print_sale(self, sale):
-        build_sale_document(sale, self.conn)
+        filename = build_sale_document(sale, self.conn)
+        self.print_file(filename)
 
     def _print_tab(self, sale):
-        build_tab_document(sale)
+        filename = build_tab_document(sale)
+        self.print_file(filename)
 
     def _get_open_and_close_date(self):
         model = run_dialog(DateDialog, get_current_toplevel(), self.conn)
@@ -180,14 +223,16 @@ class ImpnfUI(object):
         dates = self._get_open_and_close_date()
         if dates:
             open_date, close_date = dates
-            salesperson_stock_report(open_date, close_date, self.conn)
+            filename = salesperson_stock_report(open_date, close_date, self.conn)
+            self.print_file(filename)
 
     def _on_PrinterFinancialReportEvent(self, arg):
         log.debug('{} solicitou relatorio financeiro'.format(get_current_user(self.conn).username))
         dates = self._get_open_and_close_date()
         if dates:
             open_date, close_date = dates
-            salesperson_financial_report(open_date, close_date, self.conn)
+            filename = salesperson_financial_report(open_date, close_date, self.conn)
+            self.print_file(filename)
 
     def _on_PrinterGerencialReportEvent(self, arg):
         log.debug('{} solicitou relatorio financeiro e estoque'.format(get_current_user(self.conn).username))
@@ -198,7 +243,8 @@ class ImpnfUI(object):
         dates = self._get_open_and_close_date()
         if dates:
             od, cd = dates
-            gerencial_report(od, cd, self.conn)
+            filename = gerencial_report(od, cd, self.conn)
+            self.print_file(filename)
 
     def _on_ConfigureRemotePrinter__activate(self):
         run_dialog(RemotePrinterListDialog, None)
@@ -211,11 +257,13 @@ class ImpnfUI(object):
         pv = [p for p in InPaymentView.select(Payment.q.id == payment.id, connection=self.conn)]
         if pv:
             pv = pv[0]
-            in_payment_report(pv, self.conn)
+            filename = in_payment_report(pv, self.conn)
+            self.print_file(filename)
 
     def _on_CreatedOutPayment(self, payment):
         log.debug('{} solicitou conta a pagar'.format(get_current_user(self.conn).username))
         pv = [p for p in OutPaymentView.select(Payment.q.id == payment.id, connection=self.conn)]
         if pv:
             pv = pv[0]
-            out_payment_report(pv, self.conn)
+            filename = out_payment_report(pv, self.conn)
+            self.print_file(filename)
