@@ -22,8 +22,7 @@ from stoqlib.domain.sale import Sale
 from stoqlib.gui.base.dialogs import run_dialog, get_current_toplevel
 from stoqlib.gui.dialogs.passworddialog import UserPassword
 from stoqlib.gui.events import StartApplicationEvent
-from stoqlib.gui.stockicons import STOQ_DOLLAR
-from stoqlib.gui.stockicons import STOQ_FISCAL_PRINTER
+from stoqlib.gui.stockicons import STOQ_FISCAL_PRINTER, STOQ_DOLLAR
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.permissions import permission_required
 

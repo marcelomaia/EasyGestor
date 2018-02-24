@@ -24,17 +24,21 @@ class ImpnfEditor(BaseEditor):
     model_type = Impnf
     size = (600, 300)
     model_name = 'Impressora não fiscal'
-    proxy_widgets = ('name', 'port', 'is_default', 'station')
+    proxy_widgets = ('name', 'is_default', 'station', 'spooler_printer')
 
     def create_model(self, trans):
         impnf = Impnf(name=u'BALCAO',
-                      port=u'nome da impressora no spooler',
                       is_default=False,
+                      spooler_printer='EasyGestor',
                       station=get_current_station(self.conn),
                       connection=trans)
         return impnf
 
     def setup_proxies(self):
+        for widget in [self.kiwilabel5, self.port, self.kiwilabel4, self.dll,
+                       self.kiwilabel3, self.printer_model, self.kiwilabel2,
+                       self.brand, self.filechooser_button]:
+            widget.hide()
         stations = [(p.name, p) for p in BranchStation.selectBy(connection=self.conn)]
         self.station.prefill(stations)
         self.add_proxy(self.model, ImpnfEditor.proxy_widgets)
@@ -46,14 +50,6 @@ class ImpnfEditor(BaseEditor):
     def on_filechooser_button__selection_changed(self, widget):
         filename = widget.get_filename()
         self.dll.set_text(filename)
-
-    def on_dll__validate(self, widget, filename):
-        if not filename:
-            return
-        if not filename.endswith('.dll'):
-            self.test_button.set_sensitive(False)
-            return ValidationError('A biblioteca deve ser do tipo .dll')
-        self.test_button.set_sensitive(True)
 
     def on_is_default__content_changed(self, widget):
         icon_dict = {True: gtk.STOCK_OK,

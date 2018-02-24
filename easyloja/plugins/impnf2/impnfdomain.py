@@ -9,10 +9,10 @@ class Impnf(Domain):
     implements(IActive, IDescribable)
 
     name = UnicodeCol(default=u'')
-    port = UnicodeCol(default=u'')
     is_default = BoolCol(default=False)
     station = ForeignKey('BranchStation')
+    spooler_printer = UnicodeCol(default=u'')
 
     def get_description(self):
         return 'Impressora: {}, porta {}'.format(self.name,
-                                                            self.port)
+                                                 self.spooler_printer)
