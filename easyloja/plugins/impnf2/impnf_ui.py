@@ -3,9 +3,9 @@ import datetime
 import gtk
 import os
 import platform
-import sys
-import time
 import subprocess
+import sys
+
 from kiwi.environ import environ
 from kiwi.log import Logger
 from kiwi.ui.dialogs import info
@@ -27,6 +27,7 @@ from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.permissions import permission_required
 
 from impnfdialog import RemotePrinterListDialog, ReprintSaleDialog, DateDialog, CancelSaleDialog
+from impnfdomain import Impnf
 from pdfbuilder import (build_sale_document, build_tab_document, in_payment_report, gerencial_report,
                         salesperson_stock_report, salesperson_financial_report, out_payment_report)
 
@@ -92,6 +93,11 @@ class ImpnfUI(object):
         uimanager.insert_action_group(ag, 0)
         uimanager.add_ui_from_string(ui_string)
 
+    def _get_default_printer(self):
+        return Impnf.selectOneBy(is_default=True,
+                                 station=get_current_station(self.conn),
+                                 connection=self.conn)
+
     def print_file(self, filename):
         if platform.system() == 'Windows':
             self._print_on_spooler(filename)
@@ -107,28 +113,13 @@ class ImpnfUI(object):
         https://www.sumatrapdfreader.org/docs/Command-line-arguments-0c53a79e91394eccb7535ef6fed0678e.html
         """
         sumatra_path = environ.find_resource('sumatraPDF', 'SumatraPDF.exe')
-        branch_series = NFCEBranchSeries.selectOneBy(station=get_current_station(self.conn), connection=self.conn)
-        if branch_series.mode != NFCEBranchSeries.SPOOLER:
-            return
-        MAX_RETRIES = 15
-        retry = 1
-        while not os.path.exists(filename):
-            wait = 0.5
-            log.debug('Arquivo: {} não encontrado ainda, aguardando {}s'.format(filename, wait))
-            time.sleep(wait)
-            retry += 1
-            if retry > MAX_RETRIES:
-                log.debug('arquivo não {} encontrado'.format(filename))
-                info('Arquivo pdf não encontrado')
-                return False
-
+        printer = self._get_default_printer()
         if os.path.exists(filename):
             cmd = '{exe} -print-to {printer} {fname}'.format(exe=sumatra_path,
-                                                             printer=branch_series.spooler_printer,
+                                                             printer=printer.spooler_printer,
                                                              fname=filename)
-            log.debug('executing %s' % cmd)
+            log.debug('executing command: {cmd}'.format(cmd=cmd))
             proc = subprocess.Popen(cmd.split(' '), shell=False, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
-        return True
 
     def _print_sale(self, sale):
         filename = build_sale_document(sale, self.conn)

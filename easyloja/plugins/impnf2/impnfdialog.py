@@ -47,10 +47,6 @@ class ImpnfEditor(BaseEditor):
     # Callbacks
     #
 
-    def on_filechooser_button__selection_changed(self, widget):
-        filename = widget.get_filename()
-        self.dll.set_text(filename)
-
     def on_is_default__content_changed(self, widget):
         icon_dict = {True: gtk.STOCK_OK,
                      False: gtk.STOCK_CANCEL}
