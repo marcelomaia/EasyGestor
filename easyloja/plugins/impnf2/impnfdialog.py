@@ -2,16 +2,20 @@
 
 import datetime
 import gtk
+import os
+import subprocess
 from gtk import keysyms
 
 from kiwi.datatypes import ValidationError
 from kiwi.enums import ListType
+from kiwi.environ import environ
 from kiwi.python import Settable
 from kiwi.ui.objectlist import Column
 from stoqlib.database.runtime import get_current_station
 from stoqlib.domain.station import BranchStation
 from stoqlib.gui.base.lists import ModelListDialog
 from stoqlib.gui.editors.baseeditor import BaseEditor
+from stoqlib.lib.osutils import get_application_dir
 from stoqlib.lib.translation import stoqlib_gettext
 
 from impnfdomain import Impnf
@@ -43,6 +47,22 @@ class ImpnfEditor(BaseEditor):
         self.station.prefill(stations)
         self.add_proxy(self.model, ImpnfEditor.proxy_widgets)
 
+    def _print_on_spooler(self, filename):
+        """
+        :param filename:
+        :return:
+        usando agora o SumatraPDF
+        https://www.sumatrapdfreader.org/docs/Command-line-arguments-0c53a79e91394eccb7535ef6fed0678e.html
+        """
+        sumatra_path = environ.find_resource('sumatraPDF', 'SumatraPDF.exe')
+        printer = self.spooler_printer.read()
+        if os.path.exists(filename):
+            cmd = '{exe} -print-to {printer} {fname}'.format(exe=sumatra_path,
+                                                             printer=printer,
+                                                             fname=filename)
+
+            proc = subprocess.Popen(cmd.split(' '), shell=False, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+
     #
     # Callbacks
     #
@@ -54,7 +74,8 @@ class ImpnfEditor(BaseEditor):
         self.image_default.set_from_stock(icon_dict.get(value), gtk.ICON_SIZE_BUTTON)
 
     def on_test_button__clicked(self, widget):
-        pass
+        filename = os.path.join(get_application_dir(), 'stoq.conf')
+        self._print_on_spooler(filename)
 
 
 class RemotePrinterListDialog(ModelListDialog):

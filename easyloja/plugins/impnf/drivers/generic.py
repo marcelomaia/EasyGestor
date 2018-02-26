@@ -1,17 +1,15 @@
 # coding=utf-8
 
 import os
+import serial
 import subprocess
 import tempfile
-from reportlab.pdfgen import canvas
 
-import serial
 from kiwi.environ import environ
 from kiwi.ui.dialogs import warning
-from stoqlib.database.runtime import get_connection
-from stoqlib.lib.parameters import sysparam
+from reportlab.pdfgen import canvas
 
-from constants import PAPER_PART_CUT, CD_KICK_5, BEEP
+from constants import BEEP, CD_KICK_2, CD_KICK_5
 from interface import GenericPrinter
 from non_fiscal_pdfgenerator import termal_paper, PDFGen
 
@@ -58,7 +56,10 @@ class GENERICSERIAL(GenericPrinter):
         self.ser.write(txt)
 
     def open_drawer(self):
+        self.write_text(CD_KICK_2 + '\n')
+        self.write_text('\n')
         self.write_text(CD_KICK_5 + '\n')
+        self.write_text('\n')
 
     def close_port(self):
         pass
