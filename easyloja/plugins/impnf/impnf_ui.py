@@ -22,6 +22,7 @@ from stoqlib.gui.stockicons import STOQ_DOLLAR
 from stoqlib.gui.stockicons import STOQ_FISCAL_PRINTER
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.permissions import permission_required
+from stoqlib.lib.pluginmanager import get_plugin_manager
 
 from impnf_utils import (PrintSolution, salesperson_stock_report,
                          salesperson_financial_report, gerencial_report)
@@ -35,6 +36,8 @@ sys.path.append(plugin_root)
 
 
 class ImpnfUI(object):
+    manager = get_plugin_manager()
+    nfce_active = manager.is_active('nfce') or manager.is_active('nfce_bematech')
     def __init__(self):
         self.conn = get_connection()
         StartApplicationEvent.connect(self._on_StartApplicationEvent)
@@ -124,7 +127,9 @@ class ImpnfUI(object):
     def _on_SaleSEmitEvent(self, sale):
         nfce_status = NFCEBranchSeries.selectOneBy(station=get_current_station(self.conn),
                                                    connection=self.conn)
-        if not nfce_status:
+        if not self.nfce_active:
+            self._print_sale(sale)
+        elif not nfce_status:
             self._print_sale(sale)
         elif not nfce_status.is_active:
             self._print_sale(sale)
