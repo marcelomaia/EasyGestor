@@ -25,6 +25,7 @@ from kiwi.datatypes import ValidationError
 from stoqlib.api import api
 from stoqlib.domain.interfaces import ICompany
 from stoqlib.gui.editors.baseeditor import BaseEditorSlave
+from stoqlib.lib.receitaws import CompanyData
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.lib.validators import (validate_phone_number,
                                     validate_email,
@@ -99,6 +100,12 @@ class CompanyDocumentsSlave(BaseEditorSlave):
             return
         if not validate_fancy_name(value):
             return ValidationError(u'O nome fantasia {} é muito grande'.format(value))
+
+    def on_search_cnpj__clicked(self, *args):
+        cnpj = self.cnpj.read()
+        cnpj = ''.join([p for p in cnpj if p in '0123456789'])
+        cd = CompanyData(cnpj)
+        print cd.get_company_data()
 
 
 class CompanyEditorTemplate(BaseEditorSlave):

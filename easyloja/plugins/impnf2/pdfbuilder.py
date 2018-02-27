@@ -18,8 +18,8 @@ from stoqlib.lib.osutils import get_application_dir
 from stoqlib.lib.parameters import sysparam
 from stoqlib.reporting.base.flowables import ReportLine
 
-width_doc, height_doc = 81.0 * mm, 330.0 * mm
-left_margin, right_margin = 1.1 * mm, 1.1 * mm
+width_doc, height_doc = 78.0 * mm, 330.0 * mm
+left_margin, right_margin = 0.3 * mm, 0.3 * mm
 LEFT = 0
 RIGHT = 1
 CENTER = 2
