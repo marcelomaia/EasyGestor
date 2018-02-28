@@ -22,6 +22,7 @@
 """Company template editor"""
 
 from kiwi.datatypes import ValidationError
+from kiwi.utils import gsignal
 from stoqlib.api import api
 from stoqlib.domain.interfaces import ICompany
 from stoqlib.gui.editors.baseeditor import BaseEditorSlave
@@ -36,6 +37,7 @@ _ = stoqlib_gettext
 
 
 class CompanyDocumentsSlave(BaseEditorSlave):
+    gsignal('cnpj_search', object)
     model_iface = ICompany
     gladefile = 'CompanyDocumentsSlave'
     proxy_widgets = ('cnpj',
@@ -105,10 +107,19 @@ class CompanyDocumentsSlave(BaseEditorSlave):
         cnpj = self.cnpj.read()
         cnpj = ''.join([p for p in cnpj if p in '0123456789'])
         cd = CompanyData(cnpj)
-        print cd.get_company_data()
+        data = cd.get_company_data()
+        if data:
+            fancy_name = data.get('fancy_name')
+            responsible = data.get('responsible_name')
+            if not fancy_name:
+                fancy_name = data.get('company_name')
+            self.fancy_name.update(fancy_name)
+            self.responsible_name.update(responsible)
+            self.emit('cnpj_search', data)
 
 
 class CompanyEditorTemplate(BaseEditorSlave):
+    gsignal('cnpj_search', object)
     model_iface = ICompany
     gladefile = 'BaseTemplate'
 
@@ -130,6 +141,7 @@ class CompanyEditorTemplate(BaseEditorSlave):
     def setup_slaves(self):
         self.company_docs_slave = CompanyDocumentsSlave(
             self.conn, self.model, visual_mode=self.visual_mode)
+        self.company_docs_slave.connect('cnpj_search', self.on_cnpj_search)
         self._person_slave.attach_slave('company_holder',
                                         self.company_docs_slave)
 
@@ -137,3 +149,6 @@ class CompanyEditorTemplate(BaseEditorSlave):
         if confirm_person:
             self._person_slave.on_confirm()
         return self.model
+
+    def on_cnpj_search(self, slave, data):
+        self.emit('cnpj_search', data)

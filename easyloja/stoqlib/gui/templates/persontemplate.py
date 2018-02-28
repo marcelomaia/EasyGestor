@@ -218,7 +218,7 @@ class _PersonEditorTemplate(BaseEditorSlave):
             self.address_button.set_label(_("1 More Address..."))
         elif addresses > 2:
             self.address_button.set_label(_("%i More Addresses...")
-                                            % (addresses - 1))
+                                          % (addresses - 1))
 
     def _setup_form_fields(self):
         if not self.db_form:
@@ -284,12 +284,12 @@ class BasePersonRoleEditor(BaseEditor):
         if not self.role_type in [Person.ROLE_INDIVIDUAL,
                                   Person.ROLE_COMPANY]:
             raise ValueError("Invalid value for role_type attribute, %r" % (
-                self.role_type, ))
+                self.role_type,))
         if (self.role_type == Person.ROLE_INDIVIDUAL and
-            not IIndividual(self.person, None)):
+                not IIndividual(self.person, None)):
             self.person.addFacet(IIndividual, connection=conn)
         elif (self.role_type == Person.ROLE_COMPANY and
-              not ICompany(self.person, None)):
+                  not ICompany(self.person, None)):
             self.person.addFacet(ICompany, connection=conn)
         else:
             pass
@@ -320,6 +320,7 @@ class BasePersonRoleEditor(BaseEditor):
                                           visual_mode=self.visual_mode)
             self.company_slave = slave
             self.main_slave = slave
+            slave.connect('cnpj_search', self.on_cnpj_search)
 
         self.attach_slave('main_holder', slave)
         self.main_slave.attach_slave('main_holder', self._person_slave)
@@ -336,6 +337,12 @@ class BasePersonRoleEditor(BaseEditor):
                 not sysparam(self.conn).SUGGESTED_SUPPLIER):
             sysparam(self.conn).SUGGESTED_SUPPLIER = self.model.id
         return self.model
+
+    def on_cnpj_search(self, slave, data):
+        phone_number = ''.join([p for p in data.get('phone_number') if p in '0123456789'])[:10]
+        self._person_slave.name.update(data.get('company_name'))
+        self._person_slave.email.update(data.get('email'))
+        self._person_slave.set_phone_number(phone_number)
 
     #
     # Public API

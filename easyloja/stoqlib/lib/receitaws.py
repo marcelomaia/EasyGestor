@@ -58,12 +58,19 @@ class CompanyData(object):
         r = requests.get(url, timeout=3)
         self.data = r.json()
 
+    def _get_responsible_name(self, data):
+        partners_data = data.get('qsa')
+        for partner in partners_data:
+            partner_qual = partner.get('qual')
+            partner_nome = partner.get('nome')
+            return partner_nome
+
     def get_company_data(self):
         if self.data.get('status') == 'ERROR':
             return False
         else:
             return dict(company_name=self.data.get('nome'),
-                        phone=self.data.get('telefone'),
+                        phone_number=self.data.get('telefone'),
                         email=self.data.get('email'),
                         uf=self.data.get('uf'),
                         company_status=self.data.get('situacao'),
@@ -75,4 +82,5 @@ class CompanyData(object):
                         city=self.data.get('municipio'),
                         legal_nature=self.data.get('natureza_juridica'),
                         cnpj=self.data.get('cnpj'),
-                        fancy_name=self.data.get('fantasia'))
+                        fancy_name=self.data.get('fantasia'),
+                        responsible_name=self._get_responsible_name(self.data))
