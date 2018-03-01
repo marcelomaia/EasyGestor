@@ -9,8 +9,8 @@ website = 'http://ebi.com.br'
 major_version = 1
 minor_version = 5
 micro_version = 9
-extra_version = 0
-release_date = (2017, 2, 2)
+extra_version = 1
+release_date = (2017, 1, 3)
 stable = True
 
 version = '%d.%d.%d' % (major_version, minor_version, micro_version)

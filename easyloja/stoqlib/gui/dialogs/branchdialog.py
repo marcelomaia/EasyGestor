@@ -23,20 +23,17 @@
 ##
 ##
 
-from decimal import Decimal
-
 from kiwi.datatypes import ValidationError
-from kiwi.python import Settable
-
 from stoqlib.api import api
 from stoqlib.database.admin import create_main_branch
-from stoqlib.exceptions import StoqlibError
-from stoqlib.lib.parameters import sysparam
-from stoqlib.lib.translation import stoqlib_gettext
-from stoqlib.gui.editors.addresseditor import AddressSlave
-from stoqlib.gui.editors.baseeditor import BaseEditor
 from stoqlib.domain.interfaces import ICompany
 from stoqlib.domain.person import Person
+from stoqlib.exceptions import StoqlibError
+from stoqlib.gui.editors.addresseditor import AddressSlave
+from stoqlib.gui.editors.baseeditor import BaseEditor
+from stoqlib.lib.parameters import sysparam
+from stoqlib.lib.receitaws import CompanyData
+from stoqlib.lib.translation import stoqlib_gettext
 
 _ = stoqlib_gettext
 
@@ -48,14 +45,10 @@ class BranchDialog(BaseEditor):
     """
     gladefile = 'BranchDialog'
     person_widgets = ('name',
-                      'phone_number',
-                      'fax_number')
-    tax_widgets = ('icms',
-                   'iss',
-                   'substitution_icms')
+                      'phone_number')
     company_widgets = ('cnpj',
                        'state_registry')
-    proxy_widgets = person_widgets + tax_widgets + company_widgets
+    proxy_widgets = person_widgets + company_widgets
     model_type = Person
 
     def __init__(self, trans, model=None):
@@ -64,18 +57,12 @@ class BranchDialog(BaseEditor):
         self.param = sysparam(trans)
         BaseEditor.__init__(self, trans, model, visual_mode=False)
         self._setup_widgets()
+        # for widget in [self.label11, self.label6, self.label4, self.icms,
+        #                self.substitution_icms, self.iss, self.label5,
+        #                self.label1,self.label3, self.label10,self.fax_number]:
+        #     widget.hide()
 
     def _update_system_parameters(self, person):
-        icms = self.tax_proxy.model.icms
-        self.param.update_parameter('ICMS_TAX', unicode(icms))
-
-        iss = self.tax_proxy.model.iss
-        self.param.update_parameter('ISS_TAX', unicode(iss))
-
-        substitution = self.tax_proxy.model.substitution_icms
-        self.param.update_parameter('SUBSTITUTION_TAX',
-                                    unicode(substitution))
-
         address = person.get_main_address()
         if not address:
             raise StoqlibError("You should have an address defined at "
@@ -94,10 +81,11 @@ class BranchDialog(BaseEditor):
         self.company_proxy.model.fancy_name = self.person_proxy.model.name
 
     def _setup_widgets(self):
-        self.name.grab_focus()
+        self.cnpj.grab_focus()
         self.document_l10n = api.get_l10n_field(self.conn, 'company_document')
         self.cnpj_lbl.set_label(self.document_l10n.label)
         self.cnpj.set_mask(self.document_l10n.entry_mask)
+        self.phone_number.set_mask('(00)0000-0000')
 
     def _setup_slaves(self):
         address = self.model.get_main_address()
@@ -117,14 +105,6 @@ class BranchDialog(BaseEditor):
         widgets = self.person_widgets
         self.person_proxy = self.add_proxy(self.model, widgets)
 
-        widgets = self.tax_widgets
-        iss = Decimal(self.param.ISS_TAX)
-        icms = Decimal(self.param.ICMS_TAX)
-        substitution = Decimal(self.param.SUBSTITUTION_TAX)
-        model = Settable(iss=iss, icms=icms,
-                         substitution_icms=substitution)
-        self.tax_proxy = self.add_proxy(model, widgets)
-
         widgets = self.company_widgets
         model = ICompany(self.model, None)
         if not model is None:
@@ -139,27 +119,27 @@ class BranchDialog(BaseEditor):
     # Kiwi Callbacks
     #
 
-    def on_icms__validate(self, entry, value):
-        if value > 100:
-            return ValidationError(_("ICMS can not be greater than 100"))
-        if value < 0:
-            return ValidationError(_("ICMS can not be less than 0"))
-
-    def on_iss__validate(self, entry, value):
-        if value > 100:
-            return ValidationError(_("ISS can not be greater than 100"))
-        if value < 0:
-            return ValidationError(_("ISS can not be less than 0"))
-
-    def on_substitution_icms__validate(self, entry, value):
-        if value > 100:
-            return ValidationError(_("ICMS Substitution can not be greater "
-                                     "than 100"))
-        if value < 0:
-            return ValidationError(_("ICMS Substitution can not be "
-                                     "less than 0"))
-
     def on_cnpj__validate(self, widget, value):
         if not self.document_l10n.validate(value):
             return ValidationError(_('%s is not valid.') % (
                 self.document_l10n.label,))
+
+    def on_search_cnpj__clicked(self, *args):
+        cnpj = self.cnpj.read()
+        cd = CompanyData(cnpj)
+        data = cd.get_company_data()
+        if data:
+            phone_number = ''.join([p for p in data.get('phone_number') if p in '0123456789'])[:10]
+            self.phone_number.update(phone_number)
+        self.name.update(data.get('company_name'))
+
+        number = data.get('streetnumber')
+        if number:
+            if number == ''.join([p for p in number if p in '0123456789']):
+                self._address_slave.streetnumber.update(int(number))
+        self._address_slave.district.update(data.get('district'))
+        self._address_slave.street.update(data.get('street'))
+        self._address_slave.complement.update(data.get('complement'))
+        self._address_slave.postal_code.update(data.get('postal_code'))
+        self._address_slave.city.update(data.get('city'))
+        self._address_slave.state.update(data.get('state'))

@@ -125,7 +125,7 @@ class WelcomeStep(BaseWizardStep):
         self._update_widgets()
 
     def _update_widgets(self):
-        logo_file = environ.find_resource('pixmaps', 'stoq_logo.svg')
+        logo_file = environ.find_resource('pixmaps', 'stoq_logo.png')
         logo = gtk.gdk.pixbuf_new_from_file_at_size(logo_file, LOGO_WIDTH,
                                                     LOGO_HEIGHT)
         self.image1.set_from_pixbuf(logo)

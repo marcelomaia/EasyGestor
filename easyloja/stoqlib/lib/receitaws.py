@@ -1,4 +1,10 @@
+import os
+
 import requests
+from stoqlib.lib.osutils import get_application_dir
+
+certifi_path = os.path.join(get_application_dir(), 'cacert.pem')
+os.environ['REQUESTS_CA_BUNDLE'] = certifi_path
 
 
 def extract_digits(text):
@@ -72,13 +78,13 @@ class CompanyData(object):
             return dict(company_name=self.data.get('nome'),
                         phone_number=self.data.get('telefone'),
                         email=self.data.get('email'),
-                        uf=self.data.get('uf'),
+                        state=self.data.get('uf'),
                         company_status=self.data.get('situacao'),
                         status=self.data.get('status'),
                         district=self.data.get('bairro'),
                         street=self.data.get('logradouro'),
-                        number=self.data.get('numero'),
-                        postal_address=self.data.get('cep'),
+                        streetnumber=self.data.get('numero'),
+                        postal_code=self.data.get('cep'),
                         city=self.data.get('municipio'),
                         legal_nature=self.data.get('natureza_juridica'),
                         cnpj=self.data.get('cnpj'),

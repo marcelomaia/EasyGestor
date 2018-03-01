@@ -344,6 +344,18 @@ class BasePersonRoleEditor(BaseEditor):
         self._person_slave.email.update(data.get('email'))
         self._person_slave.set_phone_number(phone_number)
 
+        number = data.get('streetnumber')
+        if number:
+            if number == ''.join([p for p in number if p in '0123456789']):
+                self._person_slave.address_slave.streetnumber.update(int(number))
+        self._person_slave.address_slave.district.update(data.get('district'))
+        self._person_slave.address_slave.street.update(data.get('street'))
+        self._person_slave.address_slave.complement.update(data.get('complement'))
+        self._person_slave.address_slave.postal_code.update(data.get('postal_code'))
+        self._person_slave.address_slave.city.update(data.get('city'))
+        self._person_slave.address_slave.state.update(data.get('state'))
+
+
     #
     # Public API
     #
