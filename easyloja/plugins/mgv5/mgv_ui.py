@@ -3,6 +3,7 @@ import os
 import platform
 import sys
 from unicodedata import normalize
+
 from kiwi.ui.dialogs import info
 from stoqlib.database.runtime import get_connection
 from stoqlib.domain.events import ResultListEvent
@@ -78,8 +79,12 @@ class MGVUI(object):
                 description = remove_accentuation(product_view.description)
                 if product_view.code not in controlarray:
                     controlarray.append(product_view.code)
+                    tpvd = '0'
+                    if product_view.unit:
+                        if product_view.unit.upper() == 'UN':
+                            tpvd = '1'
                     line = '{DD}{ETQ}{TPVD}{CODE}{PRICE}{VLDD}{DESC}0000000000000000110000000000000000000000000000000000000000000000000000000000000000000000\n' \
-                        .format(DD='01', ETQ='', TPVD='0', CODE=fill_zeros(product_view.code, 6, type='code'),
+                        .format(DD='01', ETQ='', TPVD=tpvd, CODE=fill_zeros(product_view.code, 6, type='code'),
                                 PRICE=fill_zeros(product_view.price, 6), VLDD='000',
                                 DESC=fill_spaces(description, 50))
                     f.write(line)
