@@ -78,8 +78,12 @@ class MGVUI(object):
                 description = remove_accentuation(product_view.description)
                 if product_view.code not in controlarray:
                     controlarray.append(product_view.code)
+                    tpvd = '0'
+                    if product_view.unit:
+                        if product_view.unit.upper() == 'UN':
+                            tpvd = '1'
                     line = '{DD}{T}{CODE}{PRICE}000{DESC}{DESC}0000000000000000110000000000000000000000000001000000000000000000000000000000000000000000|{DD}|{DESC2}{DESC2}0000000000000000000000000||0||\n' \
-                        .format(DD='01', T='0', CODE=fill_zeros(product_view.code, 6, type='code'),
+                        .format(DD='01', T=tpvd, CODE=fill_zeros(product_view.code, 6, type='code'),
                                 PRICE=fill_zeros(product_view.price, 6),
                                 DESC=fill_spaces(description, 25),
                                 DESC2=fill_spaces(description, 35))
