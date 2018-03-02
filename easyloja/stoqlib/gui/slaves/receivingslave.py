@@ -81,12 +81,12 @@ class ReceivingInvoiceSlave(BaseEditorSlave):
                          ReceivingOrder.freight_types.items()]
 
         # If the purchase's installments are paid, we cannot modify them.
-        if (self.model.purchase.is_paid() and not self.visual_mode):
-            ro = ReceivingOrder
-            freight_items.remove((ro.freight_types[ro.FREIGHT_FOB_INSTALLMENTS],
-                                  ro.FREIGHT_FOB_INSTALLMENTS))
-            freight_items.remove((ro.freight_type[ro.FREIGHT_FOB_FIRST_INSTALLMENT],
-                                  ro.FREIGHT_FOB_FIRST_INSTALLMENT))
+        # if (self.model.purchase.is_paid() and not self.visual_mode):
+        #     ro = ReceivingOrder
+        #     freight_items.remove((ro.freight_types[ro.FREIGHT_FOB_INSTALLMENTS],
+        #                           ro.FREIGHT_FOB_INSTALLMENTS))
+        #     freight_items.remove((ro.freight_type[ro.FREIGHT_FOB_FIRST_INSTALLMENT],
+        #                           ro.FREIGHT_FOB_FIRST_INSTALLMENT))
 
         # Disconnect that callback to prevent an AttributeError
         # caused by the lack of a proxy.
