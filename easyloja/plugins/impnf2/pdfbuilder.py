@@ -736,3 +736,38 @@ def gerencial_report(open_date, close_date, conn):
     doc = PDFBuilder(filename)
     doc.multiBuild(story)
     return filename
+
+
+def in_out_payment_report(till, value, reason, conn):
+    station = get_current_station(conn)
+    user = get_current_user(conn)
+    branch = get_current_branch(conn)
+    open_date = till.opening_date
+    company = ICompany(branch)
+
+    logotype_path = get_logotype_path(conn)
+    story = []
+    if logotype_path:
+        story.append(Image(logotype_path, width=logo_width, height=logo_height))
+    story.append(Paragraph('<b>{fancy_name}</b>'.format(fancy_name=company.fancy_name), h1_centered))
+    story.append(Paragraph('{address}'.format(address=company.person.get_address_string()), h1_centered))
+    story.append(
+        Paragraph('Fone: {phone}'.format(phone=format_phone_number(company.person.phone_number)), h1_centered))
+    story.append(Paragraph('CNPJ: {cnpj}'.format(cnpj=company.cnpj), h1_left))
+    story.append(ReportLine())
+    story.append(Paragraph('Usuário: {user}'.format(user=user.username),
+                           header_items_l))
+    story.append(Paragraph('Estação: {station}'.format(station=station.name),
+                           header_items_l))
+    story.append(Paragraph('Data/Hora {}'.format(open_date.strftime('%d/%m/%Y %H:%M:%S')),
+                           header_items_l))
+    story.append(ReportLine())
+    story.append(Paragraph('{description}'
+                           .format(description=reason.capitalize()),
+                           header_items_l))
+    story.append(Paragraph('Valor: R${:.2f}\n'.format(value),
+                           header_items_l))
+    filename = os.path.join(get_application_dir(), 'inoutpayment.pdf')
+    doc = PDFBuilder(filename)
+    doc.multiBuild(story)
+    return filename

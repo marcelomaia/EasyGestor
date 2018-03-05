@@ -29,8 +29,9 @@ from stoqlib.lib.pluginmanager import get_plugin_manager
 
 from impnfdialog import RemotePrinterListDialog, ReprintSaleDialog, DateDialog, CancelSaleDialog
 from impnfdomain import Impnf
-from pdfbuilder import (build_sale_document, build_tab_document, in_payment_report, gerencial_report,
-                        salesperson_stock_report, salesperson_financial_report, out_payment_report)
+from pdfbuilder import (build_sale_document, in_out_payment_report, build_tab_document,
+                        in_payment_report, gerencial_report, salesperson_stock_report,
+                        salesperson_financial_report, out_payment_report)
 
 log = Logger("stoq-impnf-plugin")
 
@@ -240,7 +241,9 @@ class ImpnfUI(object):
         run_dialog(RemotePrinterListDialog, None)
 
     def _on_TillDrawerOpen(self, till=None, value=None, reason=None):
-        pass
+        log.debug('{} abriu ou fechou o caixa'.format(get_current_user(self.conn).username))
+        filename = in_out_payment_report(till, value, reason, self.conn)
+        self.print_file(filename)
 
     def _on_CreatedInPayment(self, payment):
         log.debug('{} solicitou conta a receber'.format(get_current_user(self.conn).username))
