@@ -154,11 +154,11 @@ class ImpnfUI(object):
     def _on_SaleSEmitEvent(self, sale):
         nfce_status = NFCEBranchSeries.selectOneBy(station=get_current_station(self.conn),
                                                    connection=self.conn)
-        if not self.nfce_active:
-            self._print_sale(sale)
-        elif not nfce_status:
+        if not nfce_status:
             self._print_sale(sale)
         elif not nfce_status.is_active:
+            self._print_sale(sale)
+        elif not self.nfce_active:
             self._print_sale(sale)
         if sysparam(self.conn).RESTAURANT_MODE:
             self._print_tab(sale)

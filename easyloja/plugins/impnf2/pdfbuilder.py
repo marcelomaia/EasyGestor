@@ -9,7 +9,7 @@ from reportlab.platypus.doctemplate import PageTemplate, BaseDocTemplate
 from reportlab.platypus.frames import Frame
 from reportlab.platypus.paragraph import Paragraph
 from stoqlib.database.orm import AND, OR, LIKE
-from stoqlib.database.runtime import get_current_user, get_current_branch, get_current_station
+from stoqlib.database.runtime import get_current_user, get_current_branch, get_current_station, get_connection
 from stoqlib.domain.interfaces import IIndividual, ICompany, ISalesPerson
 from stoqlib.domain.sale import Sale
 from stoqlib.gui.dialogs.tillhistory import TillFiscalOperationsView
@@ -18,7 +18,8 @@ from stoqlib.lib.osutils import get_application_dir
 from stoqlib.lib.parameters import sysparam
 from stoqlib.reporting.base.flowables import ReportLine
 
-width_doc, height_doc = 78.0 * mm, 330.0 * mm
+width_doc = sysparam(get_connection()).IMPNF_WIDTH * mm
+height_doc = sysparam(get_connection()).IMPNF_HEIGHT * mm
 left_margin, right_margin = 0.3 * mm, 0.3 * mm
 LEFT = 0
 RIGHT = 1

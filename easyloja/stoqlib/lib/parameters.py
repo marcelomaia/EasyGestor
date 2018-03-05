@@ -811,6 +811,20 @@ _details = [
         _('Aqui você pode especificar a nota que sairá no rodapé.'),
         str, initial='Adicione sua mensagem personalizada nos parâmetros do sistema'),
 
+    ParameterDetails(
+        'IMPNF_WIDTH',
+        _('General'),
+        _('Tamanho da largura do pdf não fiscal'),
+        _('O tamanho padrão é 80mm'),
+        int, initial=78),
+
+    ParameterDetails(
+        'IMPNF_HEIGHT',
+        _('General'),
+        _('Tamanho da altura do pdf não fiscal'),
+        _('O tamanho padrão é 330mm'),
+        int, initial=330),
+
 ]
 
 
