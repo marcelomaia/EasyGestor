@@ -166,11 +166,16 @@ class ProductsSoldReport(ObjectListReport):
                                   self.report_name,
                                   landscape=True,
                                   *args, **kwargs)
-
-        self.add_object_table(self._products, self.get_columns(),
-                              summary_row=self.get_summary_row())
-
+        self._setup_items_table()
         self._add_sale_notes()
+
+    def _setup_items_table(self):
+            vendido = sum([p.quantity for p in self._products], Decimal(0))
+            total = sum([p.total_price for p in self._products], Decimal(0))
+            self.add_summary_by_column(_(u'Vendido'), format_quantity(vendido))
+            self.add_summary_by_column('Preço total', get_formatted_price(total))
+            self.add_object_table(self._products, self.get_columns(),
+                                  summary_row=self.get_summary_row())
 
     def _add_sale_notes(self):
         """
