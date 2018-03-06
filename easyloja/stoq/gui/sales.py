@@ -503,17 +503,15 @@ class SalesApp(SearchableAppWindow):
 
     def on_SalesCancel__activate(self, action):
         if yesno(_('This will cancel the selected quote. Are you sure?'),
-                 gtk.RESPONSE_NO, _("Don't cancel"), _("Cancel quote")):
-            return
-        trans = api.new_transaction()
-        sale_view = self.results.get_selected()
-        sale = trans.get(sale_view.sale)
-        sale.cancel()
-        sale.status = Sale.STATUS_RETURNED
-        for si in sale.get_items():
-            self.decrease_quote_quantity(si.sellable.id, si.quantity)
-        api.finish_transaction(trans, True)
-        self.search.refresh()
+                 gtk.RESPONSE_YES, _("Cancel quote"), _("Don't cancel")):
+            trans = api.new_transaction()
+            sale_view = self.results.get_selected()
+            sale = trans.get(sale_view.sale)
+            sale.cancel()
+            for si in sale.get_items():
+                self.decrease_quote_quantity(si.sellable.id, si.quantity)
+            api.finish_transaction(trans, True)
+            self.search.refresh()
 
     def on_SalesGenerateNFe__activate(self, action):
         if yesno(_('Voce realmente quer gerar uma NFe?'),
