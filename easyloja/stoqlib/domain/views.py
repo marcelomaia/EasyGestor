@@ -747,6 +747,7 @@ class ProductRevenueView(Viewable):
         category_description=SellableCategory.q.description,
         qty_sold=const.SUM(SaleItem.q.quantity),
         cost=Sellable.q.cost,
+        stock=ProductStockItem.q.quantity,
         base_price=Sellable.q.base_price,
         tax_aliquot=const.AVG(const.COALESCE(SaleItemIcms.q.p_cred_sn, 0)),
         gross_value=const.SUM(SaleItem.q.quantity * SaleItem.q.price),

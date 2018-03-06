@@ -788,6 +788,8 @@ class ProductsRevenueSearch(SearchDialog):
                 Column('qty_sold', title=_('Qtde Vendido'),
                        format_func=format_data,
                        data_type=Decimal),
+                Column('stock', title=_('Estoque'),
+                       data_type=Decimal),
                 Column('cost', title=_('Custo Un.'),
                        data_type=currency),
                 Column('base_price', title=_('Preço Un.'),
