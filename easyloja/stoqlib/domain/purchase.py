@@ -800,7 +800,7 @@ class PurchaseOrderView(Viewable):
     #
 
     def get_total(self):
-        return currency(self.total)
+        return currency(self.total or 0)
 
     def get_subtotal(self):
         return currency(self.subtotal)
