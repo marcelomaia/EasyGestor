@@ -5,6 +5,7 @@ import os
 import sys
 
 from kiwi.log import Logger
+from kiwi.ui.dialogs import info
 from stoqlib.database.runtime import (get_connection, get_current_station, get_current_user, new_transaction)
 from stoqlib.domain.events import (SaleSEmitEvent, CreatedOutPaymentEvent, CreatedInPaymentEvent,
                                    TillAddCashEvent, TillRemoveCashEvent, SaleSLastEmitEvent)
@@ -22,12 +23,10 @@ from stoqlib.gui.stockicons import STOQ_DOLLAR
 from stoqlib.gui.stockicons import STOQ_FISCAL_PRINTER
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.permissions import permission_required
-from stoqlib.lib.pluginmanager import get_plugin_manager
 
 from impnf_utils import (PrintSolution, salesperson_stock_report,
                          salesperson_financial_report, gerencial_report)
 from impnfdialog import RemotePrinterListDialog, ReprintSaleDialog, DateDialog, CancelSaleDialog
-from kiwi.ui.dialogs import info
 
 log = Logger("stoq-impnf-plugin")
 
@@ -36,8 +35,7 @@ sys.path.append(plugin_root)
 
 
 class ImpnfUI(object):
-    manager = get_plugin_manager()
-    nfce_active = manager.is_active('nfce') or manager.is_active('nfce_bematech')
+
     def __init__(self):
         self.conn = get_connection()
         StartApplicationEvent.connect(self._on_StartApplicationEvent)
@@ -127,9 +125,7 @@ class ImpnfUI(object):
     def _on_SaleSEmitEvent(self, sale):
         nfce_status = NFCEBranchSeries.selectOneBy(station=get_current_station(self.conn),
                                                    connection=self.conn)
-        if not self.nfce_active:
-            self._print_sale(sale)
-        elif not nfce_status:
+        if not nfce_status:
             self._print_sale(sale)
         elif not nfce_status.is_active:
             self._print_sale(sale)
@@ -162,12 +158,8 @@ class ImpnfUI(object):
 
     @permission_required('cancel_nonfiscal')
     def _on_CancelarNota__activate(self, arg):
-        # secure_mode = sysparam(self.conn).NFCE_SECURE_MODE
-        # if secure_mode:
-        #     log.debug('{} solicitou cancelamento de venda'.format(
-        #         get_current_user(self.conn).username))
-        #     if not run_dialog(UserPassword, None, self.conn):
-        #         return
+        log.debug('{} solicitou cancelamento de venda'.format(
+            get_current_user(self.conn).username))
         sid = run_dialog(CancelSaleDialog, parent=None, conn=self.conn)
         if sid:
             self._cancel_nfce_sale(Sale.get(sid.number, connection=self.conn))
@@ -208,10 +200,6 @@ class ImpnfUI(object):
     @permission_required('nonfiscal_report')
     def _on_PrinterGerencialReportEvent(self, arg):
         log.debug('{} solicitou relatorio financeiro e estoque'.format(get_current_user(self.conn).username))
-        # secure_mode = sysparam(self.conn).NFCE_SECURE_MODE
-        # if secure_mode:
-        #     if not run_dialog(UserPassword, None, self.conn):
-        #         return
         dates = self._get_open_and_close_date()
         if dates:
             od, cd = dates
