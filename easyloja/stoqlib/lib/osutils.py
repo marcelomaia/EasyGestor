@@ -27,6 +27,7 @@ import fnmatch
 import os
 import platform
 import subprocess
+import zipfile
 
 _system = platform.system()
 
@@ -139,3 +140,26 @@ def list_recursively(directory, pattern):
                 continue
             matches.append(os.path.join(root, filename))
     return matches
+
+
+def unzip_file(filename, output_dir):
+    zip_ref = zipfile.ZipFile(filename, 'r')
+    zip_ref.extractall(output_dir)
+    zip_ref.close()
+
+
+def unzip_path(path):
+    zipfiles = list_recursively(path, '*.zip')
+    for zipfile in zipfiles:
+        unzip_file(zipfile, path)
+
+
+def delete_file_pattern(path, pattern):
+    """
+    :param path:
+    :param pattern: something like *.zip
+    :return:
+    """
+    files = list_recursively(path, pattern)
+    for f in files:
+        os.remove(f)
