@@ -32,6 +32,8 @@ from kiwi.datatypes import currency
 from kiwi.log import Logger
 from kiwi.ui.widgets.contextmenu import ContextMenu, ContextMenuItem
 from kiwi.ui.widgets.list import Column, ColoredColumn
+from stoqlib.lib.permissions import permission_required
+
 from stoqlib.api import api
 from stoqlib.domain.events import (SalesNfeDetails, HasNFeHistoryEvent, PrintBillEvent, CheckPendingBillEvent,
                                    CheckCreatedBillEvent, GenerateBatchBillEvent, SaleSLastEmitEvent)
@@ -186,7 +188,7 @@ class SaleDetailsDialog(BaseEditor):
 
     def _setup_set_print_button_nf(self):
         manager = get_plugin_manager()
-        is_active = manager.is_active('impnf')
+        is_active = manager.is_active('impnf') or manager.is_active('impnf2')
         if not is_active:
             self.print_button_nf.hide()
 
@@ -352,6 +354,7 @@ class SaleDetailsDialog(BaseEditor):
         print_report(SaleOrderReport,
                      Sale.get(self.model.id, connection=self.conn))
 
+    @permission_required('reprint_nonfiscal')
     def on_print_button_nf__clicked(self, button):
         sale = Sale.get(self.model.id, connection=self.conn)
         SaleSLastEmitEvent.emit(sale)

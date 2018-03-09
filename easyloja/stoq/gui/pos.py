@@ -528,9 +528,9 @@ class PosApp(AppWindow):
         # if not api.sysparam(self.conn).EMPLOYERS_CAN_REMOVE_ITEMS:
         #     self.remove_item_button.hide()
         manager = get_plugin_manager()
-        if not manager.is_active('impnf'):
+        if not manager.is_active('impnf') or not manager.is_active('impnf2'):
             self.impnf_button.hide()
-        if not manager.is_active('nfce'):
+        if not manager.is_active('nfce') or not manager.is_active('nfce_bematech'):
             self.nfce_button.hide()
 
         self.checkout_button_shortcut.update(self._replace_shortcut(get_accel('app.pos.order_confirm')))
@@ -1214,6 +1214,7 @@ class PosApp(AppWindow):
         self._update_widgets()
         self.barcode.grab_focus()
 
+    @permission_required('reprint_nonfiscal')
     def _reprint_last_non_fiscal_sale(self):
         sale = Sale.get_last_sale(self.conn)
         try:

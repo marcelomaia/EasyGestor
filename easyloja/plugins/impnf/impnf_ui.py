@@ -132,7 +132,6 @@ class ImpnfUI(object):
         if sysparam(self.conn).RESTAURANT_MODE:
             self._print_tab(sale)
 
-    @permission_required('reprint_nonfiscal')
     def _on_SaleSLastEmitEvent(self, sale):
         log.debug('{} solicitou impressao vendas ou reimpressao do ultimo pedido'.format(
             get_current_user(self.conn).username))
@@ -140,13 +139,8 @@ class ImpnfUI(object):
         if sysparam(self.conn).RESTAURANT_MODE:
             self._print_tab(sale)
 
-    @permission_required('reprint_nonfiscal')
     def _on_ReimprimirNotaNF__activate(self, args):
-        # secure_mode = sysparam(self.conn).NFCE_SECURE_MODE
-        # log.debug('{} solicitou reimpressao impnf'.format(self.username))
-        # if secure_mode:
-        #     if not run_dialog(UserPassword, None, self.conn):
-        #         return
+        log.debug('{} solicitou reimpressao impnf'.format(get_current_user(self.conn)))
         model = run_dialog(ReprintSaleDialog, get_current_toplevel(), self.conn)
         if model is not None:
             sale = Sale.selectOneBy(id=int(model.number), connection=self.conn)
