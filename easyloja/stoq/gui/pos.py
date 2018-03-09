@@ -472,7 +472,7 @@ class PosApp(AppWindow):
         # If the sellable has a weight unit specified and we have a scale
         # configured for this station, go and check out what the printer says.
         if (sellable and sellable.unit and
-                    sellable.unit.unit_index == UnitType.WEIGHT and
+                sellable.unit.unit_index == UnitType.WEIGHT and
                 self._scale_settings):
             self._read_scale()
 
@@ -525,13 +525,15 @@ class PosApp(AppWindow):
 
         self.DetailsViewer.set_active(api.user_settings.get('pos-show-details-viewer', True))
 
-        # if not api.sysparam(self.conn).EMPLOYERS_CAN_REMOVE_ITEMS:
-        #     self.remove_item_button.hide()
+        if not api.sysparam(self.conn).EMPLOYERS_CAN_REMOVE_ITEMS:
+            self.remove_item_button.hide()
         manager = get_plugin_manager()
-        if not manager.is_active('impnf') or not manager.is_active('impnf2'):
-            self.impnf_button.hide()
-        if not manager.is_active('nfce') or not manager.is_active('nfce_bematech'):
-            self.nfce_button.hide()
+        self.impnf_button.hide()
+        if manager.is_active('impnf') or manager.is_active('impnf2'):
+            self.impnf_button.show()
+        self.nfce_button.hide()
+        if manager.is_active('nfce') or manager.is_active('nfce_bematech'):
+            self.nfce_button.show()
 
         self.checkout_button_shortcut.update(self._replace_shortcut(get_accel('app.pos.order_confirm')))
         self.cancel_button_shortcut.update(self._replace_shortcut(get_accel('app.pos.order_cancel')))
@@ -982,7 +984,7 @@ class PosApp(AppWindow):
             # If the sellable has a weight unit specified and we have a scale
             # configured for this station, go and check what the scale says.
             if (sellable and sellable.unit and
-                        sellable.unit.unit_index == UnitType.WEIGHT and
+                    sellable.unit.unit_index == UnitType.WEIGHT and
                     self._scale_settings):
                 self._read_scale(sellable)
             if not self._validate_sellable(sellable):
