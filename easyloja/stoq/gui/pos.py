@@ -46,8 +46,7 @@ from stoqdrivers.enum import UnitType
 from stoqlib.api import api
 from stoqlib.database.orm import AND
 from stoqlib.database.orm import STARTSWITH, LIKE, OR, LOWER
-from stoqlib.database.runtime import get_current_branch, get_connection, new_transaction, get_current_station, \
-    get_current_user
+from stoqlib.database.runtime import get_current_branch, get_connection, new_transaction, get_current_station
 from stoqlib.domain.devices import DeviceSettings
 from stoqlib.domain.events import SalesNFCEEvent, SaleSEmitEvent, TillOpenDrawer, SalesNFCEReprintEvent, \
     ValidateItemNFCEEvent, CreatedOutPaymentEvent, CreatedInPaymentEvent, TillAddTillEntryEvent, SaleSLastEmitEvent
@@ -1215,7 +1214,6 @@ class PosApp(AppWindow):
         self._update_widgets()
         self.barcode.grab_focus()
 
-    @permission_required("reprint_nonfiscal")
     def _reprint_last_non_fiscal_sale(self):
         sale = Sale.get_last_sale(self.conn)
         try:
@@ -1223,7 +1221,6 @@ class PosApp(AppWindow):
         except:
             pass
 
-    @permission_required("reprint_nfce")
     def _reprint_last_fiscal_sale(self):
         try:
             SalesNFCEReprintEvent.emit(None)

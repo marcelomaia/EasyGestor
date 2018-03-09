@@ -1,8 +1,0 @@
-[Plugin]
-Module=buscaempresaplugin
-Version=1
-Name=Busca Empresa
-Name[pt_BR]=Busca Empresa
-Authors=EBI
-Copyright=Copyright © 2017 EBI - Empresa Brasileira de Informatica
-Website=http://www.ebi.com.br/

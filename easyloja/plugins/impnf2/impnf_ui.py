@@ -20,7 +20,6 @@ from stoqlib.domain.payment.views import InPaymentView, OutPaymentView
 from stoqlib.domain.renegotiation import RenegotiationData
 from stoqlib.domain.sale import Sale
 from stoqlib.gui.base.dialogs import run_dialog, get_current_toplevel
-from stoqlib.gui.dialogs.passworddialog import UserPassword
 from stoqlib.gui.events import StartApplicationEvent
 from stoqlib.gui.stockicons import STOQ_FISCAL_PRINTER, STOQ_DOLLAR
 from stoqlib.lib.parameters import sysparam
@@ -41,7 +40,6 @@ sys.path.append(plugin_root)
 
 class ImpnfUI(object):
     manager = get_plugin_manager()
-    nfce_active = manager.is_active('nfce') or manager.is_active('nfce_bematech')
 
     def __init__(self):
         self.conn = get_connection()
@@ -158,18 +156,13 @@ class ImpnfUI(object):
             self._print_sale(sale)
         elif not nfce_status.is_active:
             self._print_sale(sale)
-        elif not self.nfce_active:
-            self._print_sale(sale)
         if sysparam(self.conn).RESTAURANT_MODE:
             self._print_tab(sale)
 
+    @permission_required('reprint_nonfiscal')
     def _on_SaleSLastEmitEvent(self, sale):
-        secure_mode = sysparam(self.conn).NFCE_SECURE_MODE
         log.debug('{} solicitou impressao vendas ou reimpressao do ultimo pedido'.format(
             get_current_user(self.conn).username))
-        if secure_mode:
-            if not run_dialog(UserPassword, None, self.conn):
-                return
         self._print_sale(sale)
         if sysparam(self.conn).RESTAURANT_MODE:
             self._print_tab(sale)
