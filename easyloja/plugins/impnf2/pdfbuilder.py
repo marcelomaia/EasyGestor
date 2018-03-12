@@ -188,7 +188,7 @@ def build_sale_document(sale, conn):
             Paragraph('{qtd} X {unit_price} {total}'
                       .replace(' ', '&nbsp;').format(qtd=align_text('{}'.format(item.quantity), 5, CENTER),
                                                      unit_price=align_text('{}'.format(item.price), 9, CENTER),
-                                                     total=align_text('<b>{}</b>'.format(item.get_total()), 12,
+                                                     total=align_text('<b>{}</b>'.format(float(item.get_total())), 12,
                                                                       CENTER)),
                       items_2))
 
