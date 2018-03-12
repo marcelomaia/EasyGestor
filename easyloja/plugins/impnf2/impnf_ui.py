@@ -166,6 +166,7 @@ class ImpnfUI(object):
         if sysparam(self.conn).RESTAURANT_MODE:
             self._print_tab(sale)
 
+    @permission_required('reprint_nonfiscal')
     def _on_ReimprimirNotaNF__activate(self, args):
         log.debug('{} solicitou reimpressao de venda'.format(
             get_current_user(self.conn).username))

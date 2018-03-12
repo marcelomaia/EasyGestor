@@ -532,8 +532,8 @@ class PosApp(AppWindow):
         if manager.is_active('impnf') or manager.is_active('impnf2'):
             self.impnf_button.show()
         self.nfce_button.hide()
-        if manager.is_active('nfce') or manager.is_active('nfce_bematech'):
-            self.nfce_button.show()
+        # if manager.is_active('nfce') or manager.is_active('nfce_bematech'):
+        #     self.nfce_button.show()
 
         self.checkout_button_shortcut.update(self._replace_shortcut(get_accel('app.pos.order_confirm')))
         self.cancel_button_shortcut.update(self._replace_shortcut(get_accel('app.pos.order_cancel')))
@@ -1224,6 +1224,7 @@ class PosApp(AppWindow):
         except:
             pass
 
+    @permission_required('reprint_nfce')
     def _reprint_last_fiscal_sale(self):
         try:
             SalesNFCEReprintEvent.emit(None)
