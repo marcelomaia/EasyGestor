@@ -74,7 +74,7 @@ class ImpnfEditor(BaseEditor):
         self.image_default.set_from_stock(icon_dict.get(value), gtk.ICON_SIZE_BUTTON)
 
     def on_test_button__clicked(self, widget):
-        filename = os.path.join(get_application_dir(), 'stoq.conf')
+        filename = os.path.join(get_application_dir(), 'sale.pdf')
         self._print_on_spooler(filename)
 
 
