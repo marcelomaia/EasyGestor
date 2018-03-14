@@ -73,14 +73,14 @@ def setup_path():
     paths = []
 
     # PostgreSQL, we're only working with 8.4 for now
-    key = r'Software\PostgreSQL\Installations\postgresql-8.4'
+    key = r'Software\PostgreSQL\Installations\postgresql-9.3'
     base_dir = read_registry_key('HKLM', key, 'Base Directory')
     if base_dir is not None:
         paths.append(os.path.join(base_dir, 'bin'))
 
     # Stoq, for stoqdbadmin and restarting Stoq itself
-    key = r'Software\Stoq'
-    stoq_dir = read_registry_key('HKCC', r'Software\Stoq', 'Path')
+    key = r'Software\EasyGestor'
+    stoq_dir = read_registry_key('HKCC', key, 'Path')
     if stoq_dir is not None:
         paths.append(stoq_dir)
 
