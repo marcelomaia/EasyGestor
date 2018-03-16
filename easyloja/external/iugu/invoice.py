@@ -28,6 +28,10 @@ class Invoice(Action):
         url = self.api.make_url(['invoices', id, 'duplicate'])
         return super(Invoice, self).create(url, data)
 
+    def financial(self, data):
+        url = self.api.make_url(['accounts', 'financial'])
+        return super(Invoice, self).list(url, data)
+
     def change(self, id, data):
         if not data.get('email', None):
             raise RequiredParameters('Invoice email not informed')

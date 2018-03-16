@@ -30,6 +30,7 @@ import tempfile
 from datetime import date
 
 import pango
+from kiwi.currency import format_price
 from kiwi.datatypes import currency, converter
 from kiwi.enums import SearchFilterPosition
 from kiwi.log import Logger
@@ -364,6 +365,7 @@ class TillApp(SearchableAppWindow):
         self.total_label.set_color(green)
         if balance <= 0:
             self.total_label.set_color(red)
+        self._update_avegare_ticket()
 
     def _get_till_balance(self):
         """Returns the balance of till operations"""
@@ -516,6 +518,21 @@ class TillApp(SearchableAppWindow):
         self._update_toolbar_buttons()
         self._update_total()
 
+    def _update_avegare_ticket(self):
+        total_array = []
+        for p in self.results:
+            if p:
+                total_array.append(p.total)
+        if total_array:
+            total = sum(total_array)
+            quantity = len(total_array)
+            if not quantity:
+                self.average_ticket.set_text(u"")
+                return
+            self.average_ticket.set_text(u"<b>Nº de vendas: {quantity}. Ticket médio {ticket}</b>".
+                                         format(ticket=format_price(total / quantity), quantity=quantity))
+            self.average_ticket.set_use_markup(True)
+
     #
     # Callbacks
     #
@@ -624,3 +641,12 @@ class TillApp(SearchableAppWindow):
 
     def on_SearchFiscalTillOperations__activate(self, button):
         self._run_search_dialog(TillFiscalOperationsSearch)
+
+    def _on_search__search_completed(self, search, results, states):
+        self.search_completed(results, states)
+
+        has_results = len(results)
+        for widget in (self.app.launcher.Print, self.app.launcher.ExportCSV):
+            widget.set_sensitive(has_results)
+        self._save_filter_settings()
+        self._update_avegare_ticket()
