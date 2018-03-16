@@ -73,6 +73,8 @@
     <separator/>
     <menuitem action="CancelBill"/>
     <separator/>
+    <menuitem action="GenerateBillDuplicate"/>
+    <separator/>
     <menuitem action="PrintReceipt"/>
 
  </popup>

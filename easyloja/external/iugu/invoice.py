@@ -25,7 +25,7 @@ class Invoice(Action):
             raise RequiredParameters('Invoice id not informed')
         elif not data.get('due_date', None):
             raise RequiredParameters('Invoice due_date not informed')
-        url = self.api.make_url([id, 'duplicate'])
+        url = self.api.make_url(['invoices', id, 'duplicate'])
         return super(Invoice, self).create(url, data)
 
     def change(self, id, data):

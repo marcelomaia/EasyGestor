@@ -40,10 +40,11 @@ from kiwi.ui.gadgets import render_pixbuf
 from kiwi.ui.objectlist import SearchColumn, Column
 from kiwi.ui.search import ComboSearchFilter, DateSearchFilter
 from kiwi.ui.widgets.label import Label
+
 from stoq.gui.application import SearchableAppWindow
 from stoqlib.api import api
 from stoqlib.database.runtime import get_connection
-from stoqlib.domain.events import CancelBillEvent
+from stoqlib.domain.events import CancelBillEvent, GenerateDuplicateEvent
 from stoqlib.domain.events import (CreatedInPaymentEvent, PrintBillEvent, GenerateBillEvent, CheckBillStatusEvent,
                                    CheckPaidBillEvent)
 from stoqlib.domain.payment.bill import PaymentIuguBill
@@ -133,7 +134,10 @@ class ReceivableApp(SearchableAppWindow):
              _('Print a bill for the selected payment')),
             ('CancelBill', gtk.STOCK_PRINT, _('Cancelar Boleto...'),
              None,
-             _('Cancela o boloto de um dado pagamento')),
+             _('Cancela o boleto de um dado pagamento')),
+            ('GenerateBillDuplicate', gtk.STOCK_PRINT, _('Gerar segunda via de Boleto...'),
+             None,
+             _('Gera uma segunda via de boleto')),
             ('GenerateBill', gtk.STOCK_PRINT, _('Gerar boleto...'),
              group.get('payment_print_bill'),
              _('Gera um boleto avulso')),
@@ -301,6 +305,7 @@ class ReceivableApp(SearchableAppWindow):
             one_item and self._is_paid(selected))
         self.PrintBill.set_sensitive(self._can_print_bill(selected))
         self.CancelBill.set_sensitive(self._can_cancel_bill(selected))
+        self.GenerateBillDuplicate.set_sensitive(self._can_cancel_bill(selected))
         self.GenerateBill.set_sensitive(self._can_generate_bill(selected))
         self.CheckBillStatus.set_sensitive(self._can_check_bill_status(selected))
         manager = get_plugin_manager()
@@ -710,6 +715,12 @@ class ReceivableApp(SearchableAppWindow):
         payments = [item.payment for item in items]
         for payment in payments:
             CancelBillEvent.emit(payment)
+
+    def on_GenerateBillDuplicate__activate(self, action):
+        items = self.results.get_selected_rows()
+        payments = [item.payment for item in items]
+        for payment in payments:
+            GenerateDuplicateEvent.emit(payment)
 
     def on_GenerateBill__activate(self, action):
         items = self.results.get_selected_rows()

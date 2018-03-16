@@ -5,6 +5,7 @@ import os
 from iugu.invoice import Invoice
 from kiwi.log import Logger
 from kiwi.ui.dialogs import error
+
 from stoqlib.database.runtime import get_connection
 from stoqlib.database.runtime import new_transaction
 from stoqlib.domain.interfaces import IIndividual, ICompany, IClient
@@ -92,12 +93,13 @@ class Boleto(object):
         log.debug('invoice_canceled: {}, data: {}'.format(invoice_canceled, data))
         conn.close()
 
-    def _save_duplicate(self, payment, data):
+    def _save_duplicate(self, payment, iugu_id, data):
         i = Invoice()
         try:
-            invoice = i.create(data)
+            log.debug('criando duplicata do boleto: {}, data: {}'.format(iugu_id, data))
+            invoice = i.duplicate(iugu_id, data)
             errors = ''
-            log.debug('invoice: {}, data: {}'.format(invoice, data))
+            log.debug('duplicata invoice criada: {}, data: {}'.format(invoice, data))
             if 'errors' not in invoice.keys():
                 trans = new_transaction()
                 bill = PaymentIuguBill.selectOneBy(payment=payment, connection=trans)
@@ -142,7 +144,7 @@ class Boleto(object):
                       'Detalhe: {}'.format(errors))
         except Exception, e:
             msg = str(e)
-            error('Erro: servidor fora do ar', msg)
+            error('Erro: vide detalhes', msg)
 
     def _update_bill(self, payment, data):
         i = Invoice()
@@ -228,17 +230,15 @@ class Boleto(object):
         if payment.method.method_name == 'bill' \
                 and payment.is_inpayment() \
                 and bill:
-            client = IClient(payment.group.payer)
             iugu_id = bill.iugu_id
-            items = self._get_items(payment)
             due_date = payment.due_date.strftime('%Y-%m-%d')
-            payer = self._get_payer_data(client)
-            email = client.person.email
-            data = dict(id=iugu_id, due_date=due_date, email=email,
-                        payer=payer, items=items, ignore_due_email=False,
+            data = dict(id=iugu_id,
+                        due_date=due_date,
+                        ignore_due_email=False,
                         ignore_canceled_email=False,
-                        current_fines_option=True)
-            self._save_duplicate(payment, data)
+                        current_fines_option=True,  # manter os juros
+                        keep_early_payment_discount=False, )
+            self._save_duplicate(payment, iugu_id, data)
 
     def cancel_bill(self, payment, conn):
         """Cancela a fatura

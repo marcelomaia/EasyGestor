@@ -31,10 +31,12 @@ from decimal import Decimal
 from sys import maxint as MAXINT
 
 import pango
+from kiwi.currency import format_price
 from kiwi.datatypes import currency
 from kiwi.enums import SearchFilterPosition
 from kiwi.ui.objectlist import Column, SearchColumn
 from kiwi.ui.search import ComboSearchFilter
+
 from stoq.gui.application import SearchableAppWindow
 from stoqlib.api import api
 from stoqlib.database.orm import AND, IN
@@ -186,6 +188,7 @@ class SalesApp(SearchableAppWindow):
             self.SearchService,
             self.SearchDelivery])
         self.app.launcher.Print.set_tooltip(_("Print a report of these sales"))
+        self._add_avegare_ticket()
 
     def activate(self, params):
         self.check_open_inventory()
@@ -193,6 +196,7 @@ class SalesApp(SearchableAppWindow):
 
     def setup_focus(self):
         self.search.refresh()
+        self._update_avegare_ticket()
 
     def deactivate(self):
         self.uimanager.remove_ui(self.sales_ui)
@@ -285,6 +289,24 @@ class SalesApp(SearchableAppWindow):
                                       label='<b>Total:</b>',
                                       format='<b>%s</b>',
                                       parent=self.get_statusbar_message_area())
+
+    def _add_avegare_ticket(self):
+        statusbar = self.get_statusbar_message_area()
+        self.label = gtk.Label('')
+        self.label.set_use_markup(True)
+        self.label.show()
+        statusbar.pack_start(self.label)
+
+    def _update_avegare_ticket(self):
+        total_array = [p.total for p in self.results]
+        total = sum(total_array)
+        quantity = len(total_array)
+        if not quantity:
+            self.label.set_text(u"")
+            return
+        self.label.set_text(u"<b>Nº de vendas: {quantity}. Ticket médio {ticket}</b>".
+                            format(ticket=format_price(total / quantity), quantity=quantity))
+        self.label.set_use_markup(True)
 
     def _setup_widgets(self):
         self._setup_slaves()
@@ -451,6 +473,7 @@ class SalesApp(SearchableAppWindow):
         if quote:
             self._print_quote_details(quote)
         self.search.refresh()
+        self._update_avegare_ticket()
 
     def increase_quote_quantity(self, sellable_id, quantity=0):
         trans = api.new_transaction()
@@ -483,9 +506,11 @@ class SalesApp(SearchableAppWindow):
 
     def _on_sale_toolbar__sale_returned(self, toolbar, sale):
         self.search.refresh()
+        self._update_avegare_ticket()
 
     def _on_sale_toolbar__sale_edited(self, toolbar, sale):
         self.search.refresh()
+        self._update_avegare_ticket()
 
     def on_results__selection_changed(self, results, sale):
         self._update_toolbar()
@@ -512,6 +537,7 @@ class SalesApp(SearchableAppWindow):
                 self.decrease_quote_quantity(si.sellable.id, si.quantity)
             api.finish_transaction(trans, True)
             self.search.refresh()
+            self._update_avegare_ticket()
 
     def on_SalesGenerateNFe__activate(self, action):
         if yesno(_('Voce realmente quer gerar uma NFe?'),
@@ -522,6 +548,7 @@ class SalesApp(SearchableAppWindow):
             SalesNFeCreate.emit(sale)
             self.conn.commit()
             self.search.refresh()
+            self._update_avegare_ticket()
 
     def on_SalesGenerateNFCe__activate(self, action):
         if yesno(_('Voce realmente quer gerar uma NFCe?'),
@@ -532,6 +559,7 @@ class SalesApp(SearchableAppWindow):
             SalesNFCEEvent.emit(sale)
             self.conn.commit()
             self.search.refresh()
+            self._update_avegare_ticket()
 
     def on_SalesGenerateNFePreview__activate(self, action):
         sale_view = self.results.get_selected()
@@ -540,6 +568,7 @@ class SalesApp(SearchableAppWindow):
         SalesNFePreview.emit(sale)
         self.conn.commit()
         self.search.refresh()
+        self._update_avegare_ticket()
 
     # Loan
     def on_LoanNew__activate(self, action):
@@ -595,6 +624,7 @@ class SalesApp(SearchableAppWindow):
     def on_Edit__activate(self, action):
         self.sale_toolbar.edit()
         self.search.refresh()
+        self._update_avegare_ticket()
 
     def on_EditNotes__activate(self, action):
         if run_dialog(UserPassword, None, self.conn):
@@ -605,6 +635,7 @@ class SalesApp(SearchableAppWindow):
             run_dialog(NoteEditor, get_current_toplevel(), self.conn, sale, 'notes')
             trans.commit(close=True)
             self.search.refresh()
+            self._update_avegare_ticket()
 
     def on_Details__activate(self, action):
         self.sale_toolbar.show_details()
@@ -620,3 +651,12 @@ class SalesApp(SearchableAppWindow):
         with api.trans() as trans:
             sale = trans.get(sale_view.sale)
             sale.invoice_number = value
+
+    def _on_search__search_completed(self, search, results, states):
+        self.search_completed(results, states)
+
+        has_results = len(results)
+        for widget in (self.app.launcher.Print, self.app.launcher.ExportCSV):
+            widget.set_sensitive(has_results)
+        self._save_filter_settings()
+        self._update_avegare_ticket()
