@@ -747,23 +747,22 @@ class ProductRevenueView(Viewable):
         category_description=SellableCategory.q.description,
         qty_sold=const.SUM(SaleItem.q.quantity),
         cost=Sellable.q.cost,
-        stock=ProductStockItem.q.quantity,
         base_price=Sellable.q.base_price,
         tax_aliquot=const.AVG(const.COALESCE(SaleItemIcms.q.p_cred_sn, 0)),
         gross_value=const.SUM(SaleItem.q.quantity * SaleItem.q.price),
         # tax_value=const.COALESCE(const.SUM(SaleItemIcms.q.v_cred_icms_sn), 0),
-        liquid_value=const.SUM(SaleItem.q.quantity * SaleItem.q.price) - (
-            const.COALESCE(const.SUM(SaleItemIcms.q.v_cred_icms_sn), 0)
-            + const.COALESCE(const.SUM(Sellable.q.cost))),
-        profitability=(const.SUM(SaleItem.q.quantity * SaleItem.q.price) - (
-            const.COALESCE(const.SUM(SaleItemIcms.q.v_cred_icms_sn), 0)
-            + const.COALESCE(const.SUM(Sellable.q.cost)))) * 100
+        liquid_value=const.SUM(SaleItem.q.quantity * SaleItem.q.price) +
+                     (const.COALESCE(const.SUM(SaleItemIcms.q.v_cred_icms_sn), 0)
+                      - const.COALESCE(const.SUM(SaleItem.q.quantity * Sellable.q.cost))),
+        profitability=(const.SUM(SaleItem.q.quantity * SaleItem.q.price) + (
+                const.COALESCE(const.SUM(SaleItemIcms.q.v_cred_icms_sn), 0)
+                - const.COALESCE(const.SUM(Sellable.q.cost * SaleItem.q.quantity)))) * 100
                       / const.SUM(SaleItem.q.quantity * SaleItem.q.price)
     )
 
     joins = [
         LEFTJOINOn(None, SaleItem,
-                    Sellable.q.id == SaleItem.q.sellableID),
+                   Sellable.q.id == SaleItem.q.sellableID),
         INNERJOINOn(None, Sale,
                     Sale.q.id == SaleItem.q.saleID),
         LEFTJOINOn(None, Product,

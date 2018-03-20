@@ -111,10 +111,10 @@ class Boleto(object):
                 trans.commit(close=True)
             else:
                 for err in invoice['errors']:
-                    errors += 'Erro: {} {}'.format(err, invoice['errors'][err])
+                    errors += u'Erro: {} {}'.format(err, invoice['errors'][err])
                 log.error(errors)
-                error('Erro ao atualizar boleto, pagamento #{}'.format(payment.id),
-                      'Detalhe: {}'.format(errors))
+                error(u'Erro ao atualizar boleto, pagamento #{}'.format(payment.id),
+                      u'Detalhe: {}'.format(errors))
         except Exception, e:
             msg = str(e)
             error('Erro', msg)
@@ -138,13 +138,13 @@ class Boleto(object):
                 trans.commit(close=True)
             else:
                 for err in invoice['errors']:
-                    errors += 'Erro: {} {}'.format(err, invoice['errors'][err])
+                    errors += u'Erro: {} {}'.format(err, invoice['errors'][err])
                 log.error(errors)
-                error('Erro ao criar boleto, pagamento #{}'.format(payment.id),
-                      'Detalhe: {}'.format(errors))
+                error(u'Erro ao criar boleto, pagamento #{}'.format(payment.id),
+                      u'Detalhe: {}'.format(errors))
         except Exception, e:
             msg = str(e)
-            error('Erro: vide detalhes', msg)
+            error(u'Erro: vide detalhes', msg)
 
     def _update_bill(self, payment, data):
         i = Invoice()
@@ -165,13 +165,13 @@ class Boleto(object):
                 trans.commit(close=True)
             else:
                 for err in invoice['errors']:
-                    errors += 'Erro: {} {}'.format(err, invoice['errors'][err])
+                    errors += u'Erro: {} {}'.format(err, invoice['errors'][err])
                 log.error(errors)
-                error('Erro ao criar boleto, pagamento #{}'.format(payment.id),
-                      'Detalhe: {}'.format(errors))
+                error(u'Erro ao criar boleto, pagamento #{}'.format(payment.id),
+                      u'Detalhe: {}'.format(errors))
         except Exception, e:
             msg = str(e)
-            error('Erro: servidor fora do ar', msg)
+            error(u'Erro: ', msg)
 
     #
     # Public methods
@@ -268,10 +268,10 @@ class Boleto(object):
                 return bills
             else:
                 for err in bills['errors']:
-                    errors += 'Erro: {} {}'.format(err, bills['errors'][err])
+                    errors += u'Erro: {} {}'.format(err, bills['errors'][err])
                 log.error(errors)
-                error('Erro',
-                      'Detalhe: {}'.format(errors))
+                error(u'Erro',
+                      u'Detalhe: {}'.format(errors))
                 return False
         except Exception, e:
             msg = str(e)

@@ -8,6 +8,7 @@ from iugu import exception
 from iugu.version import __version__
 from requests.auth import HTTPBasicAuth
 
+
 class IuguApi(object):
 
     def __init__(self, **kwargs):
@@ -27,7 +28,7 @@ class IuguApi(object):
                                         data=json.dumps(data),
                                         headers=self.headers())
             return json.loads(response.content.decode('utf-8'))
-        #TODO: Create especifics exceptions
+        # TODO: Create especifics exceptions
         except Exception as error:
             raise
 
@@ -47,13 +48,14 @@ class IuguApi(object):
         url = 'https://api.iugu.com/v1/'
         for path in paths:
             url = re.sub(r'/?$', re.sub(r'^/?', '/', str(path)), url)
+        url += '?hl=pt-br'
         return url
+
 
 __default_api__ = None
 
 
 def default_api():
-
     global __default_api__
     if __default_api__ is None:
         try:
@@ -65,7 +67,6 @@ def default_api():
 
 
 def config(**kwargs):
-
     global __default_api__
     __default_api__ = IuguApi(**kwargs)
     return __default_api__
