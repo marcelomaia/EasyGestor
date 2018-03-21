@@ -25,9 +25,9 @@ _APPLICATIONS = {
                 _("Shows payments, orders and other things that will happen "
                   "in the future."),
                  STOQ_CALENDAR_APP),
-    'financial': (_("Financial"),
-                  _("Control accounts and financial transactions."),
-                  STOQ_CALC),
+    # 'financial': (_("Financial"),
+    #               _("Control accounts and financial transactions."),
+    #               STOQ_CALC),
     # 'inventory': (_("Inventory"),
     #               _("Audit and adjust the product stock."),
     #               STOQ_INVENTORY_APP),
