@@ -425,7 +425,7 @@ class SalesApp(SearchableAppWindow):
                 col.visible = True
                 break
 
-        self.results.set_columns(self._columns)
+        # self.results.set_columns(self._columns)
         # Adding summary label again and make it properly aligned with the
         # new columns setup
         self._create_summary_label()
