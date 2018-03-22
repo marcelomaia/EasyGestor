@@ -44,6 +44,35 @@ class Boleto(object):
         items_data.append(item_data)
         return items_data
 
+    def _get_items_for_duplicate(self, payment, iugu_id):
+        """
+        :param payment: Payment object
+        :param iugu_id: invoice id str format
+        :return:
+        """
+        items_data = []
+        price = getattr(payment, u'value')
+        description = getattr(payment, u'description')
+        notes = getattr(payment, u'notes')
+        msg = "{}".format(description)
+        invoice = Invoice()
+        bill = invoice.search(iugu_id)
+        log.debug('verificadndo boleto para gerar duplicata: {}'.format(bill))
+        try:
+            if not bill['items'][0]['id']:
+                return None
+        except:
+            return None
+        if notes:
+            msg = "{} ; {}".format(description, notes)
+        item_data = {
+            'id': bill['items'][0]['id'],
+            'description': msg,
+            'quantity': 1,
+            'price_cents': int(float(price * 100))}
+        items_data.append(item_data)
+        return items_data
+
     def _get_client_address(self, client):
         """
         extract address from a client
@@ -180,6 +209,7 @@ class Boleto(object):
     def is_paid(self, bill_id):
         invoice = Invoice()
         bill = invoice.search(bill_id)
+        log.debug('verificadndo boleto pago: {}'.format(bill))
         if bill['status'] == 'paid':
             return bill['paid_cents']
         return False
@@ -226,16 +256,24 @@ class Boleto(object):
         """Gera segunda via da fatura
         https://dev.iugu.com/v1.0/reference#gerar-segunda-via
         """
+        # pegar o payment do iugu e substituir os ids. :D
+        # no caso como é so um item, fica facil
         bill = PaymentIuguBill.selectOneBy(payment=payment, connection=conn)
         if payment.method.method_name == 'bill' \
                 and payment.is_inpayment() \
                 and bill:
             iugu_id = bill.iugu_id
             due_date = payment.due_date.strftime('%Y-%m-%d')
+            items = self._get_items_for_duplicate(payment, iugu_id)
+            if not items:
+                error(u'Erro',
+                      u'Detalhe: Não foi possível recuperar os itens da fatura.')
+                return
             data = dict(id=iugu_id,
                         due_date=due_date,
                         ignore_due_email=False,
                         ignore_canceled_email=False,
+                        items=items,
                         current_fines_option=True,  # manter os juros
                         keep_early_payment_discount=False, )
             self._save_duplicate(payment, iugu_id, data)
