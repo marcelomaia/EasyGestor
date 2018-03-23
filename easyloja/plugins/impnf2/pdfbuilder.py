@@ -639,6 +639,20 @@ def gerencial_report(open_date, close_date, conn):
         AND(TillFiscalOperationsView.q.date >= open_date,
             TillFiscalOperationsView.q.date <= close_date),
         connection=conn)
+
+    # detalhamento de cartao
+    d_card = {}
+    for p in PersonAdaptToCreditProvider.selectBy(connection=conn):
+        total_cartao = CardPaymentView.select(AND(CardPaymentView.q.open_date >= open_date,
+                                                  CardPaymentView.q.open_date <= close_date,
+                                                  CardPaymentView.q.provider_id == p.id,
+                                                  IN(CardPaymentView.q.status,
+                                                     (Payment.STATUS_PAID, Payment.STATUS_PENDING))
+                                                  ),
+                                              connection=conn).sum('value')
+        if total_cartao:
+            d_card[p.person.name] = total_cartao
+
     quantidade_entrada = {}
 
     # contadores por tipo de pagamento
@@ -674,6 +688,15 @@ def gerencial_report(open_date, close_date, conn):
                            format(total=payment_total),
                            header_items_l))
     story.append(ReportLine())
+    if d_card:
+        card_details = sorted([(key, value) for (key, value) in d_card.items()])
+        story.append(Paragraph('DETALHAMENTO DOS CARTOES',
+                               header_items_c))
+        for payment in card_details:
+            story.append(Paragraph('{method} : <b>{value}</b>'.format(method=payment[0],
+                                                                      value=payment[1]),
+                                   header_items_l))
+        story.append(ReportLine())
 
     # Sangrias
     despesa_src_str = '%%%s%%' % 'Despesa:'
