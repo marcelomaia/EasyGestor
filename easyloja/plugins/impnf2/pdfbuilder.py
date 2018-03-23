@@ -11,12 +11,16 @@ from reportlab.platypus.paragraph import Paragraph
 from stoqlib.database.orm import AND, OR, LIKE
 from stoqlib.database.runtime import get_current_user, get_current_branch, get_current_station, get_connection
 from stoqlib.domain.interfaces import IIndividual, ICompany, ISalesPerson
+from stoqlib.domain.payment.payment import Payment
+from stoqlib.domain.payment.views import CardPaymentView
+from stoqlib.domain.person import PersonAdaptToCreditProvider
 from stoqlib.domain.sale import Sale
 from stoqlib.gui.dialogs.tillhistory import TillFiscalOperationsView
 from stoqlib.lib.formatters import format_phone_number
 from stoqlib.lib.osutils import get_application_dir
 from stoqlib.lib.parameters import sysparam
 from stoqlib.reporting.base.flowables import ReportLine
+from stoqlib.database.orm import IN
 
 width_doc = sysparam(get_connection()).IMPNF_WIDTH * mm
 height_doc = sysparam(get_connection()).IMPNF_HEIGHT * mm
@@ -375,6 +379,20 @@ def salesperson_financial_report(open_date, close_date, conn):
         else:
             quantidade_entrada[th.method_name] = th.value
 
+    # detalhamento de cartao
+    d_card = {}
+    for p in PersonAdaptToCreditProvider.selectBy(connection=conn):
+        total_cartao = CardPaymentView.select(AND(CardPaymentView.q.open_date >= open_date,
+                                                  CardPaymentView.q.open_date <= close_date,
+                                                  CardPaymentView.q.provider_id == p.id,
+                                                  CardPaymentView.q.station_id == station.id,
+                                                  IN(CardPaymentView.q.status,
+                                                     (Payment.STATUS_PAID, Payment.STATUS_PENDING))
+                                                  ),
+                                              connection=conn).sum('value')
+        if total_cartao:
+            d_card[p.person.name] = total_cartao
+
     total = 0
     discounts = 0
     # total de valor
@@ -418,7 +436,16 @@ def salesperson_financial_report(open_date, close_date, conn):
                            format(total=payment_total),
                            header_items_l))
     story.append(ReportLine())
-
+    # card details
+    if d_card:
+        card_details = sorted([(key, value) for (key, value) in d_card.items()])
+        story.append(Paragraph('DETALHAMENTO DOS CARTOES',
+                               header_items_c))
+        for payment in card_details:
+            story.append(Paragraph('{method} : <b>{value}</b>'.format(method=payment[0],
+                                                                      value=payment[1]),
+                                   header_items_l))
+        story.append(ReportLine())
     # Sangrias
     despesa_src_str = '%%%s%%' % 'Despesa:'
     quantia_removida_src_str = '%%%s%%' % 'Quantia removida'

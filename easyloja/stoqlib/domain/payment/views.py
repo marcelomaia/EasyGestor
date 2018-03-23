@@ -48,6 +48,7 @@ from stoqlib.domain.person import Person, PersonAdaptToCreditProvider, PersonAda
     PersonAdaptToBranch, PersonAdaptToClient
 from stoqlib.domain.purchase import PurchaseOrder
 from stoqlib.domain.sale import Sale
+from stoqlib.domain.station import BranchStation
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.translation import stoqlib_gettext
 
@@ -344,6 +345,7 @@ class CardPaymentView(Viewable):
         paid_date=Payment.q.paid_date,
         open_date=Payment.q.open_date,
         sale_id=Sale.q.id,
+        station_id=BranchStation.q.id,
         sale_confirm_date=Sale.q.confirm_date,
         renegotiation_id=PaymentRenegotiation.q.id,
         status=Payment.q.status,
@@ -368,6 +370,10 @@ class CardPaymentView(Viewable):
                    Sale.q.groupID == PaymentGroup.q.id),
         LEFTJOINOn(None, PaymentRenegotiation,
                    PaymentRenegotiation.q.groupID == PaymentGroup.q.id),
+        LEFTJOINOn(None, PersonAdaptToBranch,
+                   Sale.q.branchID == PersonAdaptToBranch.q.id),
+        LEFTJOINOn(None, BranchStation,
+                   PersonAdaptToBranch.q.id == BranchStation.q.branchID),
     ]
 
     def get_status_str(self):
