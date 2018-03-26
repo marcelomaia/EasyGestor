@@ -68,6 +68,7 @@ class ClientEditor(BasePersonRoleEditor):
         client = IClient(person, None)
         if client is None:
             client = person.addFacet(IClient, connection=conn)
+            client.credit_limit = 9999
         return client
 
     def setup_slaves(self):
