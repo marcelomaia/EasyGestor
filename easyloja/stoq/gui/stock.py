@@ -58,7 +58,7 @@ from stoqlib.gui.printing import print_report
 from stoqlib.gui.search.loansearch import LoanItemSearch, LoanSearch
 from stoqlib.gui.search.productsearch import (ProductSearchQuantity,
                                               ProductStockSearch,
-                                              ProductClosedStockSearch, ProductSerialNumberSearch)
+                                              ProductClosedStockSearch, ProductSerialNumberSearch, ProductsInitialStock)
 from stoqlib.gui.search.purchasesearch import PurchasedItemsSearch
 from stoqlib.gui.search.receivingsearch import PurchaseReceivingSearch
 from stoqlib.gui.search.stockdecreasesearch import StockDecreaseSearch
@@ -128,6 +128,7 @@ class StockApp(SearchableAppWindow):
              group.get('search_closed_stock_items'),
              _("Search for closed stock items")),
             ("LoanSearch", None, _("Loans...")),
+            ("SearchInitialStock", None, _("Pesquisa de estoque inicial...")),
             ("PrintBarcode", None, _("Print barcode")),
             ("LoanSearchItems", None, _("Loan items...")),
             ("ProductMenu", None, _("Product")),
@@ -541,6 +542,9 @@ class StockApp(SearchableAppWindow):
 
     def on_ProductGrid__activate(self, action):
         self.run_dialog(GridSearch, self.conn)
+
+    def on_SearchInitialStock__activate(self, action):
+        self.run_dialog(ProductsInitialStock, self.conn)
 
     def on_LoanSearch__activate(self, action):
         self.run_dialog(LoanSearch, self.conn)

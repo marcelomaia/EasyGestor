@@ -56,6 +56,8 @@
         <menuitem action="SearchStockItems"/>
         <menuitem action="SearchClosedStockItems"/>
         <separator/>
+        <menuitem action="SearchInitialStock"/>
+        <separator/>
         <menuitem action="LoanSearch"/>
         <menuitem action="LoanSearchItems"/>
       </placeholder>

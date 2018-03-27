@@ -24,6 +24,7 @@
 """ Search dialogs for product objects """
 
 import gtk
+from datetime import datetime
 from decimal import Decimal
 from pango import ELLIPSIZE_END
 
@@ -37,13 +38,13 @@ from stoqlib.api import api
 from stoqlib.database.orm import AND
 from stoqlib.domain.events import ResultListEvent
 from stoqlib.domain.person import PersonAdaptToBranch
-from stoqlib.domain.product import Product, ProductSerialNumber
+from stoqlib.domain.product import Product, ProductSerialNumber, ProductInitialStock
 from stoqlib.domain.sale import SaleItem, Sale
 from stoqlib.domain.sellable import Sellable
 from stoqlib.domain.views import (ProductQuantityView, ProductRevenueView,
                                   ProductFullStockItemView, SoldItemView,
                                   ProductFullWithClosedStockView,
-                                  ProductClosedStockView, ProductFullStockView)
+                                  ProductClosedStockView, ProductFullStockView, ProductInitialStockView)
 from stoqlib.gui.base.dialogs import run_dialog, get_current_toplevel
 from stoqlib.gui.base.gtkadds import change_button_appearance
 from stoqlib.gui.base.search import (SearchDialog, SearchEditor,
@@ -805,6 +806,51 @@ class ProductsRevenueSearch(SearchDialog):
                 Column('profitability', title=_('Lucratividade %'), format_func=format_data,
                        data_type=Decimal)
                 ]
+
+    #
+    # Callbacks
+    #
+
+    def _on_export_csv_button__clicked(self, widget):
+        run_dialog(CSVExporterDialog, self, self.conn, self.search_table,
+                   self.results)
+
+
+class ProductsInitialStock(SearchDialog):
+    title = _('Busca de estoque inicial')
+    size = (950, 450)
+    table = search_table = ProductInitialStockView
+    advanced_search = False
+
+    def __init__(self, conn):
+        super(ProductsInitialStock, self).__init__(conn)
+
+    def create_filters(self):
+        self.set_text_field_columns(['sellable_description'])
+
+    def _on_results__has_rows(self, widget, has_rows):
+        self.csv_button.set_sensitive(has_rows)
+
+    #
+    # SearchEditor Hooks
+    #
+
+    def setup_widgets(self):
+        self.csv_button = self.add_button(label=_(u'Export CSV...'))
+        self.csv_button.connect('clicked', self._on_export_csv_button__clicked)
+        self.csv_button.show()
+        self.csv_button.set_sensitive(False)
+        self.results.connect('has_rows', self._on_results__has_rows)
+
+    def get_columns(self):
+        return [SearchColumn('sellable_description', title=_('Descrição'), data_type=str,
+                             width=150),
+                Column('initial_quantity', title=_('Quantidade inicial'),
+                       data_type=float, width=130),
+                SearchColumn('initial_date', title=_('Data inicial'), data_type=datetime,
+                             width=300),
+                SearchColumn('branch_description', title=_('Filial'), data_type=str,
+                             width=150)]
 
     #
     # Callbacks

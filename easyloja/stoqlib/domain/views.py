@@ -37,7 +37,7 @@ from stoqlib.domain.product import (Product,
                                     ProductAdaptToStorable,
                                     ProductStockItem,
                                     ProductHistory,
-                                    ProductComponent, ProductSupplierInfo)
+                                    ProductComponent, ProductSupplierInfo, ProductInitialStock)
 from stoqlib.domain.production import ProductionOrder, ProductionItem
 from stoqlib.domain.purchase import (Quotation, QuoteGroup, PurchaseOrder,
                                      PurchaseItem)
@@ -1313,3 +1313,24 @@ class SalesPerSalesPersonView(Viewable):
                                      join=cls.joins,
                                      having=having,
                                      ns=cls.columns)
+
+
+class ProductInitialStockView(Viewable):
+    columns = dict(id=ProductInitialStock.q.id,
+                   initial_date=ProductInitialStock.q.initial_date,
+                   initial_quantity=ProductInitialStock.q.initial_quantity,
+                   sellable_description=Sellable.q.description,
+                   branch_description=Person.q.name, )
+
+    joins = [
+        LEFTJOINOn(None, ProductAdaptToStorable,
+                   ProductAdaptToStorable.q.id == ProductInitialStock.q.storableID),
+        LEFTJOINOn(None, Product,
+                   Product.q.id == ProductAdaptToStorable.q.originalID),
+        LEFTJOINOn(None, Sellable,
+                   Sellable.q.id == Product.q.sellableID),
+        LEFTJOINOn(None, PersonAdaptToBranch,
+                   PersonAdaptToBranch.q.id == ProductInitialStock.q.branchID),
+        LEFTJOINOn(None, Person,
+                   Person.q.id == PersonAdaptToBranch.q.originalID),
+    ]
