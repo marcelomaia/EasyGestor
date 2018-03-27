@@ -23,7 +23,7 @@ from stoqlib.domain.product import (ProductSupplierInfo, Product,
                                     ProductComponent,
                                     ProductQualityTest, GroupAttribute, Attribute, _ProductAttribute, ProductStockItem,
                                     ProductAttribute,
-                                    ProductSerialNumber, ProductAdaptToStorable)
+                                    ProductSerialNumber, ProductAdaptToStorable, ProductInitialStock)
 from stoqlib.domain.sellable import (Sellable,
                                      SellableTaxConstant, SellableCategory)
 from stoqlib.domain.views import ProductFullStockView
@@ -1249,7 +1249,11 @@ class LightInitialStockDialog(InitialStockDialog):
                 storable=self.storable.id,
                 branch=branch,
                 connection=self.trans)
-
+            initial_stock = ProductInitialStock(
+                storable=self.storable.id,
+                branch=branch,
+                initial_quantity=quantity,
+                connection=self.trans)
         # If previously lacked quantity change the status of the sellable
         if not stock_item.quantity:
             sellable = product.sellable

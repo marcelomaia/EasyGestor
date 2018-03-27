@@ -563,6 +563,22 @@ class ProductStockItem(Domain):
         self.stock_cost = total_cost / total_items
 
 
+class ProductInitialStock(Domain):
+    """Class that makes a reference to the product initial stock of a
+    certain branch company.
+
+    @ivar initial_quantity: number of storables in the stock item
+    @ivar branch: the branch this stock item belongs to
+    @ivar storable: the storable the stock item refers to
+    @ivar initial_date: the date started
+    """
+
+    initial_quantity = QuantityCol(default=0)
+    initial_date = DateTimeCol(default=datetime.datetime.now())
+    branch = ForeignKey('PersonAdaptToBranch')
+    storable = ForeignKey('ProductAdaptToStorable')
+
+
 #
 # Adapters
 #

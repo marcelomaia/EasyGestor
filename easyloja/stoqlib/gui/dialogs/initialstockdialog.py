@@ -34,7 +34,8 @@ from kiwi.ui.objectlist import Column
 from kiwi.ui.listdialog import ListSlave
 
 from stoqlib.api import api
-from stoqlib.domain.product import ProductAdaptToStorable
+from stoqlib.database.runtime import get_current_branch
+from stoqlib.domain.product import ProductAdaptToStorable, ProductInitialStock
 from stoqlib.gui.editors.baseeditor import BaseEditor, BatchEditor
 from stoqlib.lib.message import yesno
 from stoqlib.lib.translation import stoqlib_gettext
@@ -182,7 +183,13 @@ class BatchInitialStock(BatchEditor):
     def _add_initial_stock(self):
         trans = api.new_transaction()
         for item in self._storables:
-            self._validate_initial_stock_quantity(item, trans)
+            if self._validate_initial_stock_quantity(item, trans):
+                storable = trans.get(item.obj)
+                initial_stock = ProductInitialStock(
+                    storable=storable,
+                    branch=self._branch,
+                    initial_quantity=item.initial_stock,
+                    connection=trans)
 
         api.finish_transaction(trans, True)
         trans.close()
@@ -192,6 +199,8 @@ class BatchInitialStock(BatchEditor):
         if item.initial_stock is not ValueUnset and positive:
             storable = trans.get(item.obj)
             storable.increase_stock(item.initial_stock, self._branch)
+            return True
+        return False
 
     def get_input_value(self, message, parent=None, min=0, max=9999):
         d = gtk.MessageDialog(parent,
