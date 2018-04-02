@@ -1,0 +1,12 @@
+zope.interface
+psycopg2
+dateutils
+twisted
+pyBarcode
+xmltodict
+Reportlab
+Mako
+pypoppler
+Serial
+Suds
+Netifaces
