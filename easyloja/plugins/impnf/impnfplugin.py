@@ -17,7 +17,6 @@ class ImpnfPlugin():
     has_product_slave = False
 
     def activate(self):
-        environ.add_resource('glade', os.path.join(plugin_root, 'glade'))
         self.ui = ImpnfUI()
 
     def get_migration(self):
