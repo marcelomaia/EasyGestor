@@ -1334,3 +1334,116 @@ class ProductInitialStockView(Viewable):
         LEFTJOINOn(None, Person,
                    Person.q.id == PersonAdaptToBranch.q.originalID),
     ]
+
+
+class SaleCounter(Viewable):
+    columns = dict(
+        id=SaleItem.q.id,
+        code=Sellable.q.code,
+        barcode=Sellable.q.barcode,
+        price=SaleItem.q.price,
+        description=Sellable.q.description,
+        product_id=Product.q.id,
+        location=Product.q.location,
+        open_date=Sale.q.open_date,
+        status=Sale.q.status,
+        category_description=SellableCategory.q.description,
+        quantity=ProductStockItem.q.quantity,
+        base_price=Sellable.q.base_price,
+        unit=SellableUnit.q.description,
+        minimum=ProductAdaptToStorable.q.minimum_quantity,
+        maximum=ProductAdaptToStorable.q.maximum_quantity,
+        ncm=Product.q.ncm,
+    )
+
+    joins = [
+        # SaleItem
+        INNERJOINOn(None, Sellable,
+                    Sellable.q.id == SaleItem.q.sellableID),
+        LEFTJOINOn(None, SellableCategory,
+                   SellableCategory.q.id == Sellable.q.categoryID),
+        # Sale
+        LEFTJOINOn(None, Sale,
+                   Sale.q.id == SaleItem.q.saleID),
+        # Product
+        LEFTJOINOn(None, Product,
+                   Product.q.sellableID == Sellable.q.id),
+        # SellableUnit
+        INNERJOINOn(None, SellableUnit,
+                    SellableUnit.q.id == Sellable.q.unitID),
+        # Product Stock Item
+        LEFTJOINOn(None, ProductAdaptToStorable,
+                   ProductAdaptToStorable.q.originalID == Product.q.id),
+        LEFTJOINOn(None, ProductStockItem,
+                   ProductStockItem.q.storableID ==
+                   ProductAdaptToStorable.q.id),
+    ]
+
+
+class StockIncreaseDecreaseBaseView(Viewable):
+    columns = dict(
+        id=Sellable.q.id,
+        code=Sellable.q.code,
+        barcode=Sellable.q.barcode,
+        description=Sellable.q.description,
+        product_id=Product.q.id,
+        location=Product.q.location,
+        category_description=SellableCategory.q.description,
+        unit=SellableUnit.q.description,
+        minimum=ProductAdaptToStorable.q.minimum_quantity,
+        maximum=ProductAdaptToStorable.q.maximum_quantity,
+        ncm=Product.q.ncm)
+
+    joins = [
+        LEFTJOINOn(None, SellableCategory,
+                   SellableCategory.q.id == Sellable.q.categoryID),
+        # Product
+        LEFTJOINOn(None, Product,
+                   Product.q.sellableID == Sellable.q.id),
+        # SellableUnit
+        LEFTJOINOn(None, SellableUnit,
+                   SellableUnit.q.id == Sellable.q.unitID),
+        # Product Stock Item
+        LEFTJOINOn(None, ProductAdaptToStorable,
+                   ProductAdaptToStorable.q.originalID == Product.q.id),
+        LEFTJOINOn(None, ProductStockItem,
+                   ProductStockItem.q.storableID ==
+                   ProductAdaptToStorable.q.id)]
+
+
+class StockIncreaseView(StockIncreaseDecreaseBaseView):
+    columns = StockIncreaseDecreaseBaseView.columns.copy()
+    columns.update(dict(
+        confirm_date=StockIncrease.q.confirm_date,
+        branch_id=PersonAdaptToBranch.q.id,
+        quantity=StockIncreaseItem.q.quantity))
+
+    joins = StockIncreaseDecreaseBaseView.joins[:]
+    joins.append(INNERJOINOn(None, StockIncreaseItem,
+                             StockIncreaseItem.q.sellableID ==
+                             Sellable.q.id))
+    joins.append(LEFTJOINOn(None, StockIncrease,
+                            StockIncrease.q.id ==
+                            StockIncreaseItem.q.stock_increaseID))
+    joins.append(LEFTJOINOn(None, PersonAdaptToBranch,
+                            PersonAdaptToBranch.q.id ==
+                            StockIncrease.q.branchID))
+
+
+class StockDecreaseView(StockIncreaseDecreaseBaseView):
+    columns = StockIncreaseDecreaseBaseView.columns.copy()
+    columns.update(dict(
+        confirm_date=StockDecrease.q.confirm_date,
+        branch_id=PersonAdaptToBranch.q.id,
+        quantity=StockDecreaseItem.q.quantity))
+
+    joins = StockIncreaseDecreaseBaseView.joins[:]
+    joins.append(INNERJOINOn(None, StockDecreaseItem,
+                             StockDecreaseItem.q.sellableID ==
+                             Sellable.q.id))
+    joins.append(LEFTJOINOn(None, StockDecrease,
+                            StockDecrease.q.id ==
+                            StockDecreaseItem.q.stock_decreaseID))
+    joins.append(LEFTJOINOn(None, PersonAdaptToBranch,
+                            PersonAdaptToBranch.q.id ==
+                            StockDecrease.q.branchID))
