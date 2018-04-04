@@ -1336,19 +1336,21 @@ class ProductInitialStockView(Viewable):
     ]
 
 
-class SaleCounter(Viewable):
+class SaleCounterView(Viewable):
     columns = dict(
         id=SaleItem.q.id,
         code=Sellable.q.code,
         barcode=Sellable.q.barcode,
         price=SaleItem.q.price,
         description=Sellable.q.description,
+        branch=Sale.q.branchID,
         product_id=Product.q.id,
         location=Product.q.location,
         open_date=Sale.q.open_date,
+        confirm_date=Sale.q.confirm_date,
         status=Sale.q.status,
         category_description=SellableCategory.q.description,
-        quantity=ProductStockItem.q.quantity,
+        quantity=SaleItem.q.quantity,
         base_price=Sellable.q.base_price,
         unit=SellableUnit.q.description,
         minimum=ProductAdaptToStorable.q.minimum_quantity,
@@ -1366,7 +1368,7 @@ class SaleCounter(Viewable):
         LEFTJOINOn(None, Sale,
                    Sale.q.id == SaleItem.q.saleID),
         # Product
-        LEFTJOINOn(None, Product,
+        INNERJOINOn(None, Product,
                    Product.q.sellableID == Sellable.q.id),
         # SellableUnit
         INNERJOINOn(None, SellableUnit,
@@ -1378,6 +1380,8 @@ class SaleCounter(Viewable):
                    ProductStockItem.q.storableID ==
                    ProductAdaptToStorable.q.id),
     ]
+    clause = OR(Sale.q.status == Sale.STATUS_CONFIRMED,
+                Sale.q.status == Sale.STATUS_PAID)
 
 
 class StockIncreaseDecreaseBaseView(Viewable):
@@ -1415,7 +1419,7 @@ class StockIncreaseView(StockIncreaseDecreaseBaseView):
     columns = StockIncreaseDecreaseBaseView.columns.copy()
     columns.update(dict(
         confirm_date=StockIncrease.q.confirm_date,
-        branch_id=PersonAdaptToBranch.q.id,
+        branch=PersonAdaptToBranch.q.id,
         quantity=StockIncreaseItem.q.quantity))
 
     joins = StockIncreaseDecreaseBaseView.joins[:]
@@ -1434,7 +1438,7 @@ class StockDecreaseView(StockIncreaseDecreaseBaseView):
     columns = StockIncreaseDecreaseBaseView.columns.copy()
     columns.update(dict(
         confirm_date=StockDecrease.q.confirm_date,
-        branch_id=PersonAdaptToBranch.q.id,
+        branch=PersonAdaptToBranch.q.id,
         quantity=StockDecreaseItem.q.quantity))
 
     joins = StockIncreaseDecreaseBaseView.joins[:]
