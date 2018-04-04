@@ -58,15 +58,19 @@ class Boleto(object):
         invoice = Invoice()
         bill = invoice.search(iugu_id)
         log.debug('verificadndo boleto para gerar duplicata: {}'.format(bill))
+        bill_id = ''
+        if notes:
+            msg = "{} ; {}".format(description, notes)
         try:
             if not bill['items'][0]['id']:
                 return None
+            for b in bill['items']:
+                if b['description'] == msg:
+                    bill_id = b['id']
         except:
             return None
-        if notes:
-            msg = "{} ; {}".format(description, notes)
         item_data = {
-            'id': bill['items'][0]['id'],
+            'id': bill_id,
             'description': msg,
             'quantity': 1,
             'price_cents': int(float(price * 100))}
