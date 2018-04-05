@@ -49,6 +49,7 @@ from stoqlib.domain.sellable import (Sellable, SellableUnit,
 from stoqlib.domain.service import Service
 from stoqlib.domain.stockdecrease import (StockDecrease, StockDecreaseItem)
 from stoqlib.domain.stockincrease import StockIncreaseItem, StockIncrease
+from stoqlib.domain.system import TransactionEntry
 from stoqlib.domain.taxes import (SaleItemIcms, ProductTaxTemplate, ProductIcmsTemplate, ProductIpiTemplate,
                                   ProductPisTemplate, ProductCofinsTemplate)
 from stoqlib.lib.parameters import sysparam
@@ -1369,7 +1370,7 @@ class SaleCounterView(Viewable):
                    Sale.q.id == SaleItem.q.saleID),
         # Product
         INNERJOINOn(None, Product,
-                   Product.q.sellableID == Sellable.q.id),
+                    Product.q.sellableID == Sellable.q.id),
         # SellableUnit
         INNERJOINOn(None, SellableUnit,
                     SellableUnit.q.id == Sellable.q.unitID),
@@ -1451,3 +1452,28 @@ class StockDecreaseView(StockIncreaseDecreaseBaseView):
     joins.append(LEFTJOINOn(None, PersonAdaptToBranch,
                             PersonAdaptToBranch.q.id ==
                             StockDecrease.q.branchID))
+
+
+class CreatedProductView(Viewable):
+    """
+    Pesquisa por uma lista de produtos criados entre um intervalo de data
+    """
+    columns = dict(
+        id=ProductStockItem.q.id,
+        product_id=Product.q.id,
+        branch=ProductStockItem.q.branchID,
+        description=Sellable.q.description,
+        create_date=TransactionEntry.q.te_time,
+    )
+
+    joins = [
+        LEFTJOINOn(None, ProductAdaptToStorable,
+                   ProductAdaptToStorable.q.id == ProductStockItem.q.storableID),
+        LEFTJOINOn(None, Product,
+                   Product.q.id == ProductAdaptToStorable.q.originalID),
+        LEFTJOINOn(None, Sellable,
+                   Sellable.q.id == Product.q.sellableID),
+        LEFTJOINOn(None, TransactionEntry,
+                   TransactionEntry.q.id == ProductStockItem.q.te_created)
+    ]
+    clause = TransactionEntry.q.type == TransactionEntry.CREATED
