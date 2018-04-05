@@ -1462,6 +1462,7 @@ class CreatedProductView(Viewable):
         id=ProductStockItem.q.id,
         product_id=Product.q.id,
         branch=ProductStockItem.q.branchID,
+        current_quantity=ProductStockItem.q.quantity,
         description=Sellable.q.description,
         create_date=TransactionEntry.q.te_time,
     )
