@@ -1357,6 +1357,8 @@ class SaleCounterView(Viewable):
         minimum=ProductAdaptToStorable.q.minimum_quantity,
         maximum=ProductAdaptToStorable.q.maximum_quantity,
         ncm=Product.q.ncm,
+        total=const.COALESCE(const.SUM(SaleItem.q.quantity *
+                                       SaleItem.q.price), 0)
     )
 
     joins = [
@@ -1461,9 +1463,12 @@ class CreatedProductView(Viewable):
     columns = dict(
         id=ProductStockItem.q.id,
         product_id=Product.q.id,
+        ncm=Product.q.ncm,
+        unit=SellableUnit.q.description,
         branch=ProductStockItem.q.branchID,
         current_quantity=ProductStockItem.q.quantity,
         description=Sellable.q.description,
+        base_price=Sellable.q.base_price,
         create_date=TransactionEntry.q.te_time,
     )
 
@@ -1474,6 +1479,8 @@ class CreatedProductView(Viewable):
                    Product.q.id == ProductAdaptToStorable.q.originalID),
         LEFTJOINOn(None, Sellable,
                    Sellable.q.id == Product.q.sellableID),
+        LEFTJOINOn(None, SellableUnit,
+                   SellableUnit.q.id == Sellable.q.unitID),
         LEFTJOINOn(None, TransactionEntry,
                    TransactionEntry.q.id == ProductStockItem.q.te_created)
     ]

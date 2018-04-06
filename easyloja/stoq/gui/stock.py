@@ -23,11 +23,11 @@
 ##
 """ Main gui definition for stock application.  """
 
-import datetime
 import decimal
 import gettext
 import gtk
 
+import datetime
 import pango
 from kiwi.currency import currency
 from kiwi.datatypes import converter, ValidationError
@@ -39,7 +39,7 @@ from stoq.gui.application import SearchableAppWindow
 from stoqlib.api import api
 from stoqlib.database.orm import AND
 from stoqlib.database.orm import OR
-from stoqlib.database.runtime import new_transaction
+from stoqlib.database.runtime import new_transaction, get_current_branch
 from stoqlib.domain.interfaces import IBranch
 from stoqlib.domain.person import Person
 from stoqlib.domain.product import ProductHistory
@@ -48,10 +48,11 @@ from stoqlib.domain.transfer import TransferOrderItem, TransferOrder
 from stoqlib.domain.views import ProductFullStockView
 from stoqlib.exceptions import DatabaseInconsistency
 from stoqlib.gui.base.dialogs import run_dialog, get_current_toplevel
+from stoqlib.gui.dialogs.datepicker import PaymentRevenueDialog2
 from stoqlib.gui.dialogs.initialstockdialog import BatchInitialStock
 from stoqlib.gui.dialogs.productimage import ProductImageViewer
 from stoqlib.gui.dialogs.productstockdetails import ProductStockHistoryDialog
-from stoqlib.gui.editors.producteditor import ProductStockEditor, GridSearch
+from stoqlib.gui.editors.producteditor import ProductStockEditor
 from stoqlib.gui.editors.sellableeditor import BarcodeEditor
 from stoqlib.gui.keybindings import get_accels
 from stoqlib.gui.printing import print_report
@@ -71,6 +72,7 @@ from stoqlib.gui.wizards.stockdecreasewizard import StockDecreaseWizard
 from stoqlib.gui.wizards.stockincreasewizard import StockIncreaseWizard
 from stoqlib.gui.wizards.stocktransferwizard import StockTransferWizard, StockTransfer
 from stoqlib.lib.defaults import sort_sellable_code
+from stoqlib.lib.livroinventario import generate_csv
 from stoqlib.lib.message import warning, yesno
 from stoqlib.reporting.product import SimpleProductReport
 from stoqlib.reporting.transfer_receipt import TransferOrderReceipt
@@ -101,10 +103,10 @@ class StockApp(SearchableAppWindow):
              group.get('transfer_product')),
             ('NewStockDecrease', gtk.STOCK_DELETE, _('Stock decrease...')),
             ('NewStockIncrease', gtk.STOCK_ADD, _('Stock increase...')),
+            ("LivroInventario", gtk.STOCK_ADD, _(u"Livro Inventário")),
             ('StockInitial', gtk.STOCK_GO_UP, _('Register initial stock...')),
             ("LoanNew", None, _("Loan...")),
             ("LoanClose", None, _("Close loan...")),
-            ("ProductGrid", None, _("Grade de produtos")),
             ("SearchPurchaseReceiving", None, _("Received purchases..."),
              group.get('search_receiving'),
              _("Search for received purchase orders")),
@@ -540,8 +542,12 @@ class StockApp(SearchableAppWindow):
         trans.close()
         self.search.refresh()
 
-    def on_ProductGrid__activate(self, action):
-        self.run_dialog(GridSearch, self.conn)
+    def on_LivroInventario__activate(self, action):
+        past_date = self.run_dialog(PaymentRevenueDialog2, self.conn)
+        if past_date:
+            current_branch = get_current_branch(self.conn)
+            csv = generate_csv(current_branch, past_date)
+            print(csv)
 
     def on_SearchInitialStock__activate(self, action):
         self.run_dialog(ProductsInitialStock, self.conn)
