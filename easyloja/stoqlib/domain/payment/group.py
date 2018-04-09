@@ -38,7 +38,7 @@ from kiwi.datatypes import currency
 from stoqlib.database.orm import AND, IN
 from stoqlib.database.orm import IntCol, ForeignKey
 from stoqlib.database.orm import SingleJoin
-from stoqlib.database.runtime import new_transaction
+from stoqlib.database.runtime import new_transaction, get_connection
 from stoqlib.domain.base import Domain
 from stoqlib.domain.interfaces import IContainer
 from stoqlib.domain.payment.payment import Payment
@@ -178,21 +178,25 @@ class PaymentGroup(Domain):
                 payment.pay()
 
     def cancel(self):
+        from stoqlib.domain.payment.method import PaymentMethod
+
         """Cancel all payments in the payment group
         """
         assert self.can_cancel(), self.get_status_string()
-
+        conn = get_connection()
         for payment in self.get_pending_payments():
             payment.cancel()
-            trans = new_transaction()
-            TillEntry(date=datetime.now(),
-                      description='CANCELAMENTO ' + payment.description,
-                      value=payment.value * -1,
-                      till=Till.get_current(self.get_connection()),
-                      payment=payment,
-                      connection=trans)
-            trans.commit(close=True)
-
+            # so devolve pro caixa se for no modo dinheiro
+            if payment.method == PaymentMethod.get_by_description(conn, 'money'):
+                trans = new_transaction()
+                TillEntry(date=datetime.now(),
+                          description='CANCELAMENTO ' + payment.description,
+                          value=payment.value * -1,
+                          till=Till.get_current(self.get_connection()),
+                          payment=payment,
+                          connection=trans)
+                trans.commit(close=True)
+        conn.close()
         self.status = PaymentGroup.STATUS_CANCELLED
 
     def get_total_paid(self):
