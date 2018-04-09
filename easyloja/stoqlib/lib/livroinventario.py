@@ -34,12 +34,13 @@ def generate_csv(current_branch, past_date):
                                                       (SaleCounterView.q.product_id == prod.product_id,
                                                        SaleCounterView.q.branch == current_branch,
                                                        SaleCounterView.q.open_date >= past_date))]
-        # lista de todas as vendas até a determinada data (modificações antes) p/ calcular o preço medio do produto
+        # lista as ultimas 20 vendas da determinada data para trás (modificações antes)
+        # p/ calcular o preço medio do produto numa data recente
         total_sold = [p.total for p in
                       SaleCounterView.select(AND
                                              (SaleCounterView.q.product_id == prod.product_id,
                                               SaleCounterView.q.branch == current_branch,
-                                              SaleCounterView.q.open_date <= past_date))]
+                                              SaleCounterView.q.open_date <= past_date)).orderBy('id')][-5:]
         # compras depois da determinada data (modificações após)
         total_purchased = [p.received for p in
                            PurchasedItemAndStockView.select(
