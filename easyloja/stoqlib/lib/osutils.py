@@ -163,3 +163,11 @@ def delete_file_pattern(path, pattern):
     files = list_recursively(path, pattern)
     for f in files:
         os.remove(f)
+
+
+def get_desktop_path():
+    if platform.system() == 'Windows':
+        path = os.path.join(os.path.join(os.environ['USERPROFILE']), 'Desktop')
+    else:
+        path = os.path.join(os.path.join(os.environ['HOME']))
+    return path

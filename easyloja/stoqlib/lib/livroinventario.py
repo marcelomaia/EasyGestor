@@ -1,9 +1,12 @@
 # coding=utf-8
-
+import xlwt
+import os
 from stoqlib.database.orm import AND
 from stoqlib.domain.purchase import (PurchaseOrder)
 from stoqlib.domain.views import CreatedProductView
 from stoqlib.domain.views import StockIncreaseView, StockDecreaseView, SaleCounterView, PurchasedItemAndStockView
+from stoqlib.lib.nfce.nfceutils import remove_accentuation
+from stoqlib.lib.osutils import get_desktop_path
 
 
 def generate_csv(current_branch, past_date):
@@ -11,7 +14,7 @@ def generate_csv(current_branch, past_date):
     products_before_2013 = CreatedProductView.select(AND(CreatedProductView.q.create_date <= past_date,
                                                          CreatedProductView.q.branch == current_branch))
     prod_list = [p for p in products_before_2013]
-    csv = 'classificacao_fiscal;discriminacao;quantidade;unidade;unitario;parcial\n'
+    csv = 'classificacao_fiscal|discriminacao|quantidade|unidade|unitario|parcial\n'
     for prod in prod_list:
         # quantidade inserida depois da determinada data (modificações após)
         total_increase = [p.quantity for p in
@@ -53,7 +56,7 @@ def generate_csv(current_branch, past_date):
         if estoque_esperado == 0:
             continue
 
-        line = "{ncm};{description};{esperado:.2f};{un};{avg_sale_price:.2f};{total:.2f}\n".format(
+        line = "{ncm}|{description}|{esperado:.2f}|{un}|{avg_sale_price:.2f}|{total:.2f}\n".format(
             ncm=prod.ncm or 'Sem NCM',
             description=prod.description,
             un=prod.unit,
@@ -62,3 +65,22 @@ def generate_csv(current_branch, past_date):
             esperado=estoque_esperado)
         csv += line
     return csv
+
+
+def export_livro_fiscal(current_branch, past_date):
+    csv_txt = generate_csv(current_branch, past_date)
+    csv_txt = remove_accentuation(csv_txt)
+    title = "Livro Inventario do dia {}".format(past_date.strftime('%d_%m_%Y'))
+    book = xlwt.Workbook()
+    sheet1 = book.add_sheet('Livro Inventario')
+
+    lines = csv_txt.split('\n')
+
+    for num in range(len(lines)):
+        row = sheet1.row(num)
+        for index, col in enumerate(lines[num].split('|')):
+            value = col
+            row.write(index, value)
+    path = os.path.join(get_desktop_path(), "{title}.xls".format(title=title))
+    book.save(path)
+    return path

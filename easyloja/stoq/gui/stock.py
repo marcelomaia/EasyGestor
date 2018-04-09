@@ -72,8 +72,9 @@ from stoqlib.gui.wizards.stockdecreasewizard import StockDecreaseWizard
 from stoqlib.gui.wizards.stockincreasewizard import StockIncreaseWizard
 from stoqlib.gui.wizards.stocktransferwizard import StockTransferWizard, StockTransfer
 from stoqlib.lib.defaults import sort_sellable_code
-from stoqlib.lib.livroinventario import generate_csv
+from stoqlib.lib.livroinventario import export_livro_fiscal
 from stoqlib.lib.message import warning, yesno
+from stoqlib.lib.osutils import open_path
 from stoqlib.reporting.product import SimpleProductReport
 from stoqlib.reporting.transfer_receipt import TransferOrderReceipt
 
@@ -546,8 +547,8 @@ class StockApp(SearchableAppWindow):
         past_date = self.run_dialog(PaymentRevenueDialog2, self.conn)
         if past_date:
             current_branch = get_current_branch(self.conn)
-            csv = generate_csv(current_branch, past_date)
-            print(csv)
+            xls = export_livro_fiscal(current_branch, past_date)
+            open_path(xls)
 
     def on_SearchInitialStock__activate(self, action):
         self.run_dialog(ProductsInitialStock, self.conn)
