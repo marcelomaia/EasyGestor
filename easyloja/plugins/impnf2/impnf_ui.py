@@ -124,6 +124,29 @@ class ImpnfUI(object):
             log.debug('executing command: {cmd}'.format(cmd=cmd))
             proc = subprocess.Popen(cmd.split(' '), shell=False, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
 
+    def _print_on_spooler2(self, filename):
+        """
+        :param filename:
+        :return:
+        """
+        import win32api
+        printer = self._get_default_printer()
+        SW_HIDE = 0
+        # SW_SHOWMINIMIZED = 2
+        if os.path.exists(filename):
+            retval = win32api.ShellExecute(
+                0,
+                "printto",
+                filename,
+                '"%s"' % printer,
+                ".",
+                SW_HIDE
+            )
+            # If succeeds, returns a value greater than 32.
+            if retval <= 32:
+                log.debug("ShellExecute Error: code: %s, printer: %s, filename: %s" %
+                          (retval, printer, filename))
+
     def _print_sale(self, sale):
         filename = build_sale_document(sale, self.conn)
         self.print_file(filename)
