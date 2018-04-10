@@ -46,7 +46,7 @@ class PaymentRevenueDialog(BaseEditor):
 
 class PaymentRevenueDialog2(BaseEditor):
     gladefile = 'PaymentFlowHistoryDialog'
-    title = u'Faturamento por período'
+    title = u'Livro Inventário'
     size = (600, 150)
     model_type = Settable
 

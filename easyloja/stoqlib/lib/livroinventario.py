@@ -1,6 +1,7 @@
 # coding=utf-8
-import xlwt
 import os
+
+import xlwt
 from stoqlib.database.orm import AND
 from stoqlib.domain.purchase import (PurchaseOrder)
 from stoqlib.domain.views import CreatedProductView
@@ -85,3 +86,4 @@ def export_livro_fiscal(current_branch, past_date):
     path = os.path.join(get_desktop_path(), "{title}.xls".format(title=title))
     book.save(path)
     return path
+
