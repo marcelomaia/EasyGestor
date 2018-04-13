@@ -640,10 +640,11 @@ class PaymentFlowHistory(Domain):
         """
         if isinstance(date, datetime.datetime):
             date = date.date()
-        day_history = PaymentFlowHistory.selectOneBy(history_date=date,
-                                                     connection=conn)
-        if day_history is not None:
-            return day_history
+        day_history = PaymentFlowHistory.selectBy(history_date=date,
+                                                  connection=conn)
+        day_history = [p for p in day_history]
+        if day_history:
+            return day_history[0]
         return cls(history_date=date, connection=conn)
 
     @classmethod
