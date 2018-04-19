@@ -33,7 +33,7 @@ from stoqlib.domain.product import Product
 from stoqlib.domain.taxes import ProductTaxTemplate
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.editors.baseeditor import BaseEditorSlave
-from stoqlib.gui.search.fiscalsearch import NcmSearch
+from stoqlib.gui.search.fiscalsearch import NcmSearch, CestSearch
 from stoqlib.gui.slaves.sellableslave import SellableDetailsSlave
 from stoqlib.lib.pluginmanager import get_plugin_manager
 from stoqlib.lib.translation import stoqlib_gettext
@@ -205,6 +205,15 @@ class ProductInformationSlave(BaseEditorSlave):
                             selection_mode=gtk.SELECTION_BROWSE)
         self.model.ncm = getattr(retval, 'code', '')
         self.ncm.set_text(self.model.ncm)
+
+    def on_cest_search__clicked(self, button):
+        retval = run_dialog(CestSearch, self, self.conn,
+                            double_click_confirm=True,
+                            hide_toolbar=True,
+                            hide_footer=False,
+                            selection_mode=gtk.SELECTION_BROWSE)
+        self.model.cest = getattr(retval, 'code', '')
+        self.cest.set_text(self.model.cest)
 
 
 class ProductDetailsSlave(SellableDetailsSlave):

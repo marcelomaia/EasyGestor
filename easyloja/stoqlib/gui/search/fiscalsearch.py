@@ -33,7 +33,7 @@ from kiwi.ui.search import ComboSearchFilter
 from kiwi.ui.objectlist import SearchColumn, Column
 
 from stoqlib.api import api
-from stoqlib.domain.fiscal import CfopData, IcmsIpiView, IssView, NcmData
+from stoqlib.domain.fiscal import CfopData, IcmsIpiView, IssView, NcmData, CestData
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.base.search import SearchEditor, SearchDialog
 from stoqlib.gui.dialogs.csvexporterdialog import CSVExporterDialog
@@ -223,4 +223,31 @@ class NcmSearch(SearchEditor):
                        data_type=bool),
                 Column('unit', title='Unidade', width=80,
                        data_type=str),
+                ]
+
+
+class CestSearch(SearchEditor):
+
+    title = "Tabela de Codigo NCM"
+    table = CestData
+    #FIXME POG dus brabos
+    editor_class = CfopEditor
+    advanced_search = True
+    size = (700, 550)
+
+    def __init__(self, *args, **kwargs):
+        SearchEditor.__init__(self, *args, **kwargs)
+        if kwargs.get('double_click_confirm'):
+            self.enable_ok()
+
+    def create_filters(self):
+        self.set_text_field_columns(['code', 'description'])
+
+    def get_columns(self):
+        return [Column('code', title='Codigo', width=80,
+                       data_type=str, sorted=True, justify=gtk.JUSTIFY_LEFT),
+                Column('description', title='Descrição', width=200, expand=True,
+                       data_type=str),
+                Column('is_active', title='Ativo', width=80,
+                       data_type=bool),
                 ]

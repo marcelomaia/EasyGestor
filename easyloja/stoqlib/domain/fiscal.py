@@ -68,6 +68,17 @@ class NcmData(Domain):
         return u"%s" % self.description
 
 
+class CestData(Domain):
+    implements(IDescribable)
+
+    code = UnicodeCol()
+    description = UnicodeCol()
+    is_active = BoolCol()
+
+    def get_description(self):
+        return u"%s" % self.description
+
+
 class FiscalBookEntry(Domain):
     implements(IReversal)
 
