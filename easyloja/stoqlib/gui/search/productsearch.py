@@ -180,6 +180,7 @@ class ProductSearch(SearchEditor):
                 SearchColumn('unit', title=_('Unit'), data_type=str),
                 SearchColumn('barcode', title=_('Barcode'), data_type=str),
                 SearchColumn('ncm', title=_('NCM'), data_type=str, visible=False),
+                SearchColumn('cest', title=_('CEST'), data_type=str, visible=False),
                 SearchColumn('category_description', title=_(u'Category'),
                              data_type=str, width=120),
                 SearchColumn('description', title=_(u'Description'),
