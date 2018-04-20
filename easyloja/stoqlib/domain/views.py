@@ -108,6 +108,7 @@ class ProductFullStockView(Viewable):
         minimum=ProductAdaptToStorable.q.minimum_quantity,
         maximum=ProductAdaptToStorable.q.maximum_quantity,
         ncm=Product.q.ncm,
+        cest=Product.q.cest,
         icms_name=ICMSAlias.q.name,
         ipi_name=IPIAlias.q.name,
         pis_name=PISALias.q.name,

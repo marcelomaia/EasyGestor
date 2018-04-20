@@ -27,6 +27,7 @@ except ImportError:
 # XXX: Use Application
 library = Library('stoq')
 if library.uninstalled:
+    library.add_global_resource('xls', 'data/xls')
     library.add_global_resource('config', 'data/config')
     library.add_global_resource('csv', 'data/csv')
     library.add_global_resource('docs', '.')
@@ -40,6 +41,8 @@ if library.uninstalled:
     library.add_global_resource('uixml', 'data/uixml')
     library.add_global_resource('sumatraPDF', 'data/SumatraPDF')
     library.add_resource('plugin', 'plugins')
+else:
+    library.add_global_resource('xls', 'data/xls')
 
 library.set_application_domain('stoq')
 library.enable_translation()
