@@ -1,3 +1,6 @@
+-- bugfix on update db
+ALTER TABLE product drop column if exists scale;
+ALTER TABLE product ADD COLUMN scale bool;
 DROP TABLE IF EXISTS cest_data CASCADE;
 CREATE TABLE cest_data
 (
