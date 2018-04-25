@@ -182,6 +182,7 @@ class Product(Domain):
     quality_tests = MultipleJoin('ProductQualityTest')  # Used for composed products only
     production_time = IntCol(default=1)
     weighable = BoolCol(default=True)
+    scale = BoolCol(default=True)
 
     # Tax details
     icms_template = ForeignKey('ProductIcmsTemplate', default=None)
