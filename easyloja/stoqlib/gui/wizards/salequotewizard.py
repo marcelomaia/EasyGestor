@@ -40,7 +40,7 @@ from stoqlib.domain.fiscal import CfopData
 from stoqlib.domain.interfaces import ISalesPerson, IStorable, ITransporter, IIndividual, ICompany
 from stoqlib.domain.payment.group import PaymentGroup
 from stoqlib.domain.payment.operation import register_payment_operations
-from stoqlib.domain.person import Person, ClientCategory, PersonAdaptToClient
+from stoqlib.domain.person import Person, ClientCategory, PersonAdaptToClient, ClientView
 from stoqlib.domain.product import ProductStockItem
 from stoqlib.domain.sale import Sale, SaleItem
 from stoqlib.domain.sellable import Sellable
@@ -139,13 +139,18 @@ class StartSaleQuoteStep(WizardEditorStep):
         #     self.invoice_number.set_sensitive(False)
 
     def _fill_clients_combo(self):
-        if self.model.client:
+        data = self.conn.queryOne("""select  count(*) from person_adapt_to_client;""")
+        row_quantity = 0
+        if data:
+            row_quantity = data[0]
+        if row_quantity < 200:
+            clients = ClientView.get_active_clients(self.conn)
+            items = [(c.get_description(), c.client) for c in clients]
+            self.client.prefill(items)
+        elif self.model.client:
             self.client.prefill([(self.model.client.person.name,
                                   self.model.client)])
             self.client.select(self.model.client)
-            # clients = ClientView.get_active_clients(self.conn)
-            # items = [(c.get_description(), c.client) for c in clients]
-            # self.client.prefill(items)
 
     def _fill_transporter_combo(self):
         marker('Filling transporters')
