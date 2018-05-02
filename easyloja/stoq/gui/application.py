@@ -404,7 +404,7 @@ class AppWindow(GladeDelegate):
         # about.set_comments('')
 
         # Logo
-        icon_file = environ.find_resource('pixmaps', 'stoq_logo.svg')
+        icon_file = environ.find_resource('pixmaps', 'stoq_logo.png')
         logo = gtk.gdk.pixbuf_new_from_file(icon_file)
         about.set_logo(logo)
 
