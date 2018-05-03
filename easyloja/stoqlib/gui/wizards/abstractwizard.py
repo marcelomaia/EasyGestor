@@ -65,6 +65,7 @@ from stoqlib.gui.search.sellablesearch import SellableSearch
 from stoqlib.lib.defaults import QUANTITY_PRECISION, MAX_INT
 from stoqlib.lib.defaults import sort_sellable_code
 from stoqlib.lib.parameters import sysparam
+from stoqlib.lib.pluginmanager import get_plugin_manager
 from stoqlib.lib.translation import stoqlib_gettext
 
 # from storm.expr import And, Lower
@@ -239,6 +240,13 @@ class SellableItemStep(WizardEditorStep):
         self._reset_sellable()
         self.cost.set_digits(sysparam(conn).COST_PRECISION_DIGITS)
         self.quantity.set_digits(3)
+        manager = get_plugin_manager()
+        self.validate_lbl.hide()
+        self.validate_nfce.hide()
+        if manager.is_active('nfce') or manager.is_active('nfce_bematech'):
+            self.validate_nfce.show()
+            self.validate_nfce.update(True)
+            self.validate_lbl.show()
 
     # Public API
 
@@ -488,8 +496,9 @@ class SellableItemStep(WizardEditorStep):
         sellable = self.proxy.model.sellable
         assert sellable
         if sellable.product:
-            if not self._validate_sellable(sellable):
-                return
+            if self.validate_nfce.read():  # pergunta se é pra validar nfce
+                if not self._validate_sellable(sellable):
+                    return
 
         self._update_list(sellable)
         self.proxy.set_model(None)

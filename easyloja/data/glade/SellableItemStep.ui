@@ -275,6 +275,32 @@
                     <property name="position">1</property>
                   </packing>
                 </child>
+                <child>
+                  <object class="ProxyLabel" id="validate_lbl">
+                    <property name="visible">True</property>
+                    <property name="xalign">1</property>
+                    <property name="label" translatable="yes">Validar NFCe?</property>
+                  </object>
+                  <packing>
+                    <property name="expand">True</property>
+                    <property name="fill">True</property>
+                    <property name="position">2</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="ProxyCheckButton" id="validate_nfce">
+                    <property name="visible">True</property>
+                    <property name="receives_default">False</property>
+                    <property name="use_action_appearance">False</property>
+                    <property name="draw_indicator">True</property>
+                    <property name="data_type">bool</property>
+                  </object>
+                  <packing>
+                    <property name="expand">True</property>
+                    <property name="fill">True</property>
+                    <property name="position">3</property>
+                  </packing>
+                </child>
               </object>
               <packing>
                 <property name="top_attach">2</property>
