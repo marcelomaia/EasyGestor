@@ -562,13 +562,15 @@ class SalesApp(SearchableAppWindow):
             self._update_avegare_ticket()
 
     def on_SalesGenerateNFePreview__activate(self, action):
-        sale_view = self.results.get_selected()
-        assert sale_view
-        sale = Sale.get(sale_view.id, connection=self.conn)
-        SalesNFePreview.emit(sale)
-        self.conn.commit()
-        self.search.refresh()
-        self._update_avegare_ticket()
+        if yesno(_('Voce quer gerar uma previa NFe?'),
+                 gtk.RESPONSE_YES, _("Yes"), _("No")):
+            sale_view = self.results.get_selected()
+            assert sale_view
+            sale = Sale.get(sale_view.id, connection=self.conn)
+            SalesNFePreview.emit(sale)
+            self.conn.commit()
+            self.search.refresh()
+            self._update_avegare_ticket()
 
     # Loan
     def on_LoanNew__activate(self, action):

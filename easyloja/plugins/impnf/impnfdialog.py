@@ -55,6 +55,9 @@ class ImpnfEditor(BaseEditor):
 
         self.printer_model.prefill(models)
         self.brand.prefill(brands)
+        port = self.model.port
+        if port is not None and port not in ports:  # pra deixar que abra o editor
+            ports.append((port, port))
         self.port.prefill(ports)
         self.station.prefill(stations)
         if self.model.spooler_printer:
