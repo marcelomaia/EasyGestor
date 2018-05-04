@@ -111,9 +111,17 @@ footer = PS(
 )
 
 
-def align_text(text, size, alignment=LEFT):
+def align_text(text, size, alignment=LEFT, space_tag='&nbsp;'):
+    """
+    Serve para preencher espaços entre as strings, a fim de deixar esteticamente mais bonitos
+    :param text:
+    :param size:
+    :param alignment:
+    :param space_tag:
+    :return:
+    """
     if len(text) < size:
-        complement = '&nbsp;' * (size - len(text))
+        complement = space_tag * (size - len(text))
         if alignment == LEFT:
             if size > 50:
                 # para a descricao do produto encaixar no texto
@@ -124,9 +132,9 @@ def align_text(text, size, alignment=LEFT):
         else:
             complement = ' ' * (size - len(text))
             first_part = complement[:int(len(complement) / 2)]
-            first_part = first_part.replace(' ', '&nbsp;')
+            first_part = first_part.replace(' ', space_tag)
             last_part = complement[int(len(complement) / 2):]
-            last_part = last_part.replace(' ', '&nbsp;')
+            last_part = last_part.replace(' ', space_tag)
             text = first_part + text + last_part
     else:
         text = text[:size]
@@ -188,13 +196,27 @@ def build_sale_document(sale, conn):
                       .replace(' ', '&nbsp;').format(code=align_text(sellable.code, 10, LEFT),
                                                      prod=align_text(sellable.description,
                                                                      58, LEFT)), items_1))
-        story.append(
-            Paragraph('{qtd} X {unit_price} {total}'
-                      .replace(' ', '&nbsp;').format(qtd=align_text('{}'.format(item.quantity), 5, CENTER),
-                                                     unit_price=align_text('{}'.format(item.price), 9, CENTER),
-                                                     total=align_text('<b>{}</b>'.format(float(item.get_total())), 12,
-                                                                      CENTER)),
-                      items_2))
+        try:
+            story.append(
+                Paragraph('{qtd} X {unit_price} {total}'
+                          .replace(' ', '&nbsp;').format(qtd=align_text('{}'.format(float(item.quantity)), 5, CENTER),
+                                                         unit_price=align_text('{}'.format(float(item.price)), 9,
+                                                                               CENTER),
+                                                         total=align_text('<b>{}</b>'.format(float(item.get_total())),
+                                                                          12,
+                                                                          CENTER)),
+                          items_2))
+        except ValueError, e:
+            # dá um erro de tag xml aqui em alguns produtos, erro exclusivo do ruindows
+            story.append(
+                Paragraph('{qtd} X {unit_price} {total}'
+                          .replace(' ', '&nbsp;').format(qtd=align_text('{}'.format(float(item.quantity)), 5,
+                                                                        CENTER),
+                                                         unit_price=align_text('{}'.format(float(item.price)), 9,
+                                                                               CENTER),
+                                                         total=align_text('{}'.format(float(item.get_total())),
+                                                                          12, CENTER)),
+                          items_2))
 
     story.append(ReportLine())
     for payment in sale.payments:
