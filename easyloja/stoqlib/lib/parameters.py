@@ -825,6 +825,17 @@ _details = [
         _('O tamanho padrão é 330mm'),
         int, initial=330),
 
+    ParameterDetails(
+        'TIPO_IMPRESSAO_SPOOLER',
+        _('Spooler'),
+        'Tipo de impressão no spooler',
+        '1=Sumatra PDF\n'
+        '2=Leitor padrão PDF\n'
+        '3=Diálogo de impressão\n',
+        int, initial=1, options={1: 'Sumatra PDF',
+                                 2: 'Leitor padrão PDF',
+                                 3: 'Diálogo de impressão'}),
+
 ]
 
 
