@@ -115,12 +115,22 @@ class ImpnfUI(object):
         usando agora o SumatraPDF
         https://www.sumatrapdfreader.org/docs/Command-line-arguments-0c53a79e91394eccb7535ef6fed0678e.html
         """
+        (SUMATRA, LEITOR, DIALOGO) = range(1, 4)
+        spooler_mode = sysparam(conn=self.conn).TIPO_IMPRESSAO_SPOOLER
+
         sumatra_path = environ.find_resource('sumatraPDF', 'SumatraPDF.exe')
         printer = self._get_default_printer()
+
+        if spooler_mode == LEITOR:
+            return self._print_on_spooler2(filename)
+
         if os.path.exists(filename):
             cmd = '{exe} -print-to {printer} {fname}'.format(exe=sumatra_path,
                                                              printer=printer.spooler_printer,
                                                              fname=filename)
+            if spooler_mode == DIALOGO:
+                cmd = '{exe} -print-dialog {fname}'.format(exe=sumatra_path,
+                                                           fname=filename)
             log.debug('executing command: {cmd}'.format(cmd=cmd))
             proc = subprocess.Popen(cmd.split(' '), shell=False, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
 
