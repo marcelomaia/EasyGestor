@@ -1,25 +1,28 @@
 # coding=utf-8
 
-import datetime
 import gtk
 import os
 import subprocess
 from gtk import keysyms
 
+import datetime
 from kiwi.datatypes import ValidationError
 from kiwi.enums import ListType
 from kiwi.environ import environ
+from kiwi.log import Logger
 from kiwi.python import Settable
 from kiwi.ui.objectlist import Column
-from stoqlib.database.runtime import get_current_station
+from stoqlib.database.runtime import (get_current_station)
 from stoqlib.domain.station import BranchStation
 from stoqlib.gui.base.lists import ModelListDialog
 from stoqlib.gui.editors.baseeditor import BaseEditor
 from stoqlib.lib.osutils import get_application_dir
+from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.translation import stoqlib_gettext
 
 from impnfdomain import Impnf
 
+log = Logger("stoq-impnf-plugin")
 _ = stoqlib_gettext
 
 
@@ -54,14 +57,45 @@ class ImpnfEditor(BaseEditor):
         usando agora o SumatraPDF
         https://www.sumatrapdfreader.org/docs/Command-line-arguments-0c53a79e91394eccb7535ef6fed0678e.html
         """
+        (SUMATRA, LEITOR, DIALOGO) = range(1, 4)
+        spooler_mode = sysparam(conn=self.conn).TIPO_IMPRESSAO_SPOOLER
         sumatra_path = environ.find_resource('sumatraPDF', 'SumatraPDF.exe')
         printer = self.spooler_printer.read()
+        if spooler_mode == LEITOR:
+            return self._print_on_spooler2(filename)
+
         if os.path.exists(filename):
             cmd = '{exe} -print-to {printer} {fname}'.format(exe=sumatra_path,
                                                              printer=printer,
                                                              fname=filename)
-
+            if spooler_mode == DIALOGO:
+                cmd = '{exe} -print-dialog {fname}'.format(exe=sumatra_path,
+                                                           fname=filename)
+            log.debug('executing command: {cmd}'.format(cmd=cmd))
             proc = subprocess.Popen(cmd.split(' '), shell=False, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+
+    def _print_on_spooler2(self, filename):
+        """
+        :param filename:
+        :return:
+        """
+        import win32api
+        printer = self.spooler_printer.read()
+        SW_HIDE = 0
+        # SW_SHOWMINIMIZED = 2
+        if os.path.exists(filename):
+            retval = win32api.ShellExecute(
+                0,
+                "printto",
+                filename,
+                '"%s"' % printer,
+                ".",
+                SW_HIDE
+            )
+            # If succeeds, returns a value greater than 32.
+            if retval <= 32:
+                log.debug("ShellExecute Error: code: %s, printer: %s, filename: %s" %
+                          (retval, printer, filename))
 
     #
     # Callbacks
