@@ -26,6 +26,7 @@
 
 from zope.interface import Attribute, Interface
 
+
 # pylint: disable=E0102,E0211,E0213
 
 #
@@ -67,6 +68,7 @@ class IDescribable(Interface):
     """It defines that a object can be described through get_description
     method.
     """
+
     def get_description():
         """ Returns a description that identifies the object """
 
@@ -297,6 +299,27 @@ class ISupplier(IPersonFacet):
         """
 
 
+class IAffiliate(IPersonFacet):
+    """A company or an individual that produces, provides, or furnishes
+    an item or service"""
+
+    commission_percent = Attribute('% de comissionamento enviado para a conta que gerencia o marketplace '
+                                   '(valor entre 0 e 70).',
+                                   'float')
+    physical_products = Attribute('Vende produtos Físicos?',
+                                  'bool')
+    business_type = Attribute('Tipo de negócio',
+                              'str')
+    bank = Attribute('Banco',
+                     'int')
+    bank_ag = Attribute('Agência do banco',
+                        'str')
+    bank_cc = Attribute('Conta',
+                        'str')
+    account_type = Attribute('Tipo de conta',
+                             'int')
+
+
 class IEmployee(IPersonFacet):
     """An individual who performs work for an employer under a verbal
     or written understanding where the employer gives direction as to
@@ -384,10 +407,10 @@ class ISalesPerson(IPersonFacet):
     """An employee in charge of make sales"""
 
     commission = Attribute('The percentege of commission the company must pay '
-                          'for this salesman')
+                           'for this salesman')
     commission_type = Attribute('A rule used to calculate the amount of '
-                               'commission. This is a reference to another '
-                               'object')
+                                'commission. This is a reference to another '
+                                'object')
 
     def get_name():
         """

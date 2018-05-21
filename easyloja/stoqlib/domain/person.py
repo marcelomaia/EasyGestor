@@ -39,6 +39,7 @@ There are currently the following Person facets available:
   - Supplier
   - Transporter
   - User
+  - Affiliate
 
 To create a new person, just issue the following:
 
@@ -70,7 +71,7 @@ from stoqlib.lib.dateutils import localnow
 from zope.interface import implements
 
 from kiwi.datatypes import currency
-from stoqlib.database.orm import PriceCol, PercentCol, Field
+from stoqlib.database.orm import PriceCol, PercentCol, Field, DecimalCol
 from stoqlib.database.orm import (DateTimeCol, UnicodeCol, IntCol,
                                   ForeignKey, MultipleJoin, BoolCol)
 from stoqlib.database.orm import const, OR, AND, INNERJOINOn, LEFTJOINOn, Alias
@@ -83,7 +84,7 @@ from stoqlib.domain.interfaces import (IIndividual, ICompany, IEmployee,
                                        IClient, ISupplier, IUser, IBranch,
                                        ISalesPerson, IActive,
                                        ICreditProvider, ITransporter,
-                                       IDescribable, IPersonFacet)
+                                       IDescribable, IPersonFacet, IAffiliate)
 from stoqlib.domain.payment.payment import Payment
 from stoqlib.domain.payment.method import CreditCardData
 from stoqlib.domain.sellable import Sellable
@@ -742,6 +743,46 @@ class PersonAdaptToSupplier(PersonAdapter):
                                                      connection=self.get_connection()) is not None
 
 Person.registerFacet(PersonAdaptToSupplier, ISupplier)
+
+
+class PersonAdaptToAffiliate(PersonAdapter):
+    """A affiliate facet of a person.
+
+    B{Notes}:
+        - I{product_desc}: Basic description of the products of a supplier.
+    """
+    implements(IAffiliate)
+
+    (BANK_BRASIL,
+     BANK_SANTANDER,
+     BANK_CEF,
+     BANK_BRADESCO,
+     BANK_ITAU,
+     BANK_BANRISUL,
+     BANK_SICREDI,
+     BANK_SICOOB) = range(8)
+
+    (CONTA_CORRENTE,
+     CONTA_POUPANCA) = range(2)
+
+    commission_percent = DecimalCol(default=10.0)
+    physical_products = BoolCol(default=False)
+    business_type = UnicodeCol(default=None)
+    bank = IntCol(default=BANK_BRASIL)
+    bank_ag = UnicodeCol()
+    bank_cc = UnicodeCol()
+    account_type = IntCol(default=CONTA_CORRENTE)
+
+    #
+    # Auxiliar methods
+    #
+
+    def get_name(self):
+        return self.person.name
+
+
+Person.registerFacet(PersonAdaptToAffiliate, IAffiliate)
+
 
 
 class PersonAdaptToEmployee(PersonAdapter):
@@ -1509,95 +1550,7 @@ class SalesPersonView(Viewable):
 # @implementer(IDescribable)
 # TODO qual o papo desse implementer
 class StorableBatch(Domain):
-    """Batch information for storables.
-    A batch is a colection of products (storable) that were produced at the same
-    time and thus they have some common information, such as expiration date.
-    This information is useful since sometimes its necessary to make decisions
-    based on the batch like a special promotion for older batches (if it is
-    close to the expiration date, for instance) or if a batch is somehow
-    defective and we need to contact the clients that purchased items from this
-    batch.
-    """
-
-    #: The sequence number for this batch. Should be unique for a given
-    #: storable
-    batch_number = UnicodeCol()
-
-    #: The date this batch was created
-    create_date = DateTimeCol(default=localnow)
-
-    #: An expiration date, specially for perishable products, like milk and food in
-    #: general
-    expire_date = DateTimeCol()
-
-    #: Some space for the users to add notes to this batch.
-    notes = UnicodeCol()
-
-    #: The storable that is in this batch
-    storable = ForeignKey('Storable')
-
-    #
-    #  IDescribable
-    #
-
-    def get_description(self):
-        return self.batch_number
-
-    #
-    #  Classmethods
-    #
-
-    @classmethod
-    def is_batch_number_available(cls, store, batch_number,
-                                  exclude_storable=None):
-        """Test if batch_number is available
-        Useful to find if a batch number is available to be used on a
-        new |batch|.
-        If you are increasing the stock of a storable, you probably
-        want to allow an existing batch number for it, in this case,
-        you can use exclude_storable param for that.
-        :param store: a store
-        :param batch_number: the batch number to check for availability
-        :param exclude_storable: if not ``None``, the |storable| to
-            exclude from the test
-        """
-        query = cls.batch_number == batch_number
-        if exclude_storable is not None:
-            query = And(query, cls.storable_id != exclude_storable.id)
-
-        return store.find(cls, query).is_empty()
-
-    @classmethod
-    def get_max_batch_number(cls, store):
-        attr = SplitPart(cls.batch_number, u'-', 1)
-        return StorableBatch.get_max_value(store, attr, validate_attr=False)
-
-    #
-    #  Public API
-    #
-
-    def get_balance_for_branch(self, branch):
-        """Return the stock balance for this |batch| in a |branch|.
-        :param branch: the |branch| to get the stock balance for
-        :returns: the amount of stock available in the |branch|
-        """
-        store = self.store
-        stock_items = store.find(ProductStockItem, storable=self.storable,
-                                 batch=self, branch=branch)
-        return stock_items.sum(ProductStockItem.quantity) or Decimal(0)
-
-        # _StockSummary = Alias(Select(
-        #     columns=[
-        #         ProductStockItem.batch_id,
-        #         ProductStockItem.branch_id,
-        #         Alias(Sum(ProductStockItem.quantity), 'stock')],
-        #     tables=[
-        #         ProductStockItem],
-        #     group_by=[
-        #         ProductStockItem.batch_id,
-        #         ProductStockItem.branch_id]),
-        # '_stock_summary')
-
+    pass
 
 # XXX nao ta conseguindo pegar dentro do modulo product.py
 class StorableBatchView(Viewable):
