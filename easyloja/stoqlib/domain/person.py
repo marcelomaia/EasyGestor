@@ -64,18 +64,16 @@ See L{stoqlib.lib.component} for more information on adapters.
 
 """
 
-import datetime
 from operator import attrgetter
 
-from stoqlib.lib.dateutils import localnow
-from zope.interface import implements
-
+import datetime
 from kiwi.datatypes import currency
-from stoqlib.database.orm import PriceCol, PercentCol, Field, DecimalCol
 from stoqlib.database.orm import (DateTimeCol, UnicodeCol, IntCol,
                                   ForeignKey, MultipleJoin, BoolCol)
-from stoqlib.database.orm import const, OR, AND, INNERJOINOn, LEFTJOINOn, Alias
+from stoqlib.database.orm import Field
+from stoqlib.database.orm import PriceCol, PercentCol, DecimalCol
 from stoqlib.database.orm import Viewable
+from stoqlib.database.orm import const, OR, AND, INNERJOINOn, LEFTJOINOn, Alias
 from stoqlib.database.runtime import get_current_station, get_current_user, get_connection
 from stoqlib.domain.address import Address, CityLocation
 from stoqlib.domain.base import Domain, ModelAdapter
@@ -85,17 +83,18 @@ from stoqlib.domain.interfaces import (IIndividual, ICompany, IEmployee,
                                        ISalesPerson, IActive,
                                        ICreditProvider, ITransporter,
                                        IDescribable, IPersonFacet, IAffiliate)
-from stoqlib.domain.payment.payment import Payment
 from stoqlib.domain.payment.method import CreditCardData
+from stoqlib.domain.payment.payment import Payment
+from stoqlib.domain.profile import UserProfile
 from stoqlib.domain.sellable import Sellable
 from stoqlib.domain.service import Service
 from stoqlib.domain.station import BranchStation
 from stoqlib.domain.system import TransactionEntry
-from stoqlib.domain.profile import UserProfile
 from stoqlib.exceptions import DatabaseInconsistency
 from stoqlib.lib.formatters import raw_phone_number, format_phone_number
 from stoqlib.lib.translation import stoqlib_gettext
-from stoqlib.database.orm import Field
+from zope.interface import implements
+
 _ = stoqlib_gettext
 
 
@@ -120,6 +119,7 @@ class EmployeeRole(Domain):
 
         #
         # Public API
+
     #
 
     def has_other_role(self, name):
@@ -128,7 +128,7 @@ class EmployeeRole(Domain):
         @returns: True if it exists, otherwise False
         """
         return self.check_unique_value_exists('name', name,
-            case_sensitive=False)
+                                              case_sensitive=False)
 
 
 # WorkPermitData, MilitaryData, and VoterData are Brazil-specific information.
@@ -288,7 +288,7 @@ class Person(Domain):
 
     def get_total_addresses(self):
         return Address.selectBy(personID=self.id,
-            connection=self.get_connection()).count()
+                                connection=self.get_connection()).count()
 
     def get_address_string(self):
         address = self.get_main_address()
@@ -382,6 +382,7 @@ class Person(Domain):
         adapter_klass = self.getAdapterClass(ISalesPerson)
         return adapter_klass(self, **kwargs)
 
+
 #
 # Adapters
 #
@@ -470,7 +471,7 @@ class PersonAdaptToIndividual(PersonAdapter):
 
     def get_marital_statuses(self):
         return [(self.marital_statuses[i], i)
-        for i in self.marital_statuses.keys()]
+                for i in self.marital_statuses.keys()]
 
     def get_cpf_number(self):
         """Returns the cpf number without any non-numeric characters
@@ -486,6 +487,7 @@ class PersonAdaptToIndividual(PersonAdapter):
         in the database.
         """
         return self.check_unique_value_exists('cpf', cpf)
+
 
 Person.registerFacet(PersonAdaptToIndividual, IIndividual)
 
@@ -536,6 +538,7 @@ class PersonAdaptToCompany(PersonAdapter):
         """
         return self.check_unique_value_exists('cnpj', cnpj)
 
+
 Person.registerFacet(PersonAdaptToCompany, ICompany)
 
 
@@ -555,6 +558,7 @@ class ClientCategory(Domain):
 
     def get_description(self):
         return self.name
+
 
 class SupplierCategory(Domain):
     """I am a supplier category.
@@ -622,6 +626,7 @@ class PersonAdaptToClient(PersonAdapter):
             self.activate()
         else:
             self.inactivate()
+
     is_active = property(_get_is_active, _set_is_active)
 
     #
@@ -641,19 +646,19 @@ class PersonAdaptToClient(PersonAdapter):
     def get_client_sales(self):
         from stoqlib.domain.sale import SaleView
         return SaleView.select(SaleView.q.client_id == self.id,
-            connection=self.get_connection(),
-            orderBy=SaleView.q.open_date)
+                               connection=self.get_connection(),
+                               orderBy=SaleView.q.open_date)
 
     def get_client_services(self):
         from stoqlib.domain.sale import SoldServicesView
         return SoldServicesView.select(SoldServicesView.q.client_id == self.id,
-            connection=self.get_connection(),
-            orderBy=SoldServicesView.q.estimated_fix_date)
+                                       connection=self.get_connection(),
+                                       orderBy=SoldServicesView.q.estimated_fix_date)
 
     def get_client_products(self):
         from stoqlib.domain.sale import SoldProductsView
         return SoldProductsView.select(SoldProductsView.q.client_id == self.id,
-                                       connection=self.get_connection(),)
+                                       connection=self.get_connection(), )
 
     def get_client_payments(self):
         from stoqlib.domain.payment.views import InPaymentView
@@ -681,6 +686,7 @@ class PersonAdaptToClient(PersonAdapter):
                                      connection=self.get_connection()).sum('value') or currency('0.0')
 
         return currency(self.credit_limit - debit)
+
 
 Person.registerFacet(PersonAdaptToClient, IClient)
 
@@ -715,7 +721,7 @@ class PersonAdaptToSupplier(PersonAdapter):
     @classmethod
     def get_active_suppliers(cls, conn):
         query = AND(cls.q.status == cls.STATUS_ACTIVE,
-            cls.q.originalID == Person.q.id)
+                    cls.q.originalID == Person.q.id)
         return cls.select(query, connection=conn, orderBy=Person.q.name)
 
     def get_supplier_purchases(self):
@@ -737,10 +743,12 @@ class PersonAdaptToSupplier(PersonAdapter):
     def get_payments_category_info(self):
         return PersonCategoryPaymentInfo.selectBy(person=self.person,
                                                   connection=self.get_connection())
+
     def has_payment_category(self, payment_category):
         return PersonCategoryPaymentInfo.selectOneBy(person=self.person,
                                                      payment_category=payment_category,
                                                      connection=self.get_connection()) is not None
+
 
 Person.registerFacet(PersonAdaptToSupplier, ISupplier)
 
@@ -784,7 +792,6 @@ class PersonAdaptToAffiliate(PersonAdapter):
 Person.registerFacet(PersonAdaptToAffiliate, IAffiliate)
 
 
-
 class PersonAdaptToEmployee(PersonAdapter):
     """An employee facet of a person."""
     implements(IEmployee)
@@ -826,6 +833,7 @@ class PersonAdaptToEmployee(PersonAdapter):
             is_active=True,
             connection=self.get_connection())
 
+
 Person.registerFacet(PersonAdaptToEmployee, IEmployee)
 
 
@@ -846,7 +854,7 @@ class PersonAdaptToUser(PersonAdapter):
     @classmethod
     def check_password_for(cls, username, password, conn):
         user = cls.selectOneBy(username=username, password=password,
-            connection=conn)
+                               connection=conn)
         if user is None:
             return True
         return user.password == password
@@ -876,26 +884,27 @@ class PersonAdaptToUser(PersonAdapter):
         station = get_current_station(self.get_connection())
         if station:
             Event.log(Event.TYPE_USER,
-                _("User '%s' logged in on '%s'") % (self.username,
-                                                    station.name))
+                      _("User '%s' logged in on '%s'") % (self.username,
+                                                          station.name))
         else:
             Event.log(Event.TYPE_USER,
-                _("User '%s' logged in") % (self.username, ))
+                      _("User '%s' logged in") % (self.username,))
 
     def logout(self):
         station = get_current_station(self.get_connection())
         if station:
             Event.log(Event.TYPE_USER,
-                _("User '%s' logged out from '%s'") % (self.username,
-                                                       station.name))
+                      _("User '%s' logged out from '%s'") % (self.username,
+                                                             station.name))
         else:
             Event.log(Event.TYPE_USER,
-                _("User '%s' logged out") % (self.username, ))
+                      _("User '%s' logged out") % (self.username,))
 
     @staticmethod
     def is_administrator():
         user = get_current_user(get_connection())
         return user.profile.id in (1,)
+
 
 Person.registerFacet(PersonAdaptToUser, IUser)
 
@@ -957,7 +966,7 @@ class PersonAdaptToBranch(PersonAdapter):
 
     def on_create(self):
         Event.log(Event.TYPE_SYSTEM,
-            _("Created branch '%s'" % (self.person.name, )))
+                  _("Created branch '%s'" % (self.person.name,)))
 
     # Private
 
@@ -970,8 +979,8 @@ class PersonAdaptToBranch(PersonAdapter):
             raise TypeError("te_type must be CREATED or MODIFIED")
 
         return AND(TransactionEntry.q.id == te_id,
-            TransactionEntry.q.station_id == BranchStation.q.id,
-            TransactionEntry.q.te_time > timestamp)
+                   TransactionEntry.q.station_id == BranchStation.q.id,
+                   TransactionEntry.q.te_time > timestamp)
 
     # Classmethods
 
@@ -987,7 +996,7 @@ class PersonAdaptToCreditProvider(PersonAdapter):
     """A credit provider facet of a person."""
     implements(ICreditProvider)
 
-    (PROVIDER_CARD, ) = range(1)
+    (PROVIDER_CARD,) = range(1)
 
     cards_type = {
         CreditCardData.TYPE_CREDIT: 'credit_fee',
@@ -1034,7 +1043,7 @@ class PersonAdaptToCreditProvider(PersonAdapter):
         @param conn: a database connection
         """
         return cls.selectBy(is_active=True, provider_type=cls.PROVIDER_CARD,
-            provider_id=provider_id, connection=conn)
+                            provider_id=provider_id, connection=conn)
 
     @classmethod
     def get_card_providers(cls, conn):
@@ -1042,7 +1051,7 @@ class PersonAdaptToCreditProvider(PersonAdapter):
         @param conn: a database connection
         """
         return cls.selectBy(is_active=True, provider_type=cls.PROVIDER_CARD,
-            connection=conn)
+                            connection=conn)
 
     @classmethod
     def has_card_provider(cls, conn):
@@ -1051,8 +1060,8 @@ class PersonAdaptToCreditProvider(PersonAdapter):
         @returns: if there is a card provider
         """
         return bool(cls.selectBy(is_active=True,
-            provider_type=cls.PROVIDER_CARD,
-            connection=conn).count())
+                                 provider_type=cls.PROVIDER_CARD,
+                                 connection=conn).count())
 
     @classmethod
     def get_active_providers(cls, conn):
@@ -1110,6 +1119,7 @@ class PersonAdaptToSalesPerson(PersonAdapter):
     def get_name(self):
         return self.person.name
 
+
 Person.registerFacet(PersonAdaptToSalesPerson, ISalesPerson)
 
 
@@ -1119,7 +1129,7 @@ class PersonAdaptToTransporter(PersonAdapter):
 
     is_active = BoolCol(default=True)
     open_contract_date = DateTimeCol(default=datetime.datetime.now)
-    #FIXME: not used in purchases.
+    # FIXME: not used in purchases.
     freight_percentage = PercentCol(default=0)
 
     #
@@ -1132,7 +1142,9 @@ class PersonAdaptToTransporter(PersonAdapter):
         query = cls.q.is_active == True
         return cls.select(query, connection=conn)
 
+
 Person.registerFacet(PersonAdaptToTransporter, ITransporter)
+
 
 class PersonCategoryPaymentInfo(Domain):
     person = ForeignKey('Person')
@@ -1157,6 +1169,7 @@ class EmployeeRoleHistory(Domain):
     role = ForeignKey('EmployeeRole')
     employee = ForeignKey('PersonAdaptToEmployee')
     is_active = BoolCol(default=True)
+
 
 #
 # Views
@@ -1214,7 +1227,7 @@ class ClientView(Viewable):
     @property
     def client(self):
         return PersonAdaptToClient.get(self.client_id,
-            connection=self._connection)
+                                       connection=self._connection)
 
     @property
     def age(self):
@@ -1257,7 +1270,7 @@ class ClientView(Viewable):
         An active client is a person who are authorized to make new sales
         """
         return cls.select(cls.q.status == PersonAdaptToClient.STATUS_SOLVENT,
-            connection=conn).orderBy('name')
+                          connection=conn).orderBy('name')
 
 
 class EmployeeView(Viewable):
@@ -1273,10 +1286,10 @@ class EmployeeView(Viewable):
 
     joins = [
         INNERJOINOn(None, PersonAdaptToEmployee,
-            Person.q.id == PersonAdaptToEmployee.q.originalID),
+                    Person.q.id == PersonAdaptToEmployee.q.originalID),
         INNERJOINOn(None, EmployeeRole,
-            PersonAdaptToEmployee.q.roleID == EmployeeRole.q.id),
-        ]
+                    PersonAdaptToEmployee.q.roleID == EmployeeRole.q.id),
+    ]
 
     def get_status_string(self):
         return PersonAdaptToEmployee.statuses[self.status]
@@ -1284,7 +1297,7 @@ class EmployeeView(Viewable):
     @property
     def employee(self):
         return PersonAdaptToEmployee.get(self.employee_id,
-            connection=self.get_connection())
+                                         connection=self.get_connection())
 
     @classmethod
     def get_active_employees(cls, conn):
@@ -1311,12 +1324,12 @@ class SupplierView(Viewable):
 
     joins = [
         INNERJOINOn(None, PersonAdaptToSupplier,
-            Person.q.id == PersonAdaptToSupplier.q.originalID),
+                    Person.q.id == PersonAdaptToSupplier.q.originalID),
         LEFTJOINOn(None, PersonAdaptToCompany,
-            Person.q.id == PersonAdaptToCompany.q.originalID),
+                   Person.q.id == PersonAdaptToCompany.q.originalID),
         LEFTJOINOn(None, PersonAdaptToIndividual,
-            Person.q.id == PersonAdaptToIndividual.q.originalID),
-        ]
+                   Person.q.id == PersonAdaptToIndividual.q.originalID),
+    ]
 
     def get_status_string(self):
         return PersonAdaptToSupplier.statuses[self.status]
@@ -1324,7 +1337,7 @@ class SupplierView(Viewable):
     @property
     def supplier(self):
         return PersonAdaptToSupplier.get(self.supplier_id,
-            connection=self.get_connection())
+                                         connection=self.get_connection())
 
 
 class TransporterView(Viewable):
@@ -1349,13 +1362,13 @@ class TransporterView(Viewable):
 
     joins = [
         INNERJOINOn(None, PersonAdaptToTransporter,
-            Person.q.id == PersonAdaptToTransporter.q.originalID),
-        ]
+                    Person.q.id == PersonAdaptToTransporter.q.originalID),
+    ]
 
     @property
     def transporter(self):
         return PersonAdaptToTransporter.get(self.transporter_id,
-            connection=self.get_connection())
+                                            connection=self.get_connection())
 
 
 class BranchView(Viewable):
@@ -1372,17 +1385,17 @@ class BranchView(Viewable):
 
     joins = [
         INNERJOINOn(None, PersonAdaptToBranch,
-            Person.q.id == PersonAdaptToBranch.q.originalID),
+                    Person.q.id == PersonAdaptToBranch.q.originalID),
         LEFTJOINOn(None, PersonAdaptToEmployee,
-            PersonAdaptToBranch.q.managerID == PersonAdaptToEmployee.q.id),
+                   PersonAdaptToBranch.q.managerID == PersonAdaptToEmployee.q.id),
         LEFTJOINOn(None, Manager_Person,
-            PersonAdaptToEmployee.q.originalID == Manager_Person.q.id),
-        ]
+                   PersonAdaptToEmployee.q.originalID == Manager_Person.q.id),
+    ]
 
     @property
     def branch(self):
         return PersonAdaptToBranch.get(self.branch_id,
-            connection=self.get_connection())
+                                       connection=self.get_connection())
 
     def get_status_str(self):
         if self.is_active:
@@ -1416,15 +1429,15 @@ class UserView(Viewable):
 
     joins = [
         INNERJOINOn(None, PersonAdaptToUser,
-            Person.q.id == PersonAdaptToUser.q.originalID),
+                    Person.q.id == PersonAdaptToUser.q.originalID),
         LEFTJOINOn(None, UserProfile,
-            PersonAdaptToUser.q.profileID == UserProfile.q.id),
-        ]
+                   PersonAdaptToUser.q.profileID == UserProfile.q.id),
+    ]
 
     @property
     def user(self):
         return PersonAdaptToUser.get(self.user_id,
-            connection=self.get_connection())
+                                     connection=self.get_connection())
 
     def get_status_str(self):
         if self.is_active:
@@ -1451,13 +1464,13 @@ class CreditProviderView(Viewable):
 
     joins = [
         INNERJOINOn(None, PersonAdaptToCreditProvider,
-            Person.q.id == PersonAdaptToCreditProvider.q.originalID),
-        ]
+                    Person.q.id == PersonAdaptToCreditProvider.q.originalID),
+    ]
 
     @property
     def provider(self):
         return PersonAdaptToCreditProvider.get(self.provider_id,
-            connection=self.get_connection())
+                                               connection=self.get_connection())
 
 
 class CallsView(Viewable):
@@ -1477,17 +1490,17 @@ class CallsView(Viewable):
 
     joins = [
         LEFTJOINOn(None, Person,
-            Person.q.id == Calls.q.personID),
+                   Person.q.id == Calls.q.personID),
         LEFTJOINOn(None, PersonAdaptToUser,
-            PersonAdaptToUser.q.id == Calls.q.attendantID),
+                   PersonAdaptToUser.q.id == Calls.q.attendantID),
         LEFTJOINOn(None, Attendant_Person,
-            PersonAdaptToUser.q.originalID == Attendant_Person.q.id),
+                   PersonAdaptToUser.q.originalID == Attendant_Person.q.id),
 
         LEFTJOINOn(None, Service,
-            Service.q.id == Calls.q.serviceID),
+                   Service.q.id == Calls.q.serviceID),
         LEFTJOINOn(None, Sellable,
-            Sellable.q.id == Service.q.sellableID),
-        ]
+                   Sellable.q.id == Service.q.sellableID),
+    ]
 
     @property
     def call(self):
@@ -1506,7 +1519,7 @@ class CallsView(Viewable):
         if date:
             if isinstance(date, tuple):
                 date_query = AND(const.DATE(Calls.q.date) >= date[0],
-                    const.DATE(Calls.q.date) <= date[1])
+                                 const.DATE(Calls.q.date) <= date[1])
             else:
                 date_query = const.DATE(Calls.q.date) == date
 
@@ -1520,18 +1533,17 @@ class CallsView(Viewable):
     @classmethod
     def select_by_date(cls, date, connection):
         return cls.select_by_client_date(None, None, date,
-            connection=connection)
+                                         connection=connection)
 
 
 class ClientCallsView(CallsView):
     joins = CallsView.joins[:]
     joins.append(
         INNERJOINOn(None, PersonAdaptToClient,
-            PersonAdaptToClient.q.originalID == Person.q.id))
+                    PersonAdaptToClient.q.originalID == Person.q.id))
 
 
 class SalesPersonView(Viewable):
-
     columns = dict(id=PersonAdaptToSalesPerson.q.id,
                    name=Person.q.name,
                    email=Person.q.email,
@@ -1551,6 +1563,7 @@ class SalesPersonView(Viewable):
 # TODO qual o papo desse implementer
 class StorableBatch(Domain):
     pass
+
 
 # XXX nao ta conseguindo pegar dentro do modulo product.py
 class StorableBatchView(Viewable):
@@ -1574,7 +1587,7 @@ class StorableBatchView(Viewable):
 
     tables = [
         StorableBatch,
-        #TODO ver essa parada
+        # TODO ver essa parada
         # LEFTJOINOn(None, _StockSummary,
         #          Field('_stock_summary', 'batch_id') == StorableBatch.q.id),
         LEFTJOINOn(None, PersonAdaptToBranch,
