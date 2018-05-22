@@ -70,7 +70,6 @@ import datetime
 from kiwi.datatypes import currency
 from stoqlib.database.orm import (DateTimeCol, UnicodeCol, IntCol,
                                   ForeignKey, MultipleJoin, BoolCol)
-from stoqlib.database.orm import Field
 from stoqlib.database.orm import PriceCol, PercentCol, DecimalCol
 from stoqlib.database.orm import Viewable
 from stoqlib.database.orm import const, OR, AND, INNERJOINOn, LEFTJOINOn, Alias
@@ -787,10 +786,10 @@ class PersonAdaptToAffiliate(PersonAdapter):
 
     commission_percent = DecimalCol(default=10.0)
     physical_products = BoolCol(default=False)
-    business_type = UnicodeCol(default=None)
+    business_type = UnicodeCol(default='')
     bank = IntCol(default=BANK_BRASIL)
-    bank_ag = UnicodeCol()
-    bank_cc = UnicodeCol()
+    bank_ag = UnicodeCol(default='')
+    bank_cc = UnicodeCol(default='')
     account_type = IntCol(default=CONTA_CORRENTE)
 
     #
@@ -1352,6 +1351,34 @@ class SupplierView(Viewable):
                                          connection=self.get_connection())
 
 
+class AffiliateView(Viewable):
+    columns = dict(
+        id=Person.q.id,
+        name=Person.q.name,
+        phone_number=Person.q.phone_number,
+        fancy_name=PersonAdaptToCompany.q.fancy_name,
+        cnpj=PersonAdaptToCompany.q.cnpj,
+        cpf=PersonAdaptToIndividual.q.cpf,
+        rg=PersonAdaptToIndividual.q.rg_number,
+        affiliate_id=PersonAdaptToAffiliate.q.id,
+        state_registry=PersonAdaptToCompany.q.state_registry,
+    )
+
+    joins = [
+        INNERJOINOn(None, PersonAdaptToAffiliate,
+                    Person.q.id == PersonAdaptToAffiliate.q.originalID),
+        LEFTJOINOn(None, PersonAdaptToCompany,
+                   Person.q.id == PersonAdaptToCompany.q.originalID),
+        LEFTJOINOn(None, PersonAdaptToIndividual,
+                   Person.q.id == PersonAdaptToIndividual.q.originalID),
+    ]
+
+    @property
+    def affiliate(self):
+        return PersonAdaptToAffiliate.get(self.affiliate_id,
+                                          connection=self.get_connection())
+
+
 class TransporterView(Viewable):
     """
     Stores information about transporters
@@ -1579,62 +1606,4 @@ class StorableBatch(Domain):
 
 # XXX nao ta conseguindo pegar dentro do modulo product.py
 class StorableBatchView(Viewable):
-    """A view for |batches|
-    This is used to get the most information of a |batch|
-    without doing lots of database queries.
-    It's bestly used with :meth:`.find_by_storable`
-    """
-
-    #: the |batch| object
-    batch = StorableBatch
-    columns = dict(
-        #: the |branch| this batch is in
-        branch=PersonAdaptToBranch,
-        # StorableBatch
-        id=StorableBatch.q.id,
-        create_date=StorableBatch.q.create_date,
-        batch_number=StorableBatch.q.batch_number,
-        stock=const.COALESCE(Field('_stock_summary', 'stock'), 0),
-    )
-
-    tables = [
-        StorableBatch,
-        # TODO ver essa parada
-        # LEFTJOINOn(None, _StockSummary,
-        #          Field('_stock_summary', 'batch_id') == StorableBatch.q.id),
-        LEFTJOINOn(None, PersonAdaptToBranch,
-                   Field('_stock_summary', 'branch_id') == PersonAdaptToBranch.q.id),
-    ]
-
-    @classmethod
-    def find_by_storable(cls, store, storable, branch=None):
-        """Find results for this view that for *storable*
-        Normally it's best to use this instead of *store.find* since
-        it'll only |batches| for the given |storable|.
-        :param store: the store that will be used to find the results
-        :param storable: the |storable| used to filter the results
-        :param branch: a |branch| that, if not ``None``, will be used to
-            filter the results to only get batches on that branch.
-        :returns: the matching views
-        :rtype: a sequence of :class:`StorableBatchView`
-        """
-        query = StorableBatch.storable_id == storable.id
-        if branch is not None:
-            query = AND(query,
-                        Field('_stock_summary', 'branch_id') == branch.id)
-        return store.find(cls, query)
-
-    @classmethod
-    def find_available_by_storable(cls, store, storable, branch=None):
-        """Find results for this view that for *storable* that have stock
-        The same as :meth:`.find_by_storable`, but only results with
-        :obj:`.stock` > 0 will be fetched
-        :param store: the store that will be used to find the results
-        :param storable: the |storable| used to filter the results
-        :param branch: a |branch| that, if not ``None``, will be used to
-            filter the results to only get batches on that branch.
-        :returns: the matching views
-        :rtype: a sequence of :class:`StorableBatchView`
-        """
-        results = cls.find_by_storable(store, storable, branch=branch)
-        return results.find(Field('_stock_summary', 'stock') > 0)
+    pass

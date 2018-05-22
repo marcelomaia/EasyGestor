@@ -24,28 +24,25 @@
 """ Person editors definition """
 
 import datetime
-
 from kiwi.datatypes import ValidationError
-from stoqlib.lib.pluginmanager import get_plugin_manager
-
-from stoqlib.lib.translation import stoqlib_gettext
+from stoqlib.domain.interfaces import (IClient, ICreditProvider, IEmployee,
+                                       ISupplier, ITransporter, IUser,
+                                       IIndividual, IBranch, ICompany, IAffiliate)
+from stoqlib.domain.person import EmployeeRole, PersonAdaptToCreditProvider
 from stoqlib.gui.editors.simpleeditor import SimpleEntryEditor
-from stoqlib.gui.templates.persontemplate import BasePersonRoleEditor
+from stoqlib.gui.slaves.affiliateslave import AffiliateDetailsSlave
+from stoqlib.gui.slaves.branchslave import BranchDetailsSlave
 from stoqlib.gui.slaves.clientslave import ClientStatusSlave
 from stoqlib.gui.slaves.credproviderslave import CreditProviderDetailsSlave
 from stoqlib.gui.slaves.employeeslave import (EmployeeDetailsSlave,
-                                      EmployeeStatusSlave,
-                                      EmployeeRoleSlave,
-                                      EmployeeRoleHistorySlave)
-from stoqlib.gui.slaves.userslave import UserDetailsSlave, UserStatusSlave
-
+                                              EmployeeStatusSlave,
+                                              EmployeeRoleSlave,
+                                              EmployeeRoleHistorySlave)
 from stoqlib.gui.slaves.supplierslave import SupplierDetailsSlave, SupplierCategorySlave
 from stoqlib.gui.slaves.transporterslave import TransporterDataSlave
-from stoqlib.gui.slaves.branchslave import BranchDetailsSlave
-from stoqlib.domain.person import EmployeeRole, PersonAdaptToCreditProvider
-from stoqlib.domain.interfaces import (IClient, ICreditProvider, IEmployee,
-                                       ISupplier, ITransporter, IUser,
-                                       IIndividual, IBranch, ICompany)
+from stoqlib.gui.slaves.userslave import UserDetailsSlave, UserStatusSlave
+from stoqlib.gui.templates.persontemplate import BasePersonRoleEditor
+from stoqlib.lib.translation import stoqlib_gettext
 
 _ = stoqlib_gettext
 
@@ -105,8 +102,8 @@ class UserEditor(BasePersonRoleEditor):
         self.main_slave.attach_person_slave(user_status)
         passwd_fields = not self.edit_mode
         self.user_details = UserDetailsSlave(self.conn, self.model,
-            show_password_fields=passwd_fields,
-            visual_mode=self.visual_mode)
+                                             show_password_fields=passwd_fields,
+                                             visual_mode=self.visual_mode)
         tab_text = _('User Details')
         self.main_slave._person_slave.attach_custom_slave(self.user_details,
                                                           tab_text)
@@ -121,7 +118,7 @@ class UserEditor(BasePersonRoleEditor):
     def on_confirm(self):
         self.main_slave.on_confirm()
         self.user_details.on_confirm()
-        #FIXME
+        # FIXME
         # WOP
         if len(self.model.password) != 64:
             self.model.crypt_passwd()
@@ -300,7 +297,54 @@ class SupplierEditor(BasePersonRoleEditor):
         category_payment_slave = SupplierCategorySlave(self.conn, self.model)
         category_text = _("Category")
         slave._person_slave.attach_extra_slave(category_payment_slave,
-                                                   category_text)
+                                               category_text)
+
+
+class AffiliateEditor(BasePersonRoleEditor):
+    model_name = _('Afiliado')
+    title = _('Novo Afiliado')
+    model_iface = IAffiliate
+    gladefile = 'BaseTemplate'
+
+    help_section = 'affiliate'
+    ui_form_name = 'affiliate'
+
+    #
+    # BaseEditor hooks
+    #
+
+    def create_model(self, conn):
+        person = BasePersonRoleEditor.create_model(self, conn)
+        supplier = ISupplier(person, None)
+        if supplier is None:
+            supplier = person.addFacet(IAffiliate, connection=conn)
+        return supplier
+
+    def setup_slaves(self):
+        BasePersonRoleEditor.setup_slaves(self)
+        self.details_slave = AffiliateDetailsSlave(self.conn, self.model,
+                                                   visual_mode=self.visual_mode)
+        slave = self.main_slave.get_person_slave()
+        slave.attach_slave('person_status_holder', self.details_slave)
+
+        # individual = IIndividual(self.model.person, None)
+        # company = ICompany(self.model.person, None)
+        #
+        # assert individual or company
+        #
+        # if individual:
+        #     self.add_category_tab("individual_slave")
+        #
+        # if company:
+        #     self.add_category_tab("company_slave")
+
+    # def add_category_tab(self, role_type_slave):
+    #     slave = getattr(self, role_type_slave, None)
+    #     category_payment_slave = SupplierCategorySlave(self.conn, self.model)
+    #     category_text = _("Category")
+    #     slave._person_slave.attach_extra_slave(category_payment_slave,
+    #                                                category_text)
+
 
 class TransporterEditor(BasePersonRoleEditor):
     model_name = _('Transporter')

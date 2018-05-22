@@ -24,26 +24,14 @@
 """ Search dialogs for person objects """
 
 from decimal import Decimal
-from datetime import datetime
 
+import pango
+from datetime import datetime
 from kiwi.argcheck import argcheck
 from kiwi.enums import SearchFilterPosition
+from kiwi.ui.objectlist import Column, SearchColumn
 from kiwi.ui.search import ComboSearchFilter
-from kiwi.ui.objectlist import Column, SearchColumn, ColoredColumn
-import pango
 from stoqlib.api import api
-from stoqlib.gui.dialogs.csvexporterdialog import CSVExporterDialog
-from stoqlib.lib.translation import stoqlib_gettext
-from stoqlib.lib.formatters import format_phone_number
-from stoqlib.gui.editors.personeditor import (ClientEditor, SupplierEditor,
-                                              EmployeeEditor,
-                                              TransporterEditor,
-                                              EmployeeRoleEditor, BranchEditor,
-                                              CardProviderEditor, UserEditor)
-from stoqlib.gui.base.search import SearchEditor, SearchDialog
-from stoqlib.gui.base.dialogs import run_dialog
-from stoqlib.gui.dialogs.clientdetails import ClientDetailsDialog
-from stoqlib.gui.dialogs.supplierdetails import SupplierDetailsDialog
 from stoqlib.domain.person import (EmployeeRole,
                                    PersonAdaptToBranch, BranchView,
                                    PersonAdaptToClient, ClientView,
@@ -51,8 +39,20 @@ from stoqlib.domain.person import (EmployeeRole,
                                    CreditProviderView,
                                    PersonAdaptToEmployee, EmployeeView,
                                    TransporterView,
-                                   SupplierView, UserView)
+                                   SupplierView, UserView, PersonAdaptToAffiliate, AffiliateView)
+from stoqlib.gui.base.dialogs import run_dialog
+from stoqlib.gui.base.search import SearchEditor, SearchDialog
+from stoqlib.gui.dialogs.clientdetails import ClientDetailsDialog
+from stoqlib.gui.dialogs.csvexporterdialog import CSVExporterDialog
+from stoqlib.gui.dialogs.supplierdetails import SupplierDetailsDialog
+from stoqlib.gui.editors.personeditor import (ClientEditor, SupplierEditor,
+                                              EmployeeEditor, AffiliateEditor,
+                                              TransporterEditor,
+                                              EmployeeRoleEditor, BranchEditor,
+                                              CardProviderEditor, UserEditor)
 from stoqlib.gui.wizards.personwizard import run_person_role_dialog
+from stoqlib.lib.formatters import format_phone_number
+from stoqlib.lib.translation import stoqlib_gettext
 
 _ = stoqlib_gettext
 
@@ -242,6 +242,57 @@ class SupplierSearch(BasePersonSearch):
 
     def get_editor_model(self, supplier_view):
         return supplier_view.supplier
+
+
+class AffiliateSearch(BasePersonSearch):
+    title = _('Supplier Search')
+    editor_class = AffiliateEditor
+    size = (800, 450)
+    table = AffiliateView
+    search_lbl_text = _('Suppliers Matching:')
+    result_strings = _('supplier'), _('suppliers')
+
+    def __init__(self, conn, **kwargs):
+        self.company_doc_l10n = api.get_l10n_field(conn, 'company_document')
+        SearchEditor.__init__(self, conn, **kwargs)
+        if kwargs.get('double_click_confirm'):
+            self.enable_ok()
+
+    #
+    # SearchDialog hooks
+    #
+
+    def create_filters(self):
+        self.set_text_field_columns(['name', 'phone_number', 'cnpj'])
+
+    def get_columns(self):
+        return [SearchColumn('name', _('Name'), str,
+                             sorted=True, expand=True),
+                SearchColumn('phone_number', _('Phone Number'), str,
+                             format_func=format_phone_number, width=110),
+                SearchColumn('fancy_name', _('Fancy Name'), str,
+                             width=180),
+                SearchColumn('state_registry', _('IE'), str,
+                             width=100, visible=False),
+                SearchColumn('rg', _('RG'), str,
+                             width=100, visible=False),
+                SearchColumn('cnpj', self.company_doc_l10n.label,
+                             str, width=140),
+                SearchColumn('cpf', 'CPF',
+                             str, width=140)]
+
+    def on_details_button_clicked(self, *args):
+        selected = self.results.get_selected()
+        run_dialog(SupplierDetailsDialog, self, self.conn, selected.supplier)
+
+    def update_widgets(self, *args):
+        affiliate_view = self.results.get_selected()
+        self.set_details_button_sensitive(affiliate_view is not None)
+        self.set_edit_button_sensitive(affiliate_view is not None)
+
+    def get_editor_model(self, affiliate_view):
+        print affiliate_view
+        return affiliate_view.affiliate
 
 
 class AbstractCreditProviderSearch(BasePersonSearch):

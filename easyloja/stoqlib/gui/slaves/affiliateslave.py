@@ -33,8 +33,15 @@ _ = stoqlib_gettext
 class AffiliateDetailsSlave(BaseEditorSlave):
     model_iface = IAffiliate
     gladefile = 'AffiliateDetailsSlave'
-    proxy_widgets = ('bank', 'account_type', 'bank_ag', 'bank_cc',
-                     'commission_percent', 'physical_products', 'business_type')
+    proxy_widgets = (
+        'bank',
+        'account_type',
+        'bank_ag',
+        'bank_cc',
+        # 'commission_percent',
+        'physical_products',
+        'business_type'
+    )
 
     def setup_proxies(self):
         banks = [(value, constant)
