@@ -773,6 +773,18 @@ class PersonAdaptToAffiliate(PersonAdapter):
     (CONTA_CORRENTE,
      CONTA_POUPANCA) = range(2)
 
+    banks = {BANK_BRASIL: 'Banco do Brasil',
+             BANK_SANTANDER: 'Santander',
+             BANK_CEF: 'Caixa Econômica Federal',
+             BANK_BRADESCO: 'Bradesco',
+             BANK_ITAU: 'Itaú',
+             BANK_BANRISUL: 'Banrisul',
+             BANK_SICREDI: 'Sicredi',
+             BANK_SICOOB: 'Sicoob'}
+
+    account_types = {CONTA_CORRENTE: 'Conta corrente',
+                     CONTA_POUPANCA: 'Poupança'}
+
     commission_percent = DecimalCol(default=10.0)
     physical_products = BoolCol(default=False)
     business_type = UnicodeCol(default=None)
