@@ -52,7 +52,7 @@ from stoqlib.gui.search.personsearch import (ClientSearch,
                                              BranchSearch,
                                              SupplierSearch,
                                              TransporterSearch,
-                                             UserSearch)
+                                             UserSearch, AffiliateSearch)
 from stoqlib.gui.search.profilesearch import UserProfileSearch
 from stoqlib.gui.search.stationsearch import StationSearch
 from stoqlib.gui.search.taxclasssearch import TaxTemplatesSearch
@@ -110,6 +110,7 @@ class Tasks(object):
             # (_('Taxes'), 'taxes', STOQ_TAXES),
             (_('Tax Classes'), 'tax_templates', STOQ_DOCUMENTS),
             (_('Suppliers'), 'suppliers', STOQ_SUPPLIERS),
+            (_('Afiliados'), 'affiliates', STOQ_CLIENTS),
             (_('Transporters'), 'transporters', STOQ_DELIVERY),
             (_('Users'), 'users', STOQ_HR),
             (_('User Profiles'), 'user_profiles', STOQ_USER_PROFILES),
@@ -247,6 +248,9 @@ class Tasks(object):
 
     def _open_suppliers(self):
         self.app.run_dialog(SupplierSearch, self.app.conn)
+
+    def _open_affiliates(self):
+        self.app.run_dialog(AffiliateSearch, self.app.conn)
 
     # def _open_taxes(self):
     #     self.app.run_dialog(SellableTaxConstantsDialog, self.app.conn)
