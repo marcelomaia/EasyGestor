@@ -245,12 +245,12 @@ class SupplierSearch(BasePersonSearch):
 
 
 class AffiliateSearch(BasePersonSearch):
-    title = _('Supplier Search')
+    title = _('Pesquisa de Afiliado')
     editor_class = AffiliateEditor
     size = (800, 450)
     table = AffiliateView
-    search_lbl_text = _('Suppliers Matching:')
-    result_strings = _('supplier'), _('suppliers')
+    search_lbl_text = _('Afiliado contendo:')
+    result_strings = _('afiliado'), _('afiliados')
 
     def __init__(self, conn, **kwargs):
         self.company_doc_l10n = api.get_l10n_field(conn, 'company_document')

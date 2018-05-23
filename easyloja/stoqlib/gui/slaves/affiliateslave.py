@@ -22,7 +22,7 @@
 ## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 """ Supplier editor slaves implementation"""
-
+from kiwi.datatypes import ValidationError
 from stoqlib.domain.interfaces import IAffiliate
 from stoqlib.gui.editors.baseeditor import BaseEditorSlave
 from stoqlib.lib.translation import stoqlib_gettext
@@ -53,3 +53,7 @@ class AffiliateDetailsSlave(BaseEditorSlave):
         self.account_type.prefill(account_types)
         self.proxy = self.add_proxy(self.model,
                                     AffiliateDetailsSlave.proxy_widgets)
+
+    def on_commission_percent__validate(self, widget, value):
+        if value > 70:
+            return ValidationError('Valor máximo de 70%')
