@@ -38,7 +38,7 @@ class AffiliateDetailsSlave(BaseEditorSlave):
         'account_type',
         'bank_ag',
         'bank_cc',
-        # 'commission_percent',
+        'commission_percent',
         'physical_products',
         'business_type'
     )

@@ -784,7 +784,7 @@ class PersonAdaptToAffiliate(PersonAdapter):
     account_types = {CONTA_CORRENTE: 'Conta corrente',
                      CONTA_POUPANCA: 'Poupança'}
 
-    commission_percent = DecimalCol(default=10.0)
+    commission_percent = DecimalCol(default=0)
     physical_products = BoolCol(default=False)
     business_type = UnicodeCol(default='')
     bank = IntCol(default=BANK_BRASIL)
