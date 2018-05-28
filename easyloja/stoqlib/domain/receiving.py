@@ -199,7 +199,7 @@ class ReceivingOrder(Domain):
         if self.purchase.can_close():
             self.purchase.close()
 
-    def update_payments(self, create_freight_payment=False):
+    def update_payments(self, create_freight_payment=False, category=None, cost_center=None):
         """Updates the payment value of all payments realated to this
         receiving. If create_freight_payment is set, a new payment will be
         created with the freight value. The other value as the surcharges and
@@ -212,9 +212,8 @@ class ReceivingOrder(Domain):
         difference = self.get_total() - self.get_products_total()
         if create_freight_payment:
             difference -= self.freight_total
-
+        payments = group.get_pending_payments()
         if difference != 0:
-            payments = group.get_pending_payments()
             payments_number = payments.count()
             if self.freight_type == self.FREIGHT_FOB_FIRST_INSTALLMENT:
                 if payments_number > 0:
@@ -228,6 +227,10 @@ class ReceivingOrder(Domain):
                     for payment in payments:
                         new_value = payment.value + per_installments_value
                         payment.update_value(new_value)
+        # to set category in a payment
+        for payment in payments:
+            payment.category = category
+            payment.cost_center = cost_center
 
         if self.freight_total and create_freight_payment:
             self._create_freight_payment()

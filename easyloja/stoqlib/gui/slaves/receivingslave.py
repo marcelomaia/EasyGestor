@@ -29,6 +29,8 @@ from kiwi.utils import gsignal
 
 from stoqlib.api import api
 from stoqlib.domain.fiscal import CfopData
+from stoqlib.domain.payment.category import PaymentCategory
+from stoqlib.domain.payment.costcenter import PaymentCostCenter
 from stoqlib.domain.receiving import ReceivingOrder
 from stoqlib.domain.person import PersonAdaptToTransporter
 from stoqlib.lib.translation import stoqlib_gettext
@@ -64,6 +66,8 @@ class ReceivingInvoiceSlave(BaseEditorSlave):
                      'freight_due_date')
 
     gsignal('activate')
+    gsignal('category_changed', object)
+    gsignal('cost_center_changed', object)
 
     #
     # BaseEditorSlave hooks
@@ -98,6 +102,14 @@ class ReceivingInvoiceSlave(BaseEditorSlave):
         self.freight_combo.handler_unblock_by_func(handler_func)
 
     def _setup_widgets(self):
+        categories = [(c.name, c) for c in PaymentCategory.selectBy(connection=self.conn)]
+        items = [('Nenhum', None)] + categories
+        self.category.prefill(items)
+
+        cost_centers = [(c.name, c) for c in PaymentCostCenter.selectBy(connection=self.conn)]
+        items = [('Nenhum', None)] + cost_centers
+        self.cost_center.prefill(items)
+
         self.total.set_bold(True)
 
         purchase = self.model.purchase
@@ -298,3 +310,12 @@ class ReceivingInvoiceSlave(BaseEditorSlave):
         if value is ValueUnset:
             self.model.expense_value = 0
         self.proxy.update('total')
+
+    def on_category__changed(self, *args):
+        category = self.category.read()
+        print(category)
+        self.emit('category_changed', category)
+
+    def on_cost_center__changed(self, *args):
+        cost_center = self.cost_center.read()
+        self.emit('cost_center_changed', cost_center)

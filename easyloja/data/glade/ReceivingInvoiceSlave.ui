@@ -709,16 +709,56 @@
               <placeholder/>
             </child>
             <child>
-              <placeholder/>
+              <object class="ProxyComboBox" id="category">
+                <property name="visible">True</property>
+                <property name="data_type">object</property>
+                <property name="model_attribute">category</property>
+              </object>
+              <packing>
+                <property name="left_attach">3</property>
+                <property name="right_attach">4</property>
+                <property name="top_attach">8</property>
+                <property name="bottom_attach">9</property>
+              </packing>
             </child>
             <child>
-              <placeholder/>
+              <object class="ProxyLabel" id="kiwilabel7">
+                <property name="visible">True</property>
+                <property name="xalign">1</property>
+                <property name="label" translatable="yes">Categoria:</property>
+              </object>
+              <packing>
+                <property name="left_attach">2</property>
+                <property name="right_attach">3</property>
+                <property name="top_attach">8</property>
+                <property name="bottom_attach">9</property>
+              </packing>
             </child>
             <child>
-              <placeholder/>
+              <object class="ProxyLabel" id="kiwilabel8">
+                <property name="visible">True</property>
+                <property name="xalign">1</property>
+                <property name="label" translatable="yes">Centro de custo:</property>
+              </object>
+              <packing>
+                <property name="left_attach">2</property>
+                <property name="right_attach">3</property>
+                <property name="top_attach">9</property>
+                <property name="bottom_attach">10</property>
+              </packing>
             </child>
             <child>
-              <placeholder/>
+              <object class="ProxyComboBox" id="cost_center">
+                <property name="visible">True</property>
+                <property name="data_type">object</property>
+                <property name="model_attribute">cost_center</property>
+              </object>
+              <packing>
+                <property name="left_attach">3</property>
+                <property name="right_attach">4</property>
+                <property name="top_attach">9</property>
+                <property name="bottom_attach">10</property>
+              </packing>
             </child>
           </object>
           <packing>

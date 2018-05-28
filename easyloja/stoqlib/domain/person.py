@@ -774,14 +774,14 @@ class PersonAdaptToAffiliate(PersonAdapter):
 
     banks = {BANK_BRASIL: 'Banco do Brasil',
              BANK_SANTANDER: 'Santander',
-             BANK_CEF: 'Caixa Econômica Federal',
+             BANK_CEF: 'Caixa Econômica',
              BANK_BRADESCO: 'Bradesco',
              BANK_ITAU: 'Itaú',
              BANK_BANRISUL: 'Banrisul',
              BANK_SICREDI: 'Sicredi',
              BANK_SICOOB: 'Sicoob'}
 
-    account_types = {CONTA_CORRENTE: 'Conta corrente',
+    account_types = {CONTA_CORRENTE: 'Corrente',
                      CONTA_POUPANCA: 'Poupança'}
 
     commission_percent = DecimalCol(default=0)

@@ -307,6 +307,8 @@ class ReceivingOrderProductStep(SellableItemStep):
 class ReceivingInvoiceStep(WizardEditorStep):
     gladefile = 'HolderTemplate'
     model_type = ReceivingOrder
+    category = None
+    cost_center = None
 
     #
     # WizardStep hooks
@@ -318,6 +320,8 @@ class ReceivingInvoiceStep(WizardEditorStep):
     def post_init(self):
         self._is_valid = False
         self.invoice_slave = ReceivingInvoiceSlave(self.conn, self.model)
+        self.invoice_slave.connect('category_changed', self._adjust_category)
+        self.invoice_slave.connect('cost_center_changed', self._adjust_cost_center)
         self.invoice_slave.connect('activate', self._on_invoice_slave__activate)
         self.attach_slave("place_holder", self.invoice_slave)
         # Slaves must be focused after being attached
@@ -329,7 +333,7 @@ class ReceivingInvoiceStep(WizardEditorStep):
 
     def validate_step(self):
         create_freight_payment = self.invoice_slave.create_freight_payment()
-        self.model.update_payments(create_freight_payment)
+        self.model.update_payments(create_freight_payment, self.category, self.cost_center)
         return self.model
 
     # Callbacks
@@ -341,6 +345,12 @@ class ReceivingInvoiceStep(WizardEditorStep):
     def _on_invoice_slave__activate(self, slave):
         if self._is_valid:
             self.wizard.finish()
+
+    def _adjust_category(self, slave, object):
+        self.category = object
+
+    def _adjust_cost_center(self, slave, object):
+        self.cost_center = object
 
 #
 # Main wizard
