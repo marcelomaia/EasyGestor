@@ -1,13 +1,12 @@
 # -*- coding: utf-8 -*-
 import tempfile
+
 from kiwi.datatypes import ValidationError
 from kiwi.enums import ListType
 from kiwi.ui.dialogs import warning
-
+from stoqlib.database.runtime import get_current_branch
 from stoqlib.database.runtime import new_transaction
 from stoqlib.domain.events import PurchaseNfeDownload
-from stoqlib.domain.interfaces import ISupplier
-from stoqlib.domain.person import Person
 from stoqlib.domain.product import ProductAdaptToStorable, ProductStockItem, Product
 from stoqlib.domain.sellable import Sellable, SellableUnit
 from stoqlib.gui.base.dialogs import get_current_toplevel
@@ -15,10 +14,10 @@ from stoqlib.gui.base.wizards import BaseWizard, WizardEditorStep
 from stoqlib.gui.slaves.nfeslaves import ProductsListSlave, NewProductListSlave, ProductListSlave
 from stoqlib.lib.nfeimporter import NFeImporter
 from stoqlib.lib.parameters import sysparam
-from stoqlib.database.runtime import get_current_branch
 from stoqlib.lib.translation import stoqlib_gettext
 
 _ = stoqlib_gettext
+
 
 class Entry():
     """An Sellable linked to a Product in XML.
@@ -64,7 +63,6 @@ class NFeProductsWizard(BaseWizard):
 
 
 class NFeSelectStep(WizardEditorStep):
-
     gladefile = 'NFeOrder'
     model_type = Entry
     products = ''
@@ -85,10 +83,10 @@ class NFeSelectStep(WizardEditorStep):
             self.xml = NFeImporter(xml_path)
             if self.xml.get_root():
                 # suplier
-                self.name_lbl.set_text(self.xml.get_issuer_name())               # issuer name
-                self.cnpj_lbl.set_text(self.xml.get_issuer_document())           # cnpj cpf or ''
-                self.address_lbl.set_text(self.xml.get_issuer_address())         # address
-                self.city_lbl.set_text(self.xml.get_issuer_UF_city())            # city/uf
+                self.name_lbl.set_text(self.xml.get_issuer_name())  # issuer name
+                self.cnpj_lbl.set_text(self.xml.get_issuer_document())  # cnpj cpf or ''
+                self.address_lbl.set_text(self.xml.get_issuer_address())  # address
+                self.city_lbl.set_text(self.xml.get_issuer_UF_city())  # city/uf
                 # nf
                 self.emission_lbl.set_text(self.xml.emission_date)
                 self.op_nat_lbl.set_text(self.xml.operation_nature[:45])
@@ -115,26 +113,26 @@ class NFeSelectStep(WizardEditorStep):
     def create_products_slave(self, xml_path):
         products = ProductsListSlave(xml_path)
         products.show()
-        #TODO it says that slave have been already attached, this is a WOP,
+        # TODO it says that slave have been already attached, this is a WOP,
         self.attach_slave("placeholder", products)
         return products
 
     def reset_footer(self):
         dots = '...'
-        self.name_lbl.set_text(dots)                # issuer name
-        self.cnpj_lbl.set_text(dots)                # cnpj
-        self.address_lbl.set_text(dots)             # address
-        self.city_lbl.set_text(dots)                # city/uf
+        self.name_lbl.set_text(dots)  # issuer name
+        self.cnpj_lbl.set_text(dots)  # cnpj
+        self.address_lbl.set_text(dots)  # address
+        self.city_lbl.set_text(dots)  # city/uf
         # nf
-        self.emission_lbl.set_text(dots)            # emission date
-        self.op_nat_lbl.set_text(dots)              # emission date
-        self.total_lbl.set_text(dots)               # emission date
-        self.id_lbl.set_text(dots)                  # emission date
+        self.emission_lbl.set_text(dots)  # emission date
+        self.op_nat_lbl.set_text(dots)  # emission date
+        self.total_lbl.set_text(dots)  # emission date
+        self.id_lbl.set_text(dots)  # emission date
 
     def next_step(self):
         import datetime
-        self.products = self.slaves['placeholder'].products                                        # update product list
-        self.products = [product for product in self.products if product.select is True]           # filtra os marcados
+        self.products = self.slaves['placeholder'].products  # update product list
+        self.products = [product for product in self.products if product.select is True]  # filtra os marcados
         self.model.nfeid = self.xml.nfe_id
         self.model.entry_date = datetime.datetime.today()
         return NFeCommitStep(self.wizard, self.conn, self.model, self.products, self.xml)
@@ -171,7 +169,7 @@ class NFeSelectStep(WizardEditorStep):
         filename = widget.get_filename()
         self.path.set_text(filename)
         try:
-            self.detach_slave("placeholder")                        # Workaround
+            self.detach_slave("placeholder")  # Workaround
         except LookupError:
             pass
         self.create_products_slave(xml_path=filename)
@@ -182,7 +180,7 @@ class NFeSelectStep(WizardEditorStep):
         if not filename:
             return
         try:
-            self.detach_slave("placeholder")                        # Workaround
+            self.detach_slave("placeholder")  # Workaround
         except LookupError:
             pass
         self.create_products_slave(xml_path=filename)
@@ -204,7 +202,8 @@ class NFeCommitStep(WizardEditorStep):
         WizardEditorStep.__init__(self, conn, wizard, model)
 
     def setup_slaves(self):
-        prod_slave = ProductListSlave(self.products, self.xml, conn=self.conn)   # here is passed an array of Product() instance,
+        prod_slave = ProductListSlave(self.products, self.xml,
+                                      conn=self.conn)  # here is passed an array of Product() instance,
         prod_slave.set_list_type(ListType.UNADDABLE)
         self.attach_slave("placeholder", prod_slave)
 
@@ -225,6 +224,8 @@ class NFeCommitStep(WizardEditorStep):
         else:
             self.conn.commit()
             for product in slave.products:
+                product.price = float(product.price) / float(product.split_parts)  # divide o preço
+                product.quantity = float(product.quantity) * float(product.split_parts)  # multiplica as quantidades
                 self.model.products.append(product)
             return True
 
@@ -264,7 +265,8 @@ class NFeImportProductsStep(WizardEditorStep):
         WizardEditorStep.__init__(self, conn, wizard, model)
 
     def setup_slaves(self):
-        prod_slave = NewProductListSlave(self.products, self.xml, conn=self.conn)   # here is passed an array of Product() instance,
+        prod_slave = NewProductListSlave(self.products, self.xml,
+                                         conn=self.conn)  # here is passed an array of Product() instance,
         prod_slave.set_list_type(ListType.READONLY)
         self.attach_slave("placeholder", prod_slave)
 

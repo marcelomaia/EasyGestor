@@ -1,30 +1,29 @@
 # -*- coding: utf-8 -*-
-from sys import maxint as MAXINT
 import gtk
 from decimal import Decimal
+from sys import maxint as MAXINT
+
 from kiwi import ValueUnset
 from kiwi.currency import currency
-from kiwi.ui.dialogs import yesno, info
+from kiwi.ui.dialogs import yesno
 from kiwi.ui.listdialog import ListSlave
 from kiwi.ui.objectlist import Column
 from kiwi.ui.objectlist import ObjectList
 from kiwi.ui.views import SlaveView
-
 from stoqlib.api import api
-from stoqlib.database.runtime import new_transaction, get_current_branch
+from stoqlib.database.runtime import new_transaction
 from stoqlib.domain.interfaces import IStorable
 from stoqlib.domain.nfe import SellableNfe
-from stoqlib.domain.product import Product, ProductAdaptToStorable, ProductStockItem
+from stoqlib.domain.product import Product
 from stoqlib.domain.sellable import Sellable
-from stoqlib.exceptions import SellableError
 from stoqlib.gui.base.dialogs import get_current_toplevel, run_dialog
 from stoqlib.gui.editors.baseeditor import BaseEditor
 from stoqlib.gui.editors.producteditor import ProductEditor
 from stoqlib.gui.search.sellablesearch import SellableSearch
 from stoqlib.lib.formatters import get_formatted_price, format_quantity
-
-from stoqlib.lib.nfeimporter import NFeImporter, PRODUCT_DESCRIPTION, PRODUCT_CEAN, PRODUCT_UNITARY_TRADE_VALUE, \
-    PRODUCT_COMMERCIAL_QUANTITY, PRODUCT_COMMERCIAL_UNITY, PRODUCT_TOTAL_GROSS_AMOUNT, PRODUCT_CODE, PRODUCT_NCM
+from stoqlib.lib.nfeimporter import (NFeImporter, PRODUCT_DESCRIPTION, PRODUCT_CEAN, PRODUCT_UNITARY_TRADE_VALUE,
+                                     PRODUCT_COMMERCIAL_QUANTITY, PRODUCT_COMMERCIAL_UNITY, PRODUCT_TOTAL_GROSS_AMOUNT,
+                                     PRODUCT_CODE, PRODUCT_NCM)
 from stoqlib.lib.parameters import sysparam
 
 
@@ -78,6 +77,7 @@ class ProductsListSlave(SlaveView):
                                 Column('quantity', data_type=Decimal, title=u'Quantidade', format_func=format_quantity),
                                 Column('unit', data_type=str, title=u'Un.'),
                                 Column('total', data_type=currency, title=u'Total', format_func=get_formatted_price),
+                                Column('split_parts', editable=True, data_type=float, title=u'Dividir em'),
                                 Column('select', editable=True, data_type=bool, title=u'Selecionar')])
 
         try:
@@ -102,6 +102,7 @@ class ProductsListSlave(SlaveView):
         nfe_product.product = prod_info[PRODUCT_CODE]
         nfe_product.sell_price = 0
         nfe_product.ncm = prod_info[PRODUCT_NCM]
+        nfe_product.split_parts = 1.0
 
         self.products.append(nfe_product)
         return nfe_product
