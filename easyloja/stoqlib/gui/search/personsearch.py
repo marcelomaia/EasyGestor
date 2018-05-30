@@ -32,6 +32,7 @@ from kiwi.enums import SearchFilterPosition
 from kiwi.ui.objectlist import Column, SearchColumn
 from kiwi.ui.search import ComboSearchFilter
 from stoqlib.api import api
+from stoqlib.domain.events import CreateAffiliateEvent
 from stoqlib.domain.person import (EmployeeRole,
                                    PersonAdaptToBranch, BranchView,
                                    PersonAdaptToClient, ClientView,
@@ -39,7 +40,7 @@ from stoqlib.domain.person import (EmployeeRole,
                                    CreditProviderView,
                                    PersonAdaptToEmployee, EmployeeView,
                                    TransporterView,
-                                   SupplierView, UserView, PersonAdaptToAffiliate, AffiliateView)
+                                   SupplierView, UserView, AffiliateView)
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.base.search import SearchEditor, SearchDialog
 from stoqlib.gui.dialogs.clientdetails import ClientDetailsDialog
@@ -282,8 +283,22 @@ class AffiliateSearch(BasePersonSearch):
                              str, width=140)]
 
     def on_details_button_clicked(self, *args):
+        pass
+
+    def setup_widgets(self):
+        self.create_affiliate_button = self.add_button(label=_(u'Criar afiliado...'))
+        self.create_affiliate_button.connect('clicked', self._create_affiliate)
+        self.create_affiliate_button.show()
+        self.create_affiliate_button.set_sensitive(False)
+        self.results.connect('has_rows', self._on_results__has_rows)
+
+    def _create_affiliate(self, *args):
         selected = self.results.get_selected()
-        run_dialog(SupplierDetailsDialog, self, self.conn, selected.supplier)
+        CreateAffiliateEvent.emit(selected)
+        print('afiliado selecionado', selected.name)
+
+    def _on_results__has_rows(self, widget, has_rows):
+        self.create_affiliate_button.set_sensitive(has_rows)
 
     def update_widgets(self, *args):
         affiliate_view = self.results.get_selected()

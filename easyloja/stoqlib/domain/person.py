@@ -1352,16 +1352,35 @@ class SupplierView(Viewable):
 
 
 class AffiliateView(Viewable):
+    #
     columns = dict(
+        # person data
         id=Person.q.id,
         name=Person.q.name,
         phone_number=Person.q.phone_number,
-        fancy_name=PersonAdaptToCompany.q.fancy_name,
-        cnpj=PersonAdaptToCompany.q.cnpj,
+        # individual data
         cpf=PersonAdaptToIndividual.q.cpf,
         rg=PersonAdaptToIndividual.q.rg_number,
+        # affiliate data
         affiliate_id=PersonAdaptToAffiliate.q.id,
+        physical_products=PersonAdaptToAffiliate.q.physical_products,
+        business_type=PersonAdaptToAffiliate.q.business_type,
+        bank_ag=PersonAdaptToAffiliate.q.bank_ag,
+        account_type=PersonAdaptToAffiliate.q.account_type,
+        bank_cc=PersonAdaptToAffiliate.q.account_type,
+        # address
+        district=Address.q.district,
+        city=CityLocation.q.city,
+        country=CityLocation.q.country,
+        state=CityLocation.q.state,
+        street=Address.q.street,
+        postal_code=Address.q.postal_code,
+        streetnumber=Address.q.streetnumber,
+        # company data
+        responsible_name=PersonAdaptToCompany.q.responsible_name,
         state_registry=PersonAdaptToCompany.q.state_registry,
+        fancy_name=PersonAdaptToCompany.q.fancy_name,
+        cnpj=PersonAdaptToCompany.q.cnpj,
     )
 
     joins = [
@@ -1371,6 +1390,10 @@ class AffiliateView(Viewable):
                    Person.q.id == PersonAdaptToCompany.q.originalID),
         LEFTJOINOn(None, PersonAdaptToIndividual,
                    Person.q.id == PersonAdaptToIndividual.q.originalID),
+        LEFTJOINOn(None, Address,
+                   Person.q.id == Address.q.person),
+        LEFTJOINOn(None, CityLocation,
+                   CityLocation.q.id == Address.q.city_locationID),
     ]
 
     @property

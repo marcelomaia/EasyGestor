@@ -5,7 +5,7 @@ import webbrowser
 
 from stoqlib.database.runtime import get_connection
 from stoqlib.database.runtime import new_transaction
-from stoqlib.domain.events import CancelBillEvent
+from stoqlib.domain.events import CancelBillEvent, CreateAffiliateEvent
 from stoqlib.domain.events import (PrintBillEvent, GenerateBillEvent,
                                    GenerateBatchBillEvent, CheckBillStatusEvent,
                                    CheckPendingBillEvent, CheckCreatedBillEvent, GenerateDuplicateEvent,
@@ -37,6 +37,7 @@ class BoletoUI(object):
         GenerateDuplicateEvent.connect(self._on_GenerateDuplicateEvent)
         CheckPaidBillEvent.connect(self._on_CheckPaidBillEvent)
         CancelBillEvent.connect(self._on_CancelBillEvent)
+        CreateAffiliateEvent.connect(self._on_CreateAffiliateEvent)
 
     def _on_StartApplicationEvent(self, appname, app):
         self._add_ui_menus(appname, app, app.main_window.uimanager)
@@ -142,6 +143,15 @@ class BoletoUI(object):
         bill.status = PaymentIuguBill.STATUS_CANCELED
         trans.commit(close=True)
         info('Boleto cancelado!')
+
+    def _on_CreateAffiliateEvent(self, affiliateview):
+        print affiliateview.name
+        print affiliateview.business_type
+        print affiliateview.phone_number
+        print affiliateview.fancy_name
+        print affiliateview.cnpj
+        print affiliateview.cpf
+        print affiliateview.postal_code
 
     def _on_CheckPaidBillEvent(self, start_date, end_date):
         # TODO, colocar um dialogo aqui com todos os boletos pendentes em confirmar no easygestor

@@ -473,3 +473,9 @@ class ResultListEvent(Event):
     """
     This event is emitted to provide a resultlist
     """
+
+
+class CreateAffiliateEvent(Event):
+    """
+        This event is emitted to create a affiliate
+    """
