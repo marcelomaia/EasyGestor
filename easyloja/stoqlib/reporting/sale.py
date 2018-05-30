@@ -180,7 +180,7 @@ class SaleOrderReport(BaseStoqReport):
         salesperson_name = ''
         if sp is not None:
             sp_name = sp.person.name
-            salesperson_name = 'Vendedor: %s' % sp_name
+            salesperson_name = u'Responsável: %s' % sp_name
         extra = _(u'Opening Date: %s') % self._get_status_date(Sale.STATUS_INITIAL).strftime('%x')
         if self.sale.expire_date:
             extra += u';'
