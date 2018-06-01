@@ -295,7 +295,6 @@ class AffiliateSearch(BasePersonSearch):
     def _create_affiliate(self, *args):
         selected = self.results.get_selected()
         CreateAffiliateEvent.emit(selected)
-        print('afiliado selecionado', selected.name)
 
     def _on_results__has_rows(self, widget, has_rows):
         self.create_affiliate_button.set_sensitive(has_rows)

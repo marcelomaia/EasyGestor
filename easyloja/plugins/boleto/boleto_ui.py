@@ -12,6 +12,7 @@ from stoqlib.domain.events import (PrintBillEvent, GenerateBillEvent,
                                    CheckPaidBillEvent)
 from stoqlib.domain.payment.bill import PaymentIuguBill
 from stoqlib.domain.payment.payment import Payment
+from stoqlib.domain.person import PersonAdaptToAffiliate
 from stoqlib.gui.base.dialogs import run_dialog, get_current_toplevel
 from stoqlib.gui.events import StartApplicationEvent
 from stoqlib.gui.slaves.installmentslave import SaleInstallmentConfirmationSlave
@@ -145,13 +146,35 @@ class BoletoUI(object):
         info('Boleto cancelado!')
 
     def _on_CreateAffiliateEvent(self, affiliateview):
-        print affiliateview.name
-        print affiliateview.business_type
-        print affiliateview.phone_number
-        print affiliateview.fancy_name
-        print affiliateview.cnpj
-        print affiliateview.cpf
-        print affiliateview.postal_code
+        self._create_affiliate_params(affiliateview)
+
+    def _create_affiliate_params(self, affiliateview):
+        person_type = 'Pessoa Física'
+        if affiliateview.cnpj:
+            person_type = 'Pessoa Jurídica'
+        data = {'data':
+                    {'name': affiliateview.name,
+                     'price_range': 'Mais que R$ 500,00',
+                     'physical_products': affiliateview.physical_products,
+                     'business_type': affiliateview.business_type,
+                     'person_type': person_type,
+                     'automatic_transfer': True,
+                     'cnpj': affiliateview.cnpj,
+                     'cpf': affiliateview.cpf,
+                     'company_name': affiliateview.fancy_name,
+                     'address': '{}, {}'.format(affiliateview.street, affiliateview.streetnumber),
+                     'cep': affiliateview.postal_code,
+                     'city': affiliateview.city,
+                     'state': affiliateview.state,
+                     'telephone': affiliateview.phone_number,
+                     'resp_name': affiliateview.responsible_name,
+                     'resp_cpf': affiliateview.responsible_cpf,
+                     'bank': PersonAdaptToAffiliate.banks.get(affiliateview.bank),
+                     'bank_ag': affiliateview.bank_ag,
+                     'account_type': PersonAdaptToAffiliate.account_types.get(affiliateview.account_type),
+                     'bank_cc': affiliateview.bank_cc}}
+
+        print(data)
 
     def _on_CheckPaidBillEvent(self, start_date, end_date):
         # TODO, colocar um dialogo aqui com todos os boletos pendentes em confirmar no easygestor

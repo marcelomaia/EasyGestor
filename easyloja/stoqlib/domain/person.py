@@ -512,6 +512,7 @@ class PersonAdaptToCompany(PersonAdapter):
     responsible_phone = UnicodeCol(default='')
     responsible_mobile_phone = UnicodeCol(default='')
     responsible_email = UnicodeCol(default='')
+    responsible_cpf = UnicodeCol(default='')
 
     def get_cnpj_number(self):
         """Returns the cnpj number without any non-numeric characters
@@ -1363,6 +1364,7 @@ class AffiliateView(Viewable):
         rg=PersonAdaptToIndividual.q.rg_number,
         # affiliate data
         affiliate_id=PersonAdaptToAffiliate.q.id,
+        bank=PersonAdaptToAffiliate.q.bank,
         physical_products=PersonAdaptToAffiliate.q.physical_products,
         business_type=PersonAdaptToAffiliate.q.business_type,
         bank_ag=PersonAdaptToAffiliate.q.bank_ag,
@@ -1378,6 +1380,7 @@ class AffiliateView(Viewable):
         streetnumber=Address.q.streetnumber,
         # company data
         responsible_name=PersonAdaptToCompany.q.responsible_name,
+        responsible_cpf=PersonAdaptToCompany.q.responsible_cpf,
         state_registry=PersonAdaptToCompany.q.state_registry,
         fancy_name=PersonAdaptToCompany.q.fancy_name,
         cnpj=PersonAdaptToCompany.q.cnpj,

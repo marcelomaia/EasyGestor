@@ -45,6 +45,7 @@ class CompanyDocumentsSlave(BaseEditorSlave):
                      'state_registry',
                      'city_registry',
                      'responsible_name',
+                     'responsible_cpf',
                      'responsible_phone',
                      'responsible_mobile_phone',
                      'responsible_email')
@@ -53,6 +54,7 @@ class CompanyDocumentsSlave(BaseEditorSlave):
         self.document_l10n = api.get_l10n_field(self.conn, 'company_document')
         self.cnpj_lbl.set_label(self.document_l10n.label)
         self.cnpj.set_mask(self.document_l10n.entry_mask)
+        self.responsible_cpf.set_mask('000.000.000-00')
         self.proxy = self.add_proxy(self.model,
                                     CompanyDocumentsSlave.proxy_widgets)
 
