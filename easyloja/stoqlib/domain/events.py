@@ -479,3 +479,9 @@ class CreateAffiliateEvent(Event):
     """
         This event is emitted to create a affiliate
     """
+
+
+class VerifySubaccountEvent(Event):
+    """
+        This event is emitted to validate a subaccount to affiliate
+    """

@@ -793,6 +793,12 @@ class PersonAdaptToAffiliate(PersonAdapter):
     bank_cc = UnicodeCol(default='')
     account_type = IntCol(default=CONTA_CORRENTE)
 
+    user_token = UnicodeCol(default='')
+    live_api_token = UnicodeCol(default='')
+    test_api_token = UnicodeCol(default='')
+    account_id = UnicodeCol(default='')
+    iugu_name = UnicodeCol(default='')
+
     #
     # Auxiliar methods
     #
@@ -1369,7 +1375,13 @@ class AffiliateView(Viewable):
         business_type=PersonAdaptToAffiliate.q.business_type,
         bank_ag=PersonAdaptToAffiliate.q.bank_ag,
         account_type=PersonAdaptToAffiliate.q.account_type,
-        bank_cc=PersonAdaptToAffiliate.q.account_type,
+        bank_cc=PersonAdaptToAffiliate.q.bank_cc,
+        commission_percent=PersonAdaptToAffiliate.q.commission_percent,
+        user_token=PersonAdaptToAffiliate.q.user_token,
+        live_api_token=PersonAdaptToAffiliate.q.live_api_token,
+        test_api_token=PersonAdaptToAffiliate.q.test_api_token,
+        account_id=PersonAdaptToAffiliate.q.account_id,
+        iugu_name=PersonAdaptToAffiliate.q.iugu_name,
         # address
         district=Address.q.district,
         city=CityLocation.q.city,

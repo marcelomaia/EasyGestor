@@ -3,16 +3,16 @@ import os
 import sys
 import webbrowser
 
+from kiwi.log import Logger
 from stoqlib.database.runtime import get_connection
 from stoqlib.database.runtime import new_transaction
-from stoqlib.domain.events import CancelBillEvent, CreateAffiliateEvent
+from stoqlib.domain.events import CancelBillEvent, CreateAffiliateEvent, VerifySubaccountEvent
 from stoqlib.domain.events import (PrintBillEvent, GenerateBillEvent,
                                    GenerateBatchBillEvent, CheckBillStatusEvent,
                                    CheckPendingBillEvent, CheckCreatedBillEvent, GenerateDuplicateEvent,
                                    CheckPaidBillEvent)
 from stoqlib.domain.payment.bill import PaymentIuguBill
 from stoqlib.domain.payment.payment import Payment
-from stoqlib.domain.person import PersonAdaptToAffiliate
 from stoqlib.gui.base.dialogs import run_dialog, get_current_toplevel
 from stoqlib.gui.events import StartApplicationEvent
 from stoqlib.gui.slaves.installmentslave import SaleInstallmentConfirmationSlave
@@ -20,9 +20,11 @@ from stoqlib.gui.stockicons import STOQ_BARCODE
 from stoqlib.lib.message import info
 
 from boleto_iugu import Boleto
+from boleto_utils import create_affiliate, verify_subaccount
 
 plugin_root = os.path.dirname(__file__)
 sys.path.append(plugin_root)
+log = Logger("stoq-nfe-plugin")
 
 
 class BoletoUI(object):
@@ -39,6 +41,7 @@ class BoletoUI(object):
         CheckPaidBillEvent.connect(self._on_CheckPaidBillEvent)
         CancelBillEvent.connect(self._on_CancelBillEvent)
         CreateAffiliateEvent.connect(self._on_CreateAffiliateEvent)
+        VerifySubaccountEvent.connect(self._on_VerifySubaccountEvent)
 
     def _on_StartApplicationEvent(self, appname, app):
         self._add_ui_menus(appname, app, app.main_window.uimanager)
@@ -146,35 +149,10 @@ class BoletoUI(object):
         info('Boleto cancelado!')
 
     def _on_CreateAffiliateEvent(self, affiliateview):
-        self._create_affiliate_params(affiliateview)
+        return create_affiliate(affiliateview)
 
-    def _create_affiliate_params(self, affiliateview):
-        person_type = 'Pessoa Física'
-        if affiliateview.cnpj:
-            person_type = 'Pessoa Jurídica'
-        data = {'data':
-                    {'name': affiliateview.name,
-                     'price_range': 'Mais que R$ 500,00',
-                     'physical_products': affiliateview.physical_products,
-                     'business_type': affiliateview.business_type,
-                     'person_type': person_type,
-                     'automatic_transfer': True,
-                     'cnpj': affiliateview.cnpj,
-                     'cpf': affiliateview.cpf,
-                     'company_name': affiliateview.fancy_name,
-                     'address': '{}, {}'.format(affiliateview.street, affiliateview.streetnumber),
-                     'cep': affiliateview.postal_code,
-                     'city': affiliateview.city,
-                     'state': affiliateview.state,
-                     'telephone': affiliateview.phone_number,
-                     'resp_name': affiliateview.responsible_name,
-                     'resp_cpf': affiliateview.responsible_cpf,
-                     'bank': PersonAdaptToAffiliate.banks.get(affiliateview.bank),
-                     'bank_ag': affiliateview.bank_ag,
-                     'account_type': PersonAdaptToAffiliate.account_types.get(affiliateview.account_type),
-                     'bank_cc': affiliateview.bank_cc}}
-
-        print(data)
+    def _on_VerifySubaccountEvent(self, affiliateview):
+        return verify_subaccount(affiliateview)
 
     def _on_CheckPaidBillEvent(self, start_date, end_date):
         # TODO, colocar um dialogo aqui com todos os boletos pendentes em confirmar no easygestor

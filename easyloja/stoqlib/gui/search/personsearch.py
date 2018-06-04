@@ -29,10 +29,11 @@ import pango
 from datetime import datetime
 from kiwi.argcheck import argcheck
 from kiwi.enums import SearchFilterPosition
+from kiwi.ui.dialogs import warning
 from kiwi.ui.objectlist import Column, SearchColumn
 from kiwi.ui.search import ComboSearchFilter
 from stoqlib.api import api
-from stoqlib.domain.events import CreateAffiliateEvent
+from stoqlib.domain.events import CreateAffiliateEvent, VerifySubaccountEvent
 from stoqlib.domain.person import (EmployeeRole,
                                    PersonAdaptToBranch, BranchView,
                                    PersonAdaptToClient, ClientView,
@@ -291,10 +292,28 @@ class AffiliateSearch(BasePersonSearch):
         self.create_affiliate_button.show()
         self.create_affiliate_button.set_sensitive(False)
         self.results.connect('has_rows', self._on_results__has_rows)
+        self.results.connect('selection-changed', self._on_results_selection_changed)
+
+    def _on_results_selection_changed(self, search_results, affiliateview):
+        try:
+            if affiliateview.user_token:
+                self.create_affiliate_button.set_label(u'Validar afiliado...')
+            else:
+                self.create_affiliate_button.set_label(u'Criar afiliado...')
+        except AttributeError, e:
+            pass
 
     def _create_affiliate(self, *args):
-        selected = self.results.get_selected()
-        CreateAffiliateEvent.emit(selected)
+        affiliate_view = self.results.get_selected()
+        if affiliate_view.user_token:
+            if VerifySubaccountEvent.emit(affiliate_view):
+                warning('Validação solicitada... Aguarde um dia para autorizar')
+            else:
+                warning('Tente novamente')
+        else:
+            retval = CreateAffiliateEvent.emit(affiliate_view)
+            if retval:
+                warning('Afiliado criado...')
 
     def _on_results__has_rows(self, widget, has_rows):
         self.create_affiliate_button.set_sensitive(has_rows)
@@ -305,7 +324,6 @@ class AffiliateSearch(BasePersonSearch):
         self.set_edit_button_sensitive(affiliate_view is not None)
 
     def get_editor_model(self, affiliate_view):
-        print affiliate_view
         return affiliate_view.affiliate
 
 
