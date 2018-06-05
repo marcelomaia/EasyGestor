@@ -41,7 +41,7 @@ from stoqlib.domain.person import (EmployeeRole,
                                    CreditProviderView,
                                    PersonAdaptToEmployee, EmployeeView,
                                    TransporterView,
-                                   SupplierView, UserView, AffiliateView)
+                                   SupplierView, UserView, AffiliateView, PersonAdaptToAffiliate)
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.base.search import SearchEditor, SearchDialog
 from stoqlib.gui.dialogs.clientdetails import ClientDetailsDialog
@@ -287,7 +287,7 @@ class AffiliateSearch(BasePersonSearch):
         pass
 
     def setup_widgets(self):
-        self.create_affiliate_button = self.add_button(label=_(u'Criar afiliado...'))
+        self.create_affiliate_button = self.add_button(label=_(u'...'))
         self.create_affiliate_button.connect('clicked', self._create_affiliate)
         self.create_affiliate_button.show()
         self.create_affiliate_button.set_sensitive(False)
@@ -296,12 +296,20 @@ class AffiliateSearch(BasePersonSearch):
 
     def _on_results_selection_changed(self, search_results, affiliateview):
         try:
-            if affiliateview.user_token:
-                self.create_affiliate_button.set_label(u'Validar afiliado...')
-            else:
+            if not affiliateview.user_token:
                 self.create_affiliate_button.set_label(u'Criar afiliado...')
+                self.create_affiliate_button.set_sensitive(True)
+            elif affiliateview.user_token and affiliateview.status == PersonAdaptToAffiliate.STATUS_APPROVED:
+                self.create_affiliate_button.set_label(u'Já foi validado...')
+                self.create_affiliate_button.set_sensitive(False)
+            elif affiliateview.user_token and affiliateview.status == PersonAdaptToAffiliate.STATUS_PENDING:
+                self.create_affiliate_button.set_label(u'Validar afiliado...')
+                self.create_affiliate_button.set_sensitive(True)
+            elif affiliateview.user_token and affiliateview.status == PersonAdaptToAffiliate.STATUS_ANALYSIS:
+                self.create_affiliate_button.set_label(u'Está em análise...')
+                self.create_affiliate_button.set_sensitive(False)
         except AttributeError, e:
-            pass
+            print(str(e))
 
     def _create_affiliate(self, *args):
         affiliate_view = self.results.get_selected()

@@ -1,0 +1,1 @@
+ALTER TABLE person_adapt_to_affiliate  ADD COLUMN status int;

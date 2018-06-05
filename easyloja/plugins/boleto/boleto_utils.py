@@ -65,6 +65,7 @@ def create_affiliate(affiliateview):
     affiliate.test_api_token = retval['test_api_token']
     affiliate.account_id = retval['account_id']
     affiliate.iugu_name = retval['name']
+    affiliate.iugu_name = PersonAdaptToAffiliate.STATUS_PENDING  # status pendente para afiliado.
     trans.commit(close=True)
     return True
 
@@ -78,10 +79,14 @@ def verify_subaccount(affiliateview):
         m = MarketPlace()
         retval = m.verify_subaccount(affiliateview.account_id, data)
         if retval.get('errors'):
-            log.debug('Erro ao criar afiliado: {}'.format(retval.get('errors')))
+            log.debug('Erro ao verificar afiliado: {}'.format(retval.get('errors')))
             return False
         else:
             log.debug('Verificando Afiliado...: {}'.format(retval))
+            trans = new_transaction()
+            affiliate = PersonAdaptToAffiliate.get(affiliateview.affiliate_id, connection=trans)
+            affiliate.status = PersonAdaptToAffiliate.STATUS_ANALYSIS  # deixa o afiliado em status de analise
+            trans.commit(close=True)
             return True
     except Exception, e:
         log.debug('Erro: {}'.format(str(e)))

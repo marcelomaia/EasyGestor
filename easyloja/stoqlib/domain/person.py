@@ -773,6 +773,10 @@ class PersonAdaptToAffiliate(PersonAdapter):
     (CONTA_CORRENTE,
      CONTA_POUPANCA) = range(2)
 
+    (STATUS_PENDING,
+     STATUS_ANALYSIS,
+     STATUS_APPROVED) = range(3)
+
     banks = {BANK_BRASIL: 'Banco do Brasil',
              BANK_SANTANDER: 'Santander',
              BANK_CEF: 'Caixa Econômica',
@@ -798,6 +802,7 @@ class PersonAdaptToAffiliate(PersonAdapter):
     test_api_token = UnicodeCol(default='')
     account_id = UnicodeCol(default='')
     iugu_name = UnicodeCol(default='')
+    status = IntCol(default=STATUS_PENDING)
 
     #
     # Auxiliar methods
@@ -1382,6 +1387,7 @@ class AffiliateView(Viewable):
         test_api_token=PersonAdaptToAffiliate.q.test_api_token,
         account_id=PersonAdaptToAffiliate.q.account_id,
         iugu_name=PersonAdaptToAffiliate.q.iugu_name,
+        status=PersonAdaptToAffiliate.q.status,
         # address
         district=Address.q.district,
         city=CityLocation.q.city,
