@@ -24,15 +24,15 @@
 ##
 """ Editor for payments descriptions and categories"""
 
-import datetime
 import gtk
 
-from dateutil.relativedelta import relativedelta
-from kiwi.ui.gadgets import render_pixbuf
+import datetime
 import pango
+from dateutil.relativedelta import relativedelta
 from kiwi.datatypes import currency, ValidationError, ValueUnset
+from kiwi.ui.dialogs import info
+from kiwi.ui.gadgets import render_pixbuf
 from kiwi.ui.widgets.list import Column
-
 from stoqlib.api import api
 from stoqlib.domain.interfaces import (IInPayment, IOutPayment, IClient,
                                        ISupplier, IIndividual, ICompany)
@@ -43,7 +43,7 @@ from stoqlib.domain.payment.method import PaymentMethod
 from stoqlib.domain.payment.payment import Payment
 from stoqlib.domain.payment.views import PaymentChangeHistoryView
 from stoqlib.domain.person import PersonAdaptToClient, PersonAdaptToSupplier, PersonCategoryPaymentInfo, \
-    PersonAdaptToBranch
+    PersonAdaptToBranch, PersonAdaptToAffiliate, AffiliateView
 from stoqlib.domain.sale import SaleView
 from stoqlib.gui.base.dialogs import run_dialog, get_current_toplevel
 from stoqlib.gui.base.search import SearchEditor
@@ -61,7 +61,6 @@ from stoqlib.lib.defaults import (INTERVALTYPE_WEEK,
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.pluginmanager import get_plugin_manager
 from stoqlib.lib.translation import stoqlib_gettext
-from kiwi.ui.dialogs import info
 from stoqlib.lib.validators import validate_cpf, validate_cnpj, validate_phone_number, validate_email
 
 _ = stoqlib_gettext
@@ -85,6 +84,7 @@ class PaymentEditor(BaseEditor):
                      'category',
                      'cost_center',
                      'notes',
+                     'affiliate',
                      'branch']
 
     def __init__(self, conn, model=None):
@@ -126,6 +126,7 @@ class PaymentEditor(BaseEditor):
         self._fill_method_combo()
         self._populate_person()
         self._populate_branch()
+        self._populate_afiliate()
         self.repeat.prefill([
             (_('Once'), INTERVALTYPE_ONCE),
             (_('Weekly'), INTERVALTYPE_WEEK),
@@ -154,7 +155,8 @@ class PaymentEditor(BaseEditor):
 
     def can_edit_details(self):
         widgets = [self.value, self.due_date,
-                       self.add_person, self.repeat, self.method]
+                   self.add_person, self.repeat, self.method,
+                   self.affiliate, self.affiliate_lbl]
         bill = PaymentMethod.get_by_name(self.conn, 'bill')
         if get_plugin_manager().is_active('boleto') and self.model.method == bill:
             if self.value in widgets:
@@ -168,6 +170,13 @@ class PaymentEditor(BaseEditor):
     # Private
     def _populate_branch(self):
         self.branch.prefill([(str(p.person.name), p) for p in PersonAdaptToBranch.selectBy(connection=self.conn)])
+
+    def _populate_afiliate(self):
+        # preenche somente com os afiliados aprovados.
+        self.affiliate.prefill([(str(p.name), p.affiliate) for p in
+                                AffiliateView.select(AffiliateView.q.status ==
+                                                     PersonAdaptToAffiliate.STATUS_APPROVED,
+                                                     connection=self.conn).orderBy('name')])
 
     def _populate_person(self):
         person = getattr(self.model.group, self.person_attribute)
@@ -251,7 +260,8 @@ class PaymentEditor(BaseEditor):
 
     def _setup_widgets(self):
         self.person_lbl.set_label(self._person_label)
-        widgets = [self.value, self.repeat, self.end_date]
+        widgets = [self.value, self.repeat, self.end_date,
+                   self.affiliate, self.affiliate_lbl]
         if self.model.group.sale:
             label = _("Sale details")
         elif self.model.group.purchase:

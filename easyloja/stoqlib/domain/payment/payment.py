@@ -109,6 +109,7 @@ class Payment(Domain):
     category = ForeignKey('PaymentCategory')
     cost_center = ForeignKey('PaymentCostCenter', default=None)
     branch = ForeignKey('PersonAdaptToBranch', default=None)
+    affiliate = ForeignKey('PersonAdaptToAffiliate', default=None)
 
     comments = MultipleJoin('PaymentComment')
     check_data = SingleJoin('CheckData', joinColumn='payment_id')

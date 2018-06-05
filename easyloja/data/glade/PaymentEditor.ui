@@ -9,7 +9,7 @@
     <child>
       <object class="GtkTable" id="table1">
         <property name="visible">True</property>
-        <property name="n_rows">12</property>
+        <property name="n_rows">13</property>
         <property name="n_columns">5</property>
         <property name="column_spacing">6</property>
         <property name="row_spacing">6</property>
@@ -530,6 +530,39 @@
             <property name="x_options"/>
             <property name="y_options"/>
           </packing>
+        </child>
+        <child>
+          <object class="ProxyLabel" id="affiliate_lbl">
+            <property name="visible">True</property>
+            <property name="xalign">1</property>
+            <property name="label" translatable="yes">Afiliado:</property>
+          </object>
+          <packing>
+            <property name="top_attach">12</property>
+            <property name="bottom_attach">13</property>
+          </packing>
+        </child>
+        <child>
+          <object class="ProxyComboEntry" id="affiliate">
+            <property name="visible">True</property>
+            <property name="data_type">object</property>
+            <property name="model_attribute">affiliate</property>
+          </object>
+          <packing>
+            <property name="left_attach">1</property>
+            <property name="right_attach">2</property>
+            <property name="top_attach">12</property>
+            <property name="bottom_attach">13</property>
+          </packing>
+        </child>
+        <child>
+          <placeholder/>
+        </child>
+        <child>
+          <placeholder/>
+        </child>
+        <child>
+          <placeholder/>
         </child>
         <child>
           <placeholder/>
