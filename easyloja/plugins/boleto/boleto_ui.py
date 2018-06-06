@@ -99,7 +99,7 @@ class BoletoUI(object):
         if not bill:
             info(u'Boleto não encontrado!')
         else:
-            value_cents = b.is_paid(bill.iugu_id)
+            value_cents = b.is_paid(bill.iugu_id, payment)
             if bill.status == PaymentIuguBill.STATUS_PAID:
                 info(u'Boleto está já foi pago pelo cliente')
             elif value_cents and bill.status == PaymentIuguBill.STATUS_PENDING:

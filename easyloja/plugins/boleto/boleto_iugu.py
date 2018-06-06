@@ -5,11 +5,11 @@ import os
 from iugu.invoice import Invoice
 from kiwi.log import Logger
 from kiwi.ui.dialogs import error
-
 from stoqlib.database.runtime import get_connection
 from stoqlib.database.runtime import new_transaction
 from stoqlib.domain.interfaces import IIndividual, ICompany, IClient
 from stoqlib.domain.payment.bill import PaymentIuguBill
+from stoqlib.domain.person import PersonAdaptToAffiliate
 from stoqlib.lib.formatters import format_phone_number
 from stoqlib.lib.parameters import sysparam
 
@@ -25,6 +25,7 @@ os.environ['REQUESTS_CA_BUNDLE'] = certifi_path
 
 
 class Boleto(object):
+
     def _get_items(self, payment):
         """
         create a array of dict, that indicates the bill value
@@ -50,6 +51,7 @@ class Boleto(object):
         :param iugu_id: invoice id str format
         :return:
         """
+        self._setup_environ_key(payment)
         items_data = []
         price = getattr(payment, u'value')
         description = getattr(payment, u'description')
@@ -119,6 +121,7 @@ class Boleto(object):
         return payer_data
 
     def _cancel_bill(self, payment, data):
+        self._setup_environ_key(payment)
         i = Invoice()
         conn = get_connection()
         bill = PaymentIuguBill.selectOneBy(payment=payment, connection=conn)
@@ -127,6 +130,7 @@ class Boleto(object):
         conn.close()
 
     def _save_duplicate(self, payment, iugu_id, data):
+        self._setup_environ_key(payment)
         i = Invoice()
         try:
             log.debug('criando duplicata do boleto: {}, data: {}'.format(iugu_id, data))
@@ -153,6 +157,7 @@ class Boleto(object):
             error('Erro', msg)
 
     def _save_bill(self, payment, data):
+        self._setup_environ_key(payment)
         i = Invoice()
         try:
             invoice = i.create(data)
@@ -180,6 +185,7 @@ class Boleto(object):
             error(u'Erro: vide detalhes', msg)
 
     def _update_bill(self, payment, data):
+        self._setup_environ_key(payment)
         i = Invoice()
         try:
             invoice = i.create(data)
@@ -206,11 +212,31 @@ class Boleto(object):
             msg = str(e)
             error(u'Erro: ', msg)
 
+    def _setup_environ_key(self, payment):
+        """
+        Muda a chave da iugu conforme o afiliado ou o principal se for sem afiliado
+        :param payment: Payment object
+        """
+        affilite = payment.affiliate
+        if affilite:
+            if affilite.user_token and affilite.status == PersonAdaptToAffiliate.STATUS_APPROVED:
+                # se tem user token e foi aprovado.
+                os.environ['IUGU_API_TOKEN'] = affilite.user_token
+                log.debug('Trocando p/ a chave de afiliado {}'.format(affilite.user_token))
+        else:
+            # se nao tem token de afiliado, aplica o token padrão da EBI
+            conn = get_connection()
+            TOKEN = sysparam(conn).IUGU_ID
+            os.environ['IUGU_API_TOKEN'] = TOKEN
+            log.debug('Trocando p/ a chave padrão {}'.format(TOKEN))
+            conn.close()
+
     #
     # Public methods
     #
 
-    def is_paid(self, bill_id):
+    def is_paid(self, bill_id, payment):
+        self._setup_environ_key(payment)
         invoice = Invoice()
         bill = invoice.search(bill_id)
         log.debug('verificadndo boleto pago: {}'.format(bill))
@@ -297,6 +323,7 @@ class Boleto(object):
     def search_paid_bills(self, start_date, end_date):
         # https://dev.iugu.com/v1.0/reference#listar
         # AAAA-MM-DDThh:mm:ss-03:00
+        # TODO buscar boletos pagos para afiliados
         invoice = Invoice()
         data = {'paid_at_from': start_date.strftime('%Y-%m-%dT%H:%M:%S-03:00'),
                 'paid_at_to': end_date.strftime('%Y-%m-%dT%H:%M:%S-03:00'),
@@ -319,7 +346,3 @@ class Boleto(object):
             msg = str(e)
             error('Erro:', msg)
             return False
-            # TOKEN = '6d2caf1bb86d2af24048fea4d72a3a7e'
-            # os.environ['IUGU_API_TOKEN'] = TOKEN
-            # i = Invoice()
-            # print i.cancel('4D0AE22D7EA449B68B21145B39327C03')
