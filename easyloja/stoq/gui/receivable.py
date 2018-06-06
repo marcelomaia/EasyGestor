@@ -27,10 +27,10 @@ stoq/gui/receivable/receivable.py:
     Implementation of receivable application.
 """
 
-import datetime
 import gettext
 import gtk
 
+import datetime
 import pango
 from kiwi.currency import format_price
 from kiwi.datatypes import currency
@@ -40,7 +40,6 @@ from kiwi.ui.gadgets import render_pixbuf
 from kiwi.ui.objectlist import SearchColumn, Column
 from kiwi.ui.search import ComboSearchFilter, DateSearchFilter
 from kiwi.ui.widgets.label import Label
-
 from stoq.gui.application import SearchableAppWindow
 from stoqlib.api import api
 from stoqlib.database.runtime import get_connection

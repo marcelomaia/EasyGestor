@@ -44,8 +44,8 @@ from stoqlib.domain.payment.payment import (PaymentAdaptToInPayment,
                                             PaymentAdaptToOutPayment,
                                             PaymentChangeHistory)
 from stoqlib.domain.payment.renegotiation import PaymentRenegotiation
-from stoqlib.domain.person import Person, PersonAdaptToCreditProvider, PersonAdaptToIndividual, PersonAdaptToCompany, \
-    PersonAdaptToBranch, PersonAdaptToClient
+from stoqlib.domain.person import (Person, PersonAdaptToCreditProvider, PersonAdaptToIndividual, PersonAdaptToCompany,
+                                   PersonAdaptToBranch, PersonAdaptToClient)
 from stoqlib.domain.purchase import PurchaseOrder
 from stoqlib.domain.sale import Sale
 from stoqlib.domain.station import BranchStation
