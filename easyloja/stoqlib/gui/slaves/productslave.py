@@ -35,6 +35,7 @@ from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.editors.baseeditor import BaseEditorSlave
 from stoqlib.gui.search.fiscalsearch import NcmSearch, CestSearch
 from stoqlib.gui.slaves.sellableslave import SellableDetailsSlave
+from stoqlib.lib.cest_parser import find_cest
 from stoqlib.lib.pluginmanager import get_plugin_manager
 from stoqlib.lib.translation import stoqlib_gettext
 
@@ -160,6 +161,12 @@ class ProductInformationSlave(BaseEditorSlave):
             if manager.is_active('nfce') or manager.is_active('nfe2'):
                 if not NcmData.selectOneBy(code=value, is_active=True, connection=self.conn):
                     return ValidationError(_(u'NCM inválido ou inativo'))
+
+    def on_ncm__content_changed(self, *args):
+        """Quando o ncm mudar, busca um cest recomendado"""
+        ncm = self.ncm.read()
+        cest = find_cest(ncm)
+        self.cest.update(cest)
 
     def on_cest__validate(self, widget, value):
         if len(value) not in (0, 7):
