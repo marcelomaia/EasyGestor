@@ -1,0 +1,1 @@
+ALTER TABLE payment add column iugu_status text;

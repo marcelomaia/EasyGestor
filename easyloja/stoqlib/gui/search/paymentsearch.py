@@ -86,6 +86,8 @@ class _BaseBillCheckSearch(SearchDialog):
                              data_type=datetime.date,
                              width=120),
                 SearchColumn('client_name', title=_('Client'), data_type=str),
+                SearchColumn('affiliate_name', title=_('Afiliado'), data_type=str),
+                SearchColumn('iugu_status', title=_('Status Iugu'), data_type=str),
                 SearchColumn('fancy_name', title=_('Fancy Name'), data_type=str, visible=False),
                 SearchColumn('status_str', title=_('Status'), data_type=str,
                              valid_values=self._get_status_values(),

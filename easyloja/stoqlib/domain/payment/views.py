@@ -45,7 +45,7 @@ from stoqlib.domain.payment.payment import (PaymentAdaptToInPayment,
                                             PaymentChangeHistory)
 from stoqlib.domain.payment.renegotiation import PaymentRenegotiation
 from stoqlib.domain.person import (Person, PersonAdaptToCreditProvider, PersonAdaptToIndividual, PersonAdaptToCompany,
-                                   PersonAdaptToBranch, PersonAdaptToClient)
+                                   PersonAdaptToBranch, PersonAdaptToClient, PersonAdaptToAffiliate)
 from stoqlib.domain.purchase import PurchaseOrder
 from stoqlib.domain.sale import Sale
 from stoqlib.domain.station import BranchStation
@@ -399,6 +399,7 @@ class CardPaymentView(Viewable):
 
 class _BillandCheckPaymentView(Viewable):
     """A base view for check and bill payments."""
+    PersonAffiliate = Alias(PersonAdaptToAffiliate, 'person_affiliate')
     columns = dict(
         id=Payment.q.id,
         due_date=Payment.q.due_date,
@@ -413,6 +414,8 @@ class _BillandCheckPaymentView(Viewable):
         method_description=PaymentMethod.q.description,
         iugu_id=PaymentIuguBill.q.iugu_id,
         client_name=Person.q.name,
+        affiliate_name=PersonAffiliate.q.iugu_name,
+        iugu_status=Payment.q.iugu_status,
         fancy_name=PersonAdaptToCompany.q.fancy_name,
     )
 
@@ -431,6 +434,8 @@ class _BillandCheckPaymentView(Viewable):
                    Person.q.id == PaymentGroup.q.payerID),
         LEFTJOINOn(None, PersonAdaptToCompany,
                    PersonAdaptToCompany.q.originalID == Person.q.id),
+        LEFTJOINOn(None, PersonAffiliate,
+                   Payment.q.affiliateID == PersonAffiliate.q.id),
     ]
 
     clause = OR(PaymentMethod.q.method_name == 'bill',

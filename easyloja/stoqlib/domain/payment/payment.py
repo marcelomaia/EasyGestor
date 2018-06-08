@@ -23,9 +23,9 @@
 ##
 """ Payment management implementations."""
 
-import datetime
 from decimal import Decimal
 
+import datetime
 from kiwi.datatypes import currency
 from kiwi.log import Logger
 from kiwi.python import Settable
@@ -80,6 +80,18 @@ class Payment(Domain):
      STATUS_CANCELLED,
      STATUS_LATE) = range(7)
 
+    (IUGU_STATUS_PENDING,
+     IUGU_STATUS_PAID,
+     IUGU_STATUS_CANCELED,
+     IUGU_STATUS_DRAFT,
+     IUGU_STATUS_PARTIALLY_PAID,
+     IUGU_STATUS_REFUNDED,
+     IUGU_STATUS_EXPIRED,
+     IUGU_STATUS_IN_PROTEST,
+     IUGU_STATUS_CHARGEBACK,
+     IUGU_STATUS_IN_ANALISYS) = ('pending', 'paid', 'canceled', 'draft', 'partially_paid',
+                                 'refunded', 'expired', 'in_protest', 'chargeback', 'in_analysis')
+
     statuses = {STATUS_PREVIEW: _(u'Preview'),
                 STATUS_PENDING: _(u'A pagar'),
                 STATUS_PAID: _(u'Paid'),
@@ -87,6 +99,17 @@ class Payment(Domain):
                 STATUS_CONFIRMED: _(u'Confirmed'),
                 STATUS_CANCELLED: _(u'Cancelled'),
                 STATUS_LATE: _(u'Atrasado')}
+
+    iugu_statuses = {IUGU_STATUS_PENDING: 'Pendente',
+                     IUGU_STATUS_PAID: 'Paga',
+                     IUGU_STATUS_CANCELED: 'Cancelada',
+                     IUGU_STATUS_DRAFT: 'Rascunho',
+                     IUGU_STATUS_PARTIALLY_PAID: 'Parcialmente paga',
+                     IUGU_STATUS_REFUNDED: 'Reembolsada',
+                     IUGU_STATUS_EXPIRED: 'Expirada',
+                     IUGU_STATUS_IN_PROTEST: 'Em protesto',
+                     IUGU_STATUS_CHARGEBACK: 'Contestada',
+                     IUGU_STATUS_IN_ANALISYS: u'Em análise'}
 
     status = IntCol(default=STATUS_PREVIEW)
     open_date = DateTimeCol(default=datetime.datetime.now)
@@ -103,6 +126,7 @@ class Payment(Domain):
     migrated_hash = UnicodeCol(default=None)
     payment_number = UnicodeCol(default=None)
     notes = UnicodeCol(default=None)
+    iugu_status = UnicodeCol(default=IUGU_STATUS_PENDING)
     method = ForeignKey('PaymentMethod')
     group = ForeignKey('PaymentGroup')
     till = ForeignKey('Till')

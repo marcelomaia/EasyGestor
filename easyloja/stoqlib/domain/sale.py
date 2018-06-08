@@ -435,7 +435,8 @@ class Sale(Domain):
      STATUS_ORDERED,
      STATUS_RETURNED,
      STATUS_QUOTE,
-     STATUS_RENEGOTIATED) = range(8)
+     STATUS_RENEGOTIATED,
+     STATUS_FISCAL_NOTE) = range(9)
 
     statuses = {STATUS_INITIAL: _(u'Opened'),
                 STATUS_CONFIRMED: _(u'Confirmed'),
@@ -444,7 +445,8 @@ class Sale(Domain):
                 STATUS_ORDERED: _(u'Ordered'),
                 STATUS_RETURNED: _(u'Returned'),
                 STATUS_RENEGOTIATED: _(u'Renegotiated'),
-                STATUS_QUOTE: _(u'Quoting')}
+                STATUS_QUOTE: _(u'Quoting'),
+                STATUS_FISCAL_NOTE: 'Nota Fiscal'}
 
     status = IntCol(default=STATUS_INITIAL)
     coupon_id = IntCol()
@@ -589,6 +591,7 @@ class Sale(Domain):
         @returns: True if the sale can be confirmed, otherwise False
         """
         return (self.status == Sale.STATUS_ORDERED or
+                self.status == Sale.STATUS_FISCAL_NOTE or
                 self.status == Sale.STATUS_QUOTE)
 
     def can_set_paid(self):
