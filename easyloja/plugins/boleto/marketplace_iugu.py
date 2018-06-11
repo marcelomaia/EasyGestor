@@ -45,32 +45,3 @@ class MarketPlace():
             data.bank_cc: Número da Conta
         """
         return self.mp.request_verification(account_id, data)
-
-# token_acc_principal = '09fecfa8018ec877df2d7bc0326e9846'
-# token_subconta = '110ef366314a888eaabab2eb8b10df9b'
-#
-# os.environ['IUGU_API_TOKEN'] = token_subconta
-# marcelo_subaccount = '624229F5C249421EB6D11C183DF3D8A1'
-# mp = MarketPlace()
-# data = {'data':
-#     {
-#         'price_range': 'Mais que R$ 500,00',
-#         'physical_products': False,
-#         'business_type': 'TESTE ',
-#         'person_type': 'Pessoa Física',
-#         'automatic_transfer': True,
-#         'cpf': '94882592215',
-#         'city': 'BELEM',
-#         'state': 'PA',
-#         'telephone': '91991641767',
-#         'bank': 'Banco do Brasil',
-#         'bank_ag': '0765-x',
-#         'account_type': 'Corrente',
-#         'bank_cc': '00050726-1',
-#         'name': 'Vitor Pinheiro Alves',
-#         'address': 'Conj medice I, rua marapanim, 26',
-#         'cep': '66620360',
-#
-#     }
-# }
-# print(mp.get_subacount_data(marcelo_subaccount))

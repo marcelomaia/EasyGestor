@@ -323,7 +323,6 @@ class Boleto(object):
     def search_paid_bills(self, start_date, end_date):
         # https://dev.iugu.com/v1.0/reference#listar
         # AAAA-MM-DDThh:mm:ss-03:00
-        # TODO buscar boletos pagos para afiliados
         invoice = Invoice()
         data = {'paid_at_from': start_date.strftime('%Y-%m-%dT%H:%M:%S-03:00'),
                 'paid_at_to': end_date.strftime('%Y-%m-%dT%H:%M:%S-03:00'),
@@ -345,4 +344,55 @@ class Boleto(object):
         except Exception, e:
             msg = str(e)
             error('Erro:', msg)
+            return False
+
+    def search_bills(self, start_date, end_date):
+        """
+        Search for bills by create date
+        https://dev.iugu.com/v1.0/reference#listar
+        AAAA-MM-DDThh:mm:ss-03:00
+
+        :param start_date: datetime
+        :param end_date: datetime
+        :return:
+        """
+        invoice = Invoice()
+        data = {'created_at_from': start_date.strftime('%Y-%m-%dT%H:%M:%S-03:00'),
+                'created_at_to': end_date.strftime('%Y-%m-%dT%H:%M:%S-03:00')}
+        try:
+            bills = invoice.list(data)
+            errors = ''
+            log.debug('invoice: {}, data: {}'.format(invoice, data))
+
+            if 'errors' not in bills.keys():
+                return bills
+            else:
+                for err in bills['errors']:
+                    errors += u'Erro: {} {}'.format(err, bills['errors'][err])
+                log.error(errors)
+                error(u'Erro',
+                      u'Detalhe: {}'.format(errors))
+                return False
+        except Exception, e:
+            msg = str(e)
+            error('Erro:', msg)
+            return False
+
+    def search_affiliate_bills(self, affiliate, start_date, end_date, conn):
+        """
+        :param affiliate:
+        :param start_date:
+        :param end_date:
+        :param conn:
+        :return:
+        """
+        if affiliate.user_token and affiliate.status == PersonAdaptToAffiliate.STATUS_APPROVED:
+            os.environ['IUGU_API_TOKEN'] = affiliate.user_token
+            log.debug('Trocando p/ a chave de afiliado {}'.format(affiliate.user_token))
+            return self.search_bills(start_date, end_date)
+        else:
+            # se nao tem token de afiliado, aplica o token padrão da EBI
+            TOKEN = sysparam(conn).IUGU_ID
+            os.environ['IUGU_API_TOKEN'] = TOKEN
+            log.debug('Trocando p/ a chave padrão {}'.format(TOKEN))
             return False

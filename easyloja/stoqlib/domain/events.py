@@ -485,3 +485,9 @@ class VerifySubaccountEvent(Event):
     """
         This event is emitted to validate a subaccount to affiliate
     """
+
+
+class VerifyAffiliateBillsEvent(Event):
+    """
+        This event is emitted to verify affiliate's bills
+    """

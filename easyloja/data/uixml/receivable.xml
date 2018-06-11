@@ -54,6 +54,8 @@
       <placeholder name="SearchMenuPH">
         <menuitem action="BillCheckSearch"/>
         <menuitem action="CardPaymentSearch"/>
+        <separator/>
+        <menuitem action="BillAffiliateSearch"/>
       </placeholder>
     </menu>
   </menubar>

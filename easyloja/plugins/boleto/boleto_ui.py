@@ -6,7 +6,8 @@ import webbrowser
 from kiwi.log import Logger
 from stoqlib.database.runtime import get_connection
 from stoqlib.database.runtime import new_transaction
-from stoqlib.domain.events import CancelBillEvent, CreateAffiliateEvent, VerifySubaccountEvent
+from stoqlib.domain.events import CancelBillEvent, CreateAffiliateEvent, VerifySubaccountEvent, \
+    VerifyAffiliateBillsEvent
 from stoqlib.domain.events import (PrintBillEvent, GenerateBillEvent,
                                    GenerateBatchBillEvent, CheckBillStatusEvent,
                                    CheckPendingBillEvent, CheckCreatedBillEvent, GenerateDuplicateEvent,
@@ -42,6 +43,7 @@ class BoletoUI(object):
         CancelBillEvent.connect(self._on_CancelBillEvent)
         CreateAffiliateEvent.connect(self._on_CreateAffiliateEvent)
         VerifySubaccountEvent.connect(self._on_VerifySubaccountEvent)
+        VerifyAffiliateBillsEvent.connect(self._on_VerifyAffiliateBillsEvent)
 
     def _on_StartApplicationEvent(self, appname, app):
         self._add_ui_menus(appname, app, app.main_window.uimanager)
@@ -153,6 +155,10 @@ class BoletoUI(object):
 
     def _on_VerifySubaccountEvent(self, affiliateview):
         return verify_subaccount(affiliateview)
+
+    def _on_VerifyAffiliateBillsEvent(self, retval):
+        b = Boleto()
+        return b.search_affiliate_bills(retval.affiliate, retval.start_date, retval.end_date, self.conn)
 
     def _on_CheckPaidBillEvent(self, start_date, end_date):
         # TODO, colocar um dialogo aqui com todos os boletos pendentes em confirmar no easygestor

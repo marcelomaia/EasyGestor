@@ -43,7 +43,7 @@ from kiwi.ui.widgets.label import Label
 from stoq.gui.application import SearchableAppWindow
 from stoqlib.api import api
 from stoqlib.database.runtime import get_connection
-from stoqlib.domain.events import CancelBillEvent, GenerateDuplicateEvent
+from stoqlib.domain.events import CancelBillEvent, GenerateDuplicateEvent, VerifyAffiliateBillsEvent
 from stoqlib.domain.events import (CreatedInPaymentEvent, PrintBillEvent, GenerateBillEvent, CheckBillStatusEvent,
                                    CheckPaidBillEvent)
 from stoqlib.domain.payment.bill import PaymentIuguBill
@@ -54,7 +54,7 @@ from stoqlib.domain.payment.views import InPaymentView
 from stoqlib.domain.till import Till
 from stoqlib.exceptions import TillError
 from stoqlib.gui.base.dialogs import run_dialog, get_current_toplevel
-from stoqlib.gui.dialogs.datepicker import PaymentRevenueDialog
+from stoqlib.gui.dialogs.datepicker import PaymentRevenueDialog, PaymentAffiliateBillsDialog
 from stoqlib.gui.dialogs.paymentchangedialog import (PaymentDueDateChangeDialog,
                                                      PaymentStatusChangeDialog)
 from stoqlib.gui.dialogs.paymentcommentsdialog import PaymentCommentsDialog
@@ -155,6 +155,9 @@ class ReceivableApp(SearchableAppWindow):
             ('CardPaymentSearch', None, _('Card payments...'),
              group.get('search_card_payments'),
              _('Search for card payments')),
+            ('BillAffiliateSearch', gtk.STOCK_PRINT, _('Buscar boletos de afiliados...'),
+             None,
+             _('Busca boletos de afiliados')),
         ]
         self.receivable_ui = self.add_ui_actions(None, actions,
                                                  filename='receivable.xml')
@@ -675,6 +678,11 @@ class ReceivableApp(SearchableAppWindow):
 
     def on_BillCheckSearch__activate(self, action):
         self._run_bill_check_search()
+
+    def on_BillAffiliateSearch__activate(self, action):
+        retval = run_dialog(PaymentAffiliateBillsDialog, None, self.conn)
+        if retval:
+            print VerifyAffiliateBillsEvent.emit(retval), 'maximussss'
 
     def on_CheckPaidBills__activate(self, action):
         # BUG de não abrir as telas de pagamento, search refresh resolve ele
