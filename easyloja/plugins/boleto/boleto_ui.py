@@ -22,6 +22,7 @@ from stoqlib.lib.message import info
 
 from boleto_iugu import Boleto
 from boleto_utils import create_affiliate, verify_subaccount
+from retval_parser import check_paid_bills
 
 plugin_root = os.path.dirname(__file__)
 sys.path.append(plugin_root)
@@ -157,8 +158,7 @@ class BoletoUI(object):
         return verify_subaccount(affiliateview)
 
     def _on_VerifyAffiliateBillsEvent(self, retval):
-        b = Boleto()
-        return b.search_affiliate_bills(retval.affiliate, retval.start_date, retval.end_date, self.conn)
+        check_paid_bills(retval, self.conn)
 
     def _on_CheckPaidBillEvent(self, start_date, end_date):
         # TODO, colocar um dialogo aqui com todos os boletos pendentes em confirmar no easygestor
