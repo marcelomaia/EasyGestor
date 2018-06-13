@@ -23,44 +23,73 @@
 ##
 ##
 
-from kiwi.datatypes import ValidationError
+# coding=utf-8
 
+from kiwi.python import Settable
+from kiwi.ui.objectlist import ObjectList, Column
+from kiwi.ui.views import SlaveView
+from stoqlib.domain.payment.payment import Payment
 from stoqlib.gui.editors.baseeditor import BaseEditor
 
-from tefdomain import TEFClient
+
+class AffiliateBill(object):
+    def __init__(self, item):
+        self.status = item['status']
+        self.id = item['id']
+        self.total_cents = item['total_cents']
+        self.total_paid_cents = item['total_paid_cents']
+        self.total_paid = item['total_paid']
+        self.email = item['email']
+        self.secure_url = item['secure_url']
+        self.total = item['total']
+        self.description = ''
+        for prod in item['items']:
+            self.description += prod['description']
+        self.logs = ''
+        for log in item['logs']:
+            self.logs += '{}--{}\n'.format(log['created_at'], log['description'])
 
 
-class TEFClientDialog(BaseEditor):
-    gladefile = 'TEFClientDialog'
-    model_type = TEFClient
-    model_name = _('TEF Client')
-    proxy_widgets = ['path', 'host', 'port']
-    size = (600, 200)
+class AffiliateBillsListSlave(SlaveView):
+    def __init__(self, bills_items):
+        self.info = ObjectList([Column('description', data_type=str, title='Descrição', sorted=True),
+                                Column('status', data_type=str, title=u'Situação', format_func=self.xxx),
+                                Column('total', data_type=str, title='Total'),
+                                Column('total_paid', data_type=int, title='Total pago'),
+                                Column('email', title='email', data_type=str),
+                                Column('id', data_type=str, title='#')])
+        for bill in bills_items:
+            bill_obj = AffiliateBill(bill)
+            self.info.append(bill_obj)
+        SlaveView.__init__(self, self.info)
 
-    #
-    # BaseEditor
-    #
+    def xxx(self, arg):
+        return Payment.iugu_statuses.get(arg, u'Não especificado')
 
-    def create_model(self, conn):
-        results = TEFClient.select(connection=conn).limit(1)
-        if results:
-            return results[0]
-        return TEFClient(path='/', connection=conn)
 
-    def setup_proxies(self):
-        self.proxy = self.add_proxy(self.model,
-                                    TEFClientDialog.proxy_widgets)
+class AffiliateBills(BaseEditor):
+    """
+    Recebe um resultado de uma consulta do iugu como parametro e uma conn
+    """
+    gladefile = 'AffiliateBills'
+    model_type = Settable
+    title = ''
+    size = (900, 700)
+    proxy_widgets = ('name')
 
-    #
-    # Callbacks
-    #
+    def __init__(self, bills, conn):
+        self.affiliate_items_slave = AffiliateBillsListSlave(bills)
+        self.affiliate_items_slave.info.connect('selection-changed', self._affiliate_item_selection_changed)
+        self.affiliate_items_slave.show()
+        super(AffiliateBills, self).__init__(conn)
+        self.attach_slave('place_holder', self.affiliate_items_slave)
 
-    def on_filechooser_button__selection_changed(self, widget):
-        filename = widget.get_filename()
-        self.path.set_text(filename)
+    def create_model(self, trans):
+        aff_bill = Settable(name=u'')
+        return aff_bill
 
-    def on_path__validate(self, widget, filename):
-        if not filename:
-            return
-        if not filename.endswith('.bat'):
-            return ValidationError('O Cliente TEF deve ser um .bat')
+    def _affiliate_item_selection_changed(self, objectlist, affiliate):
+        if affiliate.logs:
+            self.logs.update(affiliate.logs)
+        else:
+            self.logs.update('...')

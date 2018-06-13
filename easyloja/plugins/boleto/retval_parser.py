@@ -7,8 +7,10 @@ from boleto_iugu import Boleto
 
 
 def parse_retval(retval):
+    print retval
     for item in retval['items']:
-        print item['status'], item['id'], item['total_paid_cents'], item['email'], item['secure_url']
+        print item['status'], item['id'], item['total_cents'], item['total_paid_cents'], \
+            item['email'], item['secure_url'], item['total']
         for prod in item['items']:
             print prod['description']
         for log in item['logs']:

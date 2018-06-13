@@ -682,7 +682,7 @@ class ReceivableApp(SearchableAppWindow):
     def on_BillAffiliateSearch__activate(self, action):
         retval = run_dialog(PaymentAffiliateBillsDialog, None, self.conn)
         if retval:
-            print VerifyAffiliateBillsEvent.emit(retval), 'maximussss'
+            VerifyAffiliateBillsEvent.emit(retval)
 
     def on_CheckPaidBills__activate(self, action):
         # BUG de não abrir as telas de pagamento, search refresh resolve ele
