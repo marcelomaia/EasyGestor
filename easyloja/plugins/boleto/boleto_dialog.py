@@ -73,7 +73,7 @@ class AffiliateBills(BaseEditor):
     """
     gladefile = 'AffiliateBills'
     model_type = Settable
-    title = ''
+    title = 'Busca de boletos do afiliado'
     size = (900, 700)
     proxy_widgets = ('name')
 

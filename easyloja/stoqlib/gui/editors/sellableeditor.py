@@ -433,6 +433,11 @@ class SellableEditor(BaseEditor):
         self.add_extra_tab(_(u'Category Prices'), price_slave)
         self._setup_ui_forms()
         # self.setup_recurrency_widget()
+        self._setup_default_sales_cfop()
+
+    def _setup_default_sales_cfop(self):
+        if not self.default_sale_cfop.read():
+            self.default_sale_cfop.select(sysparam(self.conn).DEFAULT_SALES_CFOP)
 
     def _add_demo_warning(self):
         self.add_message_bar(
