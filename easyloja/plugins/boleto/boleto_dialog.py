@@ -24,6 +24,7 @@
 ##
 
 # coding=utf-8
+import webbrowser
 
 from kiwi.python import Settable
 from kiwi.ui.objectlist import ObjectList, Column
@@ -53,7 +54,7 @@ class AffiliateBill(object):
 class AffiliateBillsListSlave(SlaveView):
     def __init__(self, bills_items):
         self.info = ObjectList([Column('description', data_type=str, title='Descrição', sorted=True),
-                                Column('status', data_type=str, title=u'Situação', format_func=self.xxx),
+                                Column('status', data_type=str, title=u'Situação', format_func=self._get_status_name),
                                 Column('total', data_type=str, title='Total'),
                                 Column('total_paid', data_type=int, title='Total pago'),
                                 Column('email', title='email', data_type=str),
@@ -63,7 +64,7 @@ class AffiliateBillsListSlave(SlaveView):
             self.info.append(bill_obj)
         SlaveView.__init__(self, self.info)
 
-    def xxx(self, arg):
+    def _get_status_name(self, arg):
         return Payment.iugu_statuses.get(arg, u'Não especificado')
 
 
@@ -93,3 +94,8 @@ class AffiliateBills(BaseEditor):
             self.logs.update(affiliate.logs)
         else:
             self.logs.update('...')
+
+    def on_open_bill_button__clicked(self, button):
+        selected = self.affiliate_items_slave.info.get_selected()
+        if selected:
+            webbrowser.open(selected.secure_url)
