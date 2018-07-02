@@ -365,6 +365,7 @@ class Boleto(object):
             log.debug('invoice: {}, data: {}'.format(invoice, data))
 
             if 'errors' not in bills.keys():
+                # log.debug('bills {}'.format(str(bills)))
                 return bills
             else:
                 for err in bills['errors']:

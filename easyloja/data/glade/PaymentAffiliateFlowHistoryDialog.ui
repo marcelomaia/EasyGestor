@@ -4,19 +4,16 @@
   <!-- interface-requires kiwiwidgets 0.0 -->
   <!-- interface-naming-policy toplevel-contextual -->
   <object class="GtkWindow" id="PaymentAffiliateFlowHistoryDialog">
-    <property name="can_focus">False</property>
     <property name="default_width">440</property>
     <property name="default_height">250</property>
     <child>
       <object class="GtkVBox" id="vbox1">
         <property name="visible">True</property>
-        <property name="can_focus">False</property>
         <property name="border_width">6</property>
         <property name="spacing">6</property>
         <child>
           <object class="GtkLabel" id="label1">
             <property name="visible">True</property>
-            <property name="can_focus">False</property>
             <property name="xalign">0</property>
             <property name="label" translatable="yes">&lt;b&gt;Selecione uma data ou um intervalo para ser visualizado no relatório:&lt;/b&gt;</property>
             <property name="use_markup">True</property>
@@ -30,7 +27,6 @@
         <child>
           <object class="GtkHBox" id="date_box">
             <property name="visible">True</property>
-            <property name="can_focus">False</property>
             <property name="border_width">6</property>
             <property name="spacing">6</property>
           </object>
@@ -43,12 +39,10 @@
         <child>
           <object class="GtkHBox" id="hbox2">
             <property name="visible">True</property>
-            <property name="can_focus">False</property>
             <property name="spacing">6</property>
             <child>
               <object class="ProxyLabel" id="kiwilabel1">
                 <property name="visible">True</property>
-                <property name="can_focus">False</property>
                 <property name="xalign">1</property>
                 <property name="label" translatable="yes">Afiliado:</property>
               </object>
@@ -61,7 +55,6 @@
             <child>
               <object class="ProxyComboBox" id="affiliate">
                 <property name="visible">True</property>
-                <property name="can_focus">False</property>
                 <property name="data_type">object</property>
                 <property name="model_attribute">affiliate</property>
               </object>

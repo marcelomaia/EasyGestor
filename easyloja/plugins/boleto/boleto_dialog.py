@@ -26,6 +26,7 @@
 # coding=utf-8
 import webbrowser
 
+import datetime
 from kiwi.python import Settable
 from kiwi.ui.objectlist import ObjectList, Column
 from kiwi.ui.views import SlaveView
@@ -43,12 +44,20 @@ class AffiliateBill(object):
         self.email = item['email']
         self.secure_url = item['secure_url']
         self.total = item['total']
+        self.paid_at = item['paid_at']
         self.description = ''
         for prod in item['items']:
             self.description += prod['description']
         self.logs = ''
         for log in item['logs']:
             self.logs += '{}--{}\n'.format(log['created_at'], log['description'])
+        if self.paid_at is not None:
+            self.paid_at = self._parse_datetime(self.paid_at)
+
+    def _parse_datetime(self, dt):
+        new_dt = datetime.datetime.strptime(dt[:-6], '%Y-%m-%dT%H:%M:%S')
+        new_dt = new_dt.strftime('%d-%m-%Y')
+        return new_dt
 
 
 class AffiliateBillsListSlave(SlaveView):
@@ -57,6 +66,7 @@ class AffiliateBillsListSlave(SlaveView):
                                 Column('status', data_type=str, title=u'Situação', format_func=self._get_status_name),
                                 Column('total', data_type=str, title='Total'),
                                 Column('total_paid', data_type=int, title='Total pago'),
+                                Column('paid_at', data_type=unicode, title='Pago em'),
                                 Column('email', title='email', data_type=str),
                                 Column('id', data_type=str, title='#')])
         for bill in bills_items:
