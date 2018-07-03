@@ -362,6 +362,7 @@ class PaymentEditor(BaseEditor):
                         status=self.model.status,
                         description='%d/%d %s' % (i + 2, n_dates,
                                                   description),
+                        affiliate=self.model.affiliate,
                         value=self.model.value,
                         base_value=self.model.base_value,
                         due_date=date,
