@@ -51,7 +51,7 @@ def create_affiliate(affiliateview):
      u'test_api_token': u'7584e94f9a185392091cea5065672e42', u'account_id': u'624229F5C249421EB6D11C183DF3D8A1',
       u'name': u'TESTE MARCELO 20%'}"""
     m = MarketPlace()
-    name = '{} {}%'.format(affiliateview.name, float(affiliateview.commission_percent))
+    name = '{}'.format(affiliateview.name)
     retval = m.create_subaccount(name, float(affiliateview.commission_percent))
     if retval.get('errors'):
         log.debug('Erro ao criar afiliado: {}'.format(retval.get('errors')))
@@ -65,7 +65,7 @@ def create_affiliate(affiliateview):
     affiliate.test_api_token = retval['test_api_token']
     affiliate.account_id = retval['account_id']
     affiliate.iugu_name = retval['name']
-    affiliate.iugu_name = PersonAdaptToAffiliate.STATUS_PENDING  # status pendente para afiliado.
+    affiliate.status = PersonAdaptToAffiliate.STATUS_PENDING  # status pendente para afiliado.
     trans.commit(close=True)
     return True
 
