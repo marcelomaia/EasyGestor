@@ -446,7 +446,7 @@ class Sale(Domain):
                 STATUS_RETURNED: _(u'Returned'),
                 STATUS_RENEGOTIATED: _(u'Renegotiated'),
                 STATUS_QUOTE: _(u'Quoting'),
-                STATUS_FISCAL_NOTE: 'Nota Fiscal'}
+                STATUS_FISCAL_NOTE: u'Nota Fiscal'}
 
     status = IntCol(default=STATUS_INITIAL)
     coupon_id = IntCol()

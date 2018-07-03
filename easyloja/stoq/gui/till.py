@@ -249,6 +249,7 @@ class TillApp(SearchableAppWindow):
                      Sale.q.status == Sale.STATUS_ORDERED,
                      Sale.q.status == Sale.STATUS_RETURNED,
                      Sale.q.status == Sale.STATUS_RENEGOTIATED,
+                     Sale.q.status == Sale.STATUS_FISCAL_NOTE,
                      const.DATE(Sale.q.open_date) == date.today()))
 
         if query:

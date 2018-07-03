@@ -89,7 +89,8 @@ class SalesApp(SearchableAppWindow):
                  Sale.STATUS_CANCELLED: 'cancel_date',
                  Sale.STATUS_QUOTE: 'open_date',
                  Sale.STATUS_RETURNED: 'return_date',
-                 Sale.STATUS_RENEGOTIATED: 'close_date'}
+                 Sale.STATUS_RENEGOTIATED: 'close_date',
+                 Sale.STATUS_FISCAL_NOTE: 'open_date'}
 
     def __init__(self, app):
         self.summary_label = None
@@ -435,7 +436,7 @@ class SalesApp(SearchableAppWindow):
                  # No reason to show orders in sales app
                  if key != Sale.STATUS_ORDERED]
         items.insert(0, (_('Any'), None))
-        items.insert(-1, (_('Pago e Confirmado'), 8))
+        items.insert(-1, (_('Pago e Confirmado'), 9))
         return items
 
     def _get_status_query(self, state):
@@ -446,7 +447,7 @@ class SalesApp(SearchableAppWindow):
             self._setup_columns(state.value)
             retval = (SaleView.q.status > 0)
 
-        elif state.value == 8:
+        elif state.value == 9:
             self._setup_columns(None)
             retval = IN(SaleView.q.status, [1, 2])
 
@@ -545,6 +546,8 @@ class SalesApp(SearchableAppWindow):
             sale_view = self.results.get_selected()
             assert sale_view
             sale = Sale.get(sale_view.id, connection=self.conn)
+            if sale.status == Sale.STATUS_QUOTE:
+                sale.status = Sale.STATUS_FISCAL_NOTE
             SalesNFeCreate.emit(sale)
             self.conn.commit()
             self.search.refresh()
@@ -556,6 +559,8 @@ class SalesApp(SearchableAppWindow):
             sale_view = self.results.get_selected()
             assert sale_view
             sale = Sale.get(sale_view.id, connection=self.conn)
+            if sale.status == Sale.STATUS_QUOTE:
+                sale.status = Sale.STATUS_FISCAL_NOTE
             SalesNFCEEvent.emit(sale)
             self.conn.commit()
             self.search.refresh()
