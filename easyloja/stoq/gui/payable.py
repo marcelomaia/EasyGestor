@@ -27,10 +27,10 @@ stoq/gui/payable/payable.py:
     Implementation of payable application.
 """
 
-import datetime
 import gettext
 import gtk
 
+import datetime
 import pango
 from kiwi.currency import format_price
 from kiwi.datatypes import currency
@@ -290,7 +290,7 @@ class PayableApp(SearchableAppWindow):
 
         status = payable_views[0].purchase_status
         if (status == PurchaseOrder.ORDER_CANCELLED or
-                    status == PurchaseOrder.ORDER_PENDING):
+                status == PurchaseOrder.ORDER_PENDING):
             return False
 
         return True
@@ -503,24 +503,26 @@ class PayableApp(SearchableAppWindow):
         framebkp = []
         for i in range(1, len(frame) - 1):
             framebkp.append(frame[i])
-        if len(frame) >= 3:
+        if len(frame) >= 4:
             for widget in framebkp:
                 parent.remove(widget)
 
+        # paid column
         paid_column = self.results.get_column_by_name('paid_value')
-
         paid_attr = paid_column.attribute
-
         get_paid_attribute = paid_column.get_attribute
-
         paid_value = self.get_column_value(get_paid_attribute, paid_attr, paid_column)
-
         paid_str = "<b>" + "Valor pago: R$ " + format_price(str(currency(paid_value))) + "</b>"
         paid_label = Label(paid_str)
-
         parent.pack_end(paid_label, False, False, 10)
-
         paid_label.show()
+
+        # len results
+        len_results = len(self.results)
+        results_str = "<b>{} linhas</b>".format(len_results)
+        results_lbl = Label(results_str)
+        parent.pack_end(results_lbl, False, False, 10)
+        results_lbl.show()
 
     def get_column_value(self, get_attribute, attr, column):
         value = sum([get_attribute(obj, attr, 0) or 0 for obj in self.results],

@@ -329,7 +329,7 @@ class ReceivableApp(SearchableAppWindow):
         framebkp = []
         for i in range(1, len(frame) - 1):
             framebkp.append(frame[i])
-        if len(frame) >= 4:
+        if len(frame) >= 5:
             for widget in framebkp:
                 parent.remove(widget)
 
@@ -355,6 +355,12 @@ class ReceivableApp(SearchableAppWindow):
 
         total_label.show()
         paid_label.show()
+
+        len_results = len(self.results)
+        results_str = "<b>{} linhas</b>".format(len_results)
+        results_lbl = Label(results_str)
+        parent.pack_end(results_lbl, False, False, 10)
+        results_lbl.show()
 
     def get_column_value(self, get_attribute, attr, column):
         value = sum([get_attribute(obj, attr, 0) or 0 for obj in self.results],
