@@ -56,8 +56,8 @@ from stoqlib.lib.parameters import sysparam
 
 max_results = sysparam(get_connection()).MAX_SEARCH_RESULTS
 
-if max_results > 5000:
-    max_results = 5000
+if max_results > 10000:
+    max_results = 10000
 
 
 class ProductFullStockView(Viewable):

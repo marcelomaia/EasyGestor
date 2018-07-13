@@ -23,15 +23,16 @@
 ##
 """ Editors implementation for open/close operation on till operation"""
 
-import datetime
 import gtk
 
+import datetime
 from kiwi.datatypes import ValidationError, currency
 from kiwi.python import Settable
 from kiwi.ui.objectlist import Column, ColoredColumn, SummaryLabel
 from stoqdrivers.exceptions import DriverError
 from stoqlib.api import api
 from stoqlib.database.orm import const
+from stoqlib.database.runtime import get_current_user
 from stoqlib.domain.account import AccountTransaction
 from stoqlib.domain.events import (TillOpenEvent, TillCloseEvent,
                                    TillAddTillEntryEvent,
@@ -146,16 +147,16 @@ class TillOpeningEditor(BaseEditor):
         except (TillError, DeviceError), e:
             warning(str(e))
             return None
-
+        username = get_current_user(self.conn).person.name
         value = self.proxy.model.value
         if value:
             TillAddCashEvent.emit(till=till,
                                   value=value,
-                                  reason=(_(u'Caixa iniciado com a quantia de %s em %s') %
-                                          (value, till.opening_date.strftime('%x'))))
+                                  reason=(_(u'Caixa iniciado por %s com a quantia de %s em %s') %
+                                          (username, value, till.opening_date.strftime('%x'))))
             till_entry = till.add_credit_entry(value,
-                                               (_(u'Caixa iniciado com a quantia de %s em %s')
-                                                % (value, till.opening_date.strftime('%x'))))
+                                               (_(u'Caixa iniciado por %s com a quantia de %s em %s')
+                                                % (username, value, till.opening_date.strftime('%x'))))
             _create_transaction(self.conn, till_entry)
             # The callsite is responsible for interacting with
             # the fiscal printer
@@ -278,13 +279,14 @@ class TillClosingEditor(BaseEditor):
         # in the database
         trans = api.new_transaction()
         t_till = trans.get(till)
+        username = get_current_user(self.conn).person.name
         TillRemoveCashEvent.emit(till=t_till,
                                  value=removed,
-                                 reason=_(u'Quantia removida do caixa referente ao dia %s') %
-                                        till.opening_date.strftime('%x'))
+                                 reason=_(u'Quantia removida do caixa por %s referente ao dia %s') %
+                                        (username, till.opening_date.strftime('%x')))
         till_entry = t_till.add_debit_entry(removed,
-                                            _(u'Quantia removida do caixa referente ao dia %s') %
-                                            till.opening_date.strftime('%x'))
+                                            _(u'Quantia removida do caixa por %s referente ao dia %s') %
+                                            (username, till.opening_date.strftime('%x')))
         # Financial transaction
         _create_transaction(trans, till_entry)
         # DB transaction
