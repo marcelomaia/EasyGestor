@@ -27,9 +27,9 @@ import decimal
 import gettext
 import gtk
 import tempfile
-from datetime import date
 
 import pango
+from datetime import date
 from kiwi.currency import format_price
 from kiwi.datatypes import currency, converter
 from kiwi.enums import SearchFilterPosition
@@ -489,7 +489,7 @@ class TillApp(SearchableAppWindow):
 
         # We dont have an ecf. Disable till related operations
         widgets = [self.TillOpen, self.TillClose, self.TillAddCash,
-                   self.TillRemoveCash, self.SearchTillHistory, self.app_vbox]
+                   self.TillRemoveCash, self.app_vbox]
         self.set_sensitive(widgets, has_ecf)
         text = _(u"Till operations requires a connected fiscal printer")
         self.till_status_label.set_text(text)
@@ -504,8 +504,7 @@ class TillApp(SearchableAppWindow):
         self.set_sensitive([self.TillOpen], closed)
         self.set_sensitive([self.TillClose], not closed or blocked)
 
-        widgets = [self.TillAddCash, self.TillRemoveCash,
-                   self.SearchTillHistory, self.app_vbox]
+        widgets = [self.TillAddCash, self.TillRemoveCash,self.app_vbox]
         self.set_sensitive(widgets, not closed and not blocked)
 
         if closed:
