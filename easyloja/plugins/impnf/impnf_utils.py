@@ -290,7 +290,8 @@ class PrintSolution(object):
         txt = '{}\n'.format(reason)
         txt += 'Data da impressão {}\n'.format(self._get_current_time())
         txt += 'Valor: R${:.2f}\n'.format(value)
-        txt += 'Computador: {}\n\n\n'.format(station.name)
+        txt += 'Computador: {}\n'.format(station.name)
+        txt += 'Caixa: {}\n'.format(get_current_user(self.conn).person.name)
         txt += self.line
         return txt
 
@@ -308,7 +309,7 @@ class PrintSolution(object):
         user = get_current_user(self.conn)
 
         txt = 'Pagamento (entrada) #{}\n'.format(id)
-        txt += 'Usuário: {}\n'.format(user.username)
+        txt += 'Caixa: {}\n'.format(user.username)
         txt += 'categoria: {}, pago em  {}: {}\n'.format(category, method_description, description)
         if client_name:
             txt += 'Cliente: {}\n'.format(client_name)
@@ -334,7 +335,7 @@ class PrintSolution(object):
         user = get_current_user(self.conn)
 
         txt = 'Pagamento (saída) #{}\n'.format(id)
-        txt += 'Usuário: {}\n'.format(user.username)
+        txt += 'Caixa: {}\n'.format(user.username)
         txt += 'categoria: {}, pago em  {}: {}\n'.format(category, method_description, description)
         if supplier_name:
             txt += 'Fornecedor: {}\n'.format(supplier_name)
