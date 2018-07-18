@@ -49,6 +49,7 @@ from stoqlib.domain.person import (Person, PersonAdaptToCreditProvider, PersonAd
 from stoqlib.domain.purchase import PurchaseOrder
 from stoqlib.domain.sale import Sale
 from stoqlib.domain.station import BranchStation
+from stoqlib.domain.till import DailyFlow
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.translation import stoqlib_gettext
 
@@ -720,6 +721,12 @@ class DailyFaturamentoSearch(object):
 
     @property
     def faturamento_ontem(self):
-        yesterday = self.ini - datetime.timedelta(days=1)
-        yesterday = yesterday.date()
-        return yesterday
+        yesterday_ini = self.ini - datetime.timedelta(days=1)
+        yesterday_fim = self.fim - datetime.timedelta(days=1)
+        daily_flow = DailyFlow.select(AND(DailyFlow.q.flow_date >= yesterday_ini,
+                                          DailyFlow.q.flow_date <= yesterday_fim
+                                          ), connection=self.conn)
+        daily_flow = [p for p in daily_flow]
+        if daily_flow:
+            return daily_flow[0].balance
+        return 0

@@ -42,14 +42,14 @@ from stoqlib.api import api
 from stoqlib.database.orm import AND, OR, const
 from stoqlib.domain.events import SalesNFeCreate, SalesNFCEEvent
 from stoqlib.domain.interfaces import IStorable
-from stoqlib.domain.payment.views import FaturamentoSearch
+from stoqlib.domain.payment.views import FaturamentoSearch, DailyFaturamentoSearch
 from stoqlib.domain.product import ProductStockItem, ProductAdaptToStorable, Product
 from stoqlib.domain.sale import Sale, SaleView
 from stoqlib.domain.till import Till
 from stoqlib.exceptions import (StoqlibError, TillError, SellError,
                                 ModelDataError)
 from stoqlib.gui.base.dialogs import run_dialog, get_current_toplevel
-from stoqlib.gui.dialogs.datepicker import PaymentRevenueDialog
+from stoqlib.gui.dialogs.datepicker import PaymentRevenueDialog, DaySelectDialogDialog
 from stoqlib.gui.dialogs.quotedialog import ConfirmSaleMissingDialog
 from stoqlib.gui.dialogs.saledetails import SaleDetailsDialog
 from stoqlib.gui.dialogs.tillhistory import TillHistoryDialog
@@ -99,6 +99,8 @@ class TillApp(SearchableAppWindow):
             ('TillVerify', None, _("Verificar caixa..."),
              None),
             ('TillRevenue', None, _("Faturamento de caixa..."),
+             None),
+            ('DailyFlow', None, _(u"Fluxo diário..."),
              None),
             ('TillAddCash', None, _('Cash addition...'), ''),
             ('TillRemoveCash', None, _('Cash removal...'), ''),
@@ -504,7 +506,7 @@ class TillApp(SearchableAppWindow):
         self.set_sensitive([self.TillOpen], closed)
         self.set_sensitive([self.TillClose], not closed or blocked)
 
-        widgets = [self.TillAddCash, self.TillRemoveCash,self.app_vbox]
+        widgets = [self.TillAddCash, self.TillRemoveCash, self.app_vbox]
         self.set_sensitive(widgets, not closed and not blocked)
 
         if closed:
@@ -605,6 +607,18 @@ class TillApp(SearchableAppWindow):
         payments = FaturamentoSearch(self.conn, date.start_date, date.end_date)
         payment_dict = {'saida': payments.saida,
                         'entrada': payments.entrada}
+        pdf_path = '{}.pdf'.format(tempfile.mktemp())
+        f = FinancialReport(pdf_path, payment_dict, date.start_date, date.end_date)
+        f.save()
+        print_file(pdf_path)
+
+    def on_DailyFlow__activate(self, button):
+        #TODO calcular faturamento de ontem.
+        date = run_dialog(DaySelectDialogDialog, get_current_toplevel(), self.conn)
+        payments = DailyFaturamentoSearch(self.conn, date.start_date, date.end_date)
+        payment_dict = {'saida': payments.saida,
+                        'entrada': payments.entrada,
+                        'faturamento_ontem': payments.faturamento_ontem}
         pdf_path = '{}.pdf'.format(tempfile.mktemp())
         f = FinancialReport(pdf_path, payment_dict, date.start_date, date.end_date)
         f.save()

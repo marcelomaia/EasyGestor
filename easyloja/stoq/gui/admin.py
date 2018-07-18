@@ -36,6 +36,7 @@ from stoqlib.gui.dialogs.paymentmethod import PaymentMethodsDialog
 from stoqlib.gui.dialogs.pluginsdialog import PluginManagerDialog
 from stoqlib.gui.dialogs.sintegradialog import SintegraDialog
 from stoqlib.gui.dialogs.suppliercategorydialog import SupplierCategoryDialog
+from stoqlib.gui.dialogs.tillhistory import DailyFlowListDialog
 from stoqlib.gui.editors.backupeditor import BackupEditor
 from stoqlib.gui.editors.formfieldeditor import FormFieldEditor
 from stoqlib.gui.editors.invoiceeditor import (InvoiceLayoutDialog)
@@ -111,6 +112,7 @@ class Tasks(object):
             (_('Tax Classes'), 'tax_templates', STOQ_DOCUMENTS),
             (_('Suppliers'), 'suppliers', STOQ_SUPPLIERS),
             (_('Afiliados'), 'affiliates', STOQ_CLIENTS),
+            (_(u'Saldo diário'), 'daily_flow', STOQ_EDIT),
             (_('Transporters'), 'transporters', STOQ_DELIVERY),
             (_('Users'), 'users', STOQ_HR),
             (_('User Profiles'), 'user_profiles', STOQ_USER_PROFILES),
@@ -251,6 +253,9 @@ class Tasks(object):
 
     def _open_affiliates(self):
         self.app.run_dialog(AffiliateSearch, self.app.conn)
+
+    def _open_daily_flow(self):
+        self.app.run_dialog(DailyFlowListDialog)
 
     # def _open_taxes(self):
     #     self.app.run_dialog(SellableTaxConstantsDialog, self.app.conn)

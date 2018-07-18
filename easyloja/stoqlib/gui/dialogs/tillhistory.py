@@ -23,10 +23,11 @@
 ##
 """ Implementation of classes related to till operations.  """
 
-import datetime
 import gtk
 
+import datetime
 from kiwi.datatypes import currency
+from kiwi.enums import ListType
 from kiwi.ui.objectlist import SearchColumn
 from kiwi.ui.search import DateSearchFilter, Today
 from kiwi.ui.widgets.list import Column, ColoredColumn
@@ -39,11 +40,13 @@ from stoqlib.domain.payment.payment import Payment
 from stoqlib.domain.person import PersonAdaptToBranch, PersonAdaptToSalesPerson, Person, PersonAdaptToCreditProvider
 from stoqlib.domain.sale import Sale
 from stoqlib.domain.station import BranchStation
-from stoqlib.domain.till import Till
+from stoqlib.domain.till import Till, DailyFlow
 from stoqlib.domain.till import TillEntry
 from stoqlib.gui.base.dialogs import run_dialog, get_current_toplevel
 from stoqlib.gui.base.gtkadds import change_button_appearance
+from stoqlib.gui.base.lists import ModelListDialog
 from stoqlib.gui.base.search import SearchDialog
+from stoqlib.gui.editors.baseeditor import BaseEditor
 from stoqlib.gui.editors.tilleditor import (CashAdvanceEditor, CashInEditor,
                                             CashOutEditor)
 from stoqlib.gui.printing import print_report
@@ -199,3 +202,43 @@ class TillHistoryDialog(SearchDialog):
 
     def _has_rows(self, results, obj):
         self.print_button.set_sensitive(obj)
+
+
+class DailyFlowEditor(BaseEditor):
+    gladefile = 'DailyFlowEditor'
+    model_type = DailyFlow
+    model_name = 'Fluxo do dia'
+    proxy_widgets = ('flow_date', 'balance')
+
+    def create_model(self, trans):
+        return DailyFlow(flow_date=datetime.date.today(),
+                         balance=0.0,
+                         connection=trans)
+
+    def setup_proxies(self):
+        self.add_proxy(self.model, DailyFlowEditor.proxy_widgets)
+
+
+class DailyFlowListDialog(ModelListDialog):
+    title = 'Caixa diário'
+    size = (900, 350)
+    editor_class = DailyFlowEditor
+    model_type = DailyFlow
+
+    columns = [
+        Column('flow_date', title='Dia', data_type=datetime.date),
+        Column('balance', title='Valor', data_type=str)
+    ]
+
+    def __init__(self):
+        ModelListDialog.__init__(self)
+        self.set_list_type(ListType.NORMAL)
+
+    # ModelListDialog
+
+    def populate(self):
+        return DailyFlow.select(
+            connection=self.conn)
+
+    def edit_item(self, item):
+        return ModelListDialog.edit_item(self, item)

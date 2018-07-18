@@ -33,9 +33,11 @@ from stoqlib.database.orm import IntCol, DateTimeCol, ForeignKey, UnicodeCol
 from stoqlib.database.orm import PriceCol
 from stoqlib.database.runtime import get_current_station
 from stoqlib.domain.base import Domain
+from stoqlib.domain.interfaces import IDescribable
 from stoqlib.domain.payment.payment import Payment
 from stoqlib.exceptions import TillError, DatabaseInconsistency
 from stoqlib.lib.translation import stoqlib_gettext
+from zope.interface import implements
 
 _ = stoqlib_gettext
 
@@ -411,3 +413,13 @@ class TillEntry(Domain):
     value = PriceCol()
     till = ForeignKey("Till", notNull=True)
     payment = ForeignKey("Payment", default=None)
+
+
+class DailyFlow(Domain):
+    implements(IDescribable)
+
+    flow_date = DateTimeCol(default=datetime.date.today())
+    balance = PriceCol()
+
+    def get_description(self):
+        return 'Data: {}, Balanço: {}'.format(self.flow_date.strftime('%d/%m/%Y'), self.balance)
