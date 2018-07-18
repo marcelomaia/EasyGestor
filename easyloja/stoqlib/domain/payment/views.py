@@ -721,10 +721,8 @@ class DailyFaturamentoSearch(object):
 
     @property
     def faturamento_ontem(self):
-        yesterday_ini = self.ini - datetime.timedelta(days=1)
-        yesterday_fim = self.fim - datetime.timedelta(days=1)
-        daily_flow = DailyFlow.select(AND(DailyFlow.q.flow_date >= yesterday_ini,
-                                          DailyFlow.q.flow_date <= yesterday_fim
+        daily_flow = DailyFlow.select(AND(DailyFlow.q.flow_date >= self.ini,
+                                          DailyFlow.q.flow_date <= self.fim
                                           ), connection=self.conn)
         daily_flow = [p for p in daily_flow]
         if daily_flow:

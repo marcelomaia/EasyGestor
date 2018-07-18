@@ -613,7 +613,6 @@ class TillApp(SearchableAppWindow):
         print_file(pdf_path)
 
     def on_DailyFlow__activate(self, button):
-        #TODO calcular faturamento de ontem.
         date = run_dialog(DaySelectDialogDialog, get_current_toplevel(), self.conn)
         payments = DailyFaturamentoSearch(self.conn, date.start_date, date.end_date)
         payment_dict = {'saida': payments.saida,
