@@ -89,7 +89,6 @@ class BasePaymentView(Viewable):
         cost_center=PaymentCostCenter.q.name,
         cost_center_id=PaymentCostCenter.q.id,
 
-
         # PaymentComment
         comments_number=const.COUNT(PaymentComment.q.id),
 
@@ -128,7 +127,7 @@ class BasePaymentView(Viewable):
         LEFTJOINOn(None, Sale,
                    Sale.q.groupID == PaymentGroup_Sale.q.id),
 
-        #PaymentCostCenter
+        # PaymentCostCenter
         LEFTJOINOn(None, PaymentCostCenter,
                    PaymentCostCenter.q.id == Payment.q.cost_centerID),
     ]
@@ -638,3 +637,89 @@ class FaturamentoSearch(object):
         return {'cartao': d_card,
                 'formas_pagamento': d_normal,
                 'categoria': d_category}
+
+
+class DailyFaturamentoSearch(object):
+    def __init__(self, conn, start_date, end_date):
+        self.conn = conn
+        self.ini = start_date
+        self.fim = end_date
+
+    @property
+    def saida(self):
+        d_category = {}
+        d_normal = {}
+        for p in PaymentCategory.selectBy(connection=self.conn):
+            total_saida = OutPaymentView.select(AND(OutPaymentView.q.open_date >= self.ini,
+                                                    OutPaymentView.q.open_date <= self.fim,
+                                                    OutPaymentView.q.category_id == p.id,
+                                                    IN(OutPaymentView.q.status,
+                                                       (Payment.STATUS_PAID,
+                                                        Payment.STATUS_CONFIRMED)),
+                                                    ),
+                                                connection=self.conn).sum('value')
+            if total_saida:
+                d_category[p.name] = total_saida
+        for p in PaymentMethod.selectBy(self.conn):
+            saida_total = OutPaymentView.select(AND(OutPaymentView.q.open_date >= self.ini,
+                                                    OutPaymentView.q.open_date <= self.fim,
+                                                    OutPaymentView.q.method_id == p.id,
+                                                    IN(OutPaymentView.q.status,
+                                                       (Payment.STATUS_PAID,
+                                                        Payment.STATUS_CONFIRMED)),
+                                                    ),
+                                                connection=self.conn).sum('value')
+            if saida_total:
+                d_normal[p.description] = saida_total
+        return {
+            'formas_pagamento': d_normal,
+            'categoria': d_category
+        }
+
+    @property
+    def entrada(self):
+        d_normal = {}
+        d_category = {}
+        d_card = {}
+        for p in PaymentCategory.selectBy(connection=self.conn):
+            total_cartao = InPaymentView.select(AND(InPaymentView.q.open_date >= self.ini,
+                                                    InPaymentView.q.open_date <= self.fim,
+                                                    InPaymentView.q.category_id == p.id,
+                                                    IN(InPaymentView.q.status,
+                                                       (Payment.STATUS_PAID,
+                                                        Payment.STATUS_CONFIRMED)),
+                                                    ),
+                                                connection=self.conn).sum('value')
+            if total_cartao:
+                d_category[p.name] = total_cartao
+        for p in PaymentMethod.selectBy(self.conn):
+            total_entrada = InPaymentView.select(AND(InPaymentView.q.open_date >= self.ini,
+                                                     InPaymentView.q.open_date <= self.fim,
+                                                     InPaymentView.q.method_id == p.id,
+                                                     IN(InPaymentView.q.status,
+                                                        (Payment.STATUS_PAID,
+                                                         Payment.STATUS_CONFIRMED)),
+                                                     ),
+                                                 connection=self.conn).sum('value')
+            if total_entrada:
+                d_normal[p.description] = total_entrada
+        for p in PersonAdaptToCreditProvider.selectBy(self.conn):
+            total_cartao = CardPaymentView.select(AND(CardPaymentView.q.open_date >= self.ini,
+                                                      CardPaymentView.q.open_date <= self.fim,
+                                                      CardPaymentView.q.provider_id == p.id,
+                                                      IN(CardPaymentView.q.status,
+                                                         (Payment.STATUS_PAID,
+                                                          Payment.STATUS_CONFIRMED))
+                                                      ),
+                                                  connection=self.conn).sum('value')
+            if total_cartao:
+                d_card[p.person.name] = total_cartao
+        return {'cartao': d_card,
+                'formas_pagamento': d_normal,
+                'categoria': d_category}
+
+    @property
+    def faturamento_ontem(self):
+        yesterday = self.ini - datetime.timedelta(days=1)
+        yesterday = yesterday.date()
+        return yesterday

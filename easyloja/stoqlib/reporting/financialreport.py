@@ -29,7 +29,10 @@ class FinancialReport(ReportTemplate):
                              d_category=pagamentos_dic['saida']['categoria'])
         self.entrada_total = sum([p for p in pagamentos_dic['entrada']['formas_pagamento'].values() if p is not None])
         self.saida_total = sum([p for p in pagamentos_dic['saida']['formas_pagamento'].values() if p is not None])
-        self.faturamento = self.entrada_total - self.saida_total
+        self.saldo_ontem = 0
+        if pagamentos_dic.get('faturamento_ontem', None):
+            self.saldo_ontem = pagamentos_dic.get('faturamento_ontem')
+        self.faturamento = self.entrada_total + self.saldo_ontem - self.saida_total
         self.add_faturamento()
         self.build_signatures()
 
@@ -73,7 +76,7 @@ class FinancialReport(ReportTemplate):
                                  % company_phone)
         if person.fax_number:
             contact_parts.append(_("Fax: %s")
-                                   % format_phone_number(person.fax_number))
+                                 % format_phone_number(person.fax_number))
 
         contact_string = ' - '.join(contact_parts)
 
@@ -84,7 +87,7 @@ class FinancialReport(ReportTemplate):
                 company_parts.append(_("CNPJ: %s") % company.cnpj)
             if company.get_state_registry_number():
                 company_parts.append(_("State Registry: %s")
-                                       % company.state_registry)
+                                     % company.state_registry)
 
         company_details_string = ' - '.join(company_parts)
 
@@ -95,9 +98,12 @@ class FinancialReport(ReportTemplate):
 
     def add_faturamento(self):
         self.add_title('Faturamento')
-        self.add_data_table((('Entrada total:', 'R$ {}'.format(get_formatted_price(self.entrada_total))),
-                             ('Saída total:', 'R$ {}'.format(get_formatted_price(self.saida_total))),
-                             ('Faturamento:', 'R$ {}'.format(get_formatted_price(self.faturamento)))))
+        if self.saldo_ontem:
+            self.add_data_table([('Saldo ontem:', '{}'.format(get_formatted_price(self.saldo_ontem)))])
+
+        self.add_data_table((('Entrada total:', '{}'.format(get_formatted_price(self.entrada_total))),
+                             ('Saída total:', '{}'.format(get_formatted_price(self.saida_total))),
+                             ('Faturamento:', '{}'.format(get_formatted_price(self.faturamento)))))
 
     def add_saida_total(self, d_normal, d_category):
         self.add_title("Saídas")
