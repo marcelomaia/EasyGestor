@@ -651,25 +651,25 @@ class DailyFaturamentoSearch(object):
         d_category = {}
         d_normal = {}
         for p in PaymentCategory.selectBy(connection=self.conn):
-            total_saida = OutPaymentView.select(AND(OutPaymentView.q.open_date >= self.ini,
-                                                    OutPaymentView.q.open_date <= self.fim,
+            total_saida = OutPaymentView.select(AND(OutPaymentView.q.paid_date >= self.ini,
+                                                    OutPaymentView.q.paid_date <= self.fim,
                                                     OutPaymentView.q.category_id == p.id,
                                                     IN(OutPaymentView.q.status,
                                                        (Payment.STATUS_PAID,
                                                         Payment.STATUS_CONFIRMED)),
                                                     ),
-                                                connection=self.conn).sum('value')
+                                                connection=self.conn).sum('payment.paid_value')
             if total_saida:
                 d_category[p.name] = total_saida
         for p in PaymentMethod.selectBy(self.conn):
-            saida_total = OutPaymentView.select(AND(OutPaymentView.q.open_date >= self.ini,
-                                                    OutPaymentView.q.open_date <= self.fim,
+            saida_total = OutPaymentView.select(AND(OutPaymentView.q.paid_date >= self.ini,
+                                                    OutPaymentView.q.paid_date <= self.fim,
                                                     OutPaymentView.q.method_id == p.id,
                                                     IN(OutPaymentView.q.status,
                                                        (Payment.STATUS_PAID,
                                                         Payment.STATUS_CONFIRMED)),
                                                     ),
-                                                connection=self.conn).sum('value')
+                                                connection=self.conn).sum('payment.paid_value')
             if saida_total:
                 d_normal[p.description] = saida_total
         return {
@@ -683,36 +683,36 @@ class DailyFaturamentoSearch(object):
         d_category = {}
         d_card = {}
         for p in PaymentCategory.selectBy(connection=self.conn):
-            total_cartao = InPaymentView.select(AND(InPaymentView.q.open_date >= self.ini,
-                                                    InPaymentView.q.open_date <= self.fim,
+            total_cartao = InPaymentView.select(AND(InPaymentView.q.paid_date >= self.ini,
+                                                    InPaymentView.q.paid_date <= self.fim,
                                                     InPaymentView.q.category_id == p.id,
                                                     IN(InPaymentView.q.status,
                                                        (Payment.STATUS_PAID,
                                                         Payment.STATUS_CONFIRMED)),
                                                     ),
-                                                connection=self.conn).sum('value')
+                                                connection=self.conn).sum('payment.paid_value')
             if total_cartao:
                 d_category[p.name] = total_cartao
         for p in PaymentMethod.selectBy(self.conn):
-            total_entrada = InPaymentView.select(AND(InPaymentView.q.open_date >= self.ini,
-                                                     InPaymentView.q.open_date <= self.fim,
+            total_entrada = InPaymentView.select(AND(InPaymentView.q.paid_date >= self.ini,
+                                                     InPaymentView.q.paid_date <= self.fim,
                                                      InPaymentView.q.method_id == p.id,
                                                      IN(InPaymentView.q.status,
                                                         (Payment.STATUS_PAID,
                                                          Payment.STATUS_CONFIRMED)),
                                                      ),
-                                                 connection=self.conn).sum('value')
+                                                 connection=self.conn).sum('payment.paid_value')
             if total_entrada:
                 d_normal[p.description] = total_entrada
         for p in PersonAdaptToCreditProvider.selectBy(self.conn):
-            total_cartao = CardPaymentView.select(AND(CardPaymentView.q.open_date >= self.ini,
-                                                      CardPaymentView.q.open_date <= self.fim,
+            total_cartao = CardPaymentView.select(AND(CardPaymentView.q.paid_date >= self.ini,
+                                                      CardPaymentView.q.paid_date <= self.fim,
                                                       CardPaymentView.q.provider_id == p.id,
                                                       IN(CardPaymentView.q.status,
                                                          (Payment.STATUS_PAID,
                                                           Payment.STATUS_CONFIRMED))
                                                       ),
-                                                  connection=self.conn).sum('value')
+                                                  connection=self.conn).sum('payment.paid_value')
             if total_cartao:
                 d_card[p.person.name] = total_cartao
         return {'cartao': d_card,
@@ -721,8 +721,10 @@ class DailyFaturamentoSearch(object):
 
     @property
     def faturamento_ontem(self):
-        daily_flow = DailyFlow.select(AND(DailyFlow.q.flow_date >= self.ini,
-                                          DailyFlow.q.flow_date <= self.fim
+        ini = self.ini - datetime.timedelta(days=1)
+        fim = self.fim - datetime.timedelta(days=1)
+        daily_flow = DailyFlow.select(AND(DailyFlow.q.flow_date >= ini,
+                                          DailyFlow.q.flow_date <= fim
                                           ), connection=self.conn)
         daily_flow = [p for p in daily_flow]
         if daily_flow:
