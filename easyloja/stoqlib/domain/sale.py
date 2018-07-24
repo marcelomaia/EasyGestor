@@ -1499,11 +1499,13 @@ class SaleView(Viewable):
 
     def can_confirm(self):
         return (self.status == Sale.STATUS_ORDERED or
-                self.status == Sale.STATUS_QUOTE)
+                self.status == Sale.STATUS_QUOTE or
+                self.status == Sale.STATUS_FISCAL_NOTE)
 
     def can_cancel(self):
         return self.status in (Sale.STATUS_CONFIRMED, Sale.STATUS_PAID,
-                               Sale.STATUS_ORDERED, Sale.STATUS_QUOTE)
+                               Sale.STATUS_ORDERED, Sale.STATUS_QUOTE,
+                               Sale.STATUS_FISCAL_NOTE)
 
     def get_subtotal(self):
         if self.v_ipi is not None:
