@@ -227,7 +227,7 @@ class DailyFlowListDialog(ModelListDialog):
 
     columns = [
         Column('flow_date', title='Dia', data_type=datetime.date),
-        Column('balance', title='Valor', data_type=str)
+        Column('balance', title='Balanço final do dia', data_type=currency)
     ]
 
     def __init__(self):

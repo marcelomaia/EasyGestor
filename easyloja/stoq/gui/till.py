@@ -40,12 +40,13 @@ from kiwi.ui.search import ComboSearchFilter
 from stoq.gui.application import SearchableAppWindow
 from stoqlib.api import api
 from stoqlib.database.orm import AND, OR, const
+from stoqlib.database.runtime import new_transaction
 from stoqlib.domain.events import SalesNFeCreate, SalesNFCEEvent
 from stoqlib.domain.interfaces import IStorable
 from stoqlib.domain.payment.views import FaturamentoSearch, DailyFaturamentoSearch
 from stoqlib.domain.product import ProductStockItem, ProductAdaptToStorable, Product
 from stoqlib.domain.sale import Sale, SaleView
-from stoqlib.domain.till import Till
+from stoqlib.domain.till import Till, DailyFlow
 from stoqlib.exceptions import (StoqlibError, TillError, SellError,
                                 ModelDataError)
 from stoqlib.gui.base.dialogs import run_dialog, get_current_toplevel
@@ -622,6 +623,19 @@ class TillApp(SearchableAppWindow):
         f = FinancialReport(pdf_path, payment_dict, date.start_date, date.end_date)
         f.save()
         print_file(pdf_path)
+        trans = new_transaction()
+        entrada_total = sum([p for p in payment_dict['entrada']['formas_pagamento'].values() if p is not None])
+        saida_total = sum([p for p in payment_dict['saida']['formas_pagamento'].values() if p is not None])
+        saldo_ontem = payment_dict.get('faturamento_ontem', 0)
+        balance = entrada_total + saldo_ontem - saida_total
+        df = DailyFlow.selectOneBy(flow_date=date.end_date.date(), connection=trans)
+        if not df:
+            DailyFlow(flow_date=date.end_date.date(),
+                      balance=balance,
+                      connection=trans)
+        else:
+            df.balance = balance
+        trans.commit(close=True)
 
     def on_TillClose__activate(self, button):
         self._printer.close_till()

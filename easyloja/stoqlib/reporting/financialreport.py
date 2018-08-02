@@ -99,11 +99,12 @@ class FinancialReport(ReportTemplate):
     def add_faturamento(self):
         self.add_title('Faturamento')
         if self.saldo_ontem:
-            self.add_data_table([('Saldo ontem:', '{}'.format(get_formatted_price(self.saldo_ontem)))])
+            self.add_data_table([('Saldo anterior:', '{}'.format(get_formatted_price(self.saldo_ontem)))])
 
         self.add_data_table((('Entrada total:', '{}'.format(get_formatted_price(self.entrada_total))),
                              ('Saída total:', '{}'.format(get_formatted_price(self.saida_total))),
-                             ('Faturamento:', '{}'.format(get_formatted_price(self.faturamento)))))
+                             ('Saldo do dia {}:'.format(self.start_date),
+                              '{}'.format(get_formatted_price(self.faturamento)))))
 
     def add_saida_total(self, d_normal, d_category):
         self.add_title("Saídas")
