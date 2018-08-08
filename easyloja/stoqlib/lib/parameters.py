@@ -487,7 +487,7 @@ _details = [
 
     ParameterDetails(
         'NFE_SERIAL_NUMBER',
-        _('NF-e'),
+        _('NFe'),
         _('Fiscal document serial number'),
         _('Fiscal document serial number. Fill with 0 if the NF-e have no '
           'series. This parameter only has effect if the nfe plugin is enabled.'),
@@ -495,7 +495,7 @@ _details = [
 
     ParameterDetails(
         'NFE_DANFE_ORIENTATION',
-        _('NF-e'),
+        _('NFe'),
         _('Danfe printing orientation'),
         _('Orientation to use for printing danfe. Portrait or Landscape'),
         int, initial=0,
@@ -504,9 +504,9 @@ _details = [
 
     ParameterDetails(
         'NFE_FISCO_INFORMATION',
-        _('NF-e'),
+        _('NFe'),
         _('Additional Information for the Fisco'),
-        _('Additional information to add to the NF-e for the Fisco'), str,
+        _('Additional information to add to the NFe for the Fisco'), str,
         initial=('Documento emitido por ME ou EPP optante pelo SIMPLES '
                  'NACIONAL. Não gera Direito a Crédito Fiscal de ICMS e de '
                  'ISS. Conforme Lei Complementar 123 de 14/12/2006.'),

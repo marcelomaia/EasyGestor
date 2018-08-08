@@ -27,9 +27,9 @@ import gtk
 
 import datetime
 from kiwi.datatypes import currency
-from kiwi.enums import ListType
+from kiwi.enums import ListType, SearchFilterPosition
 from kiwi.ui.objectlist import SearchColumn
-from kiwi.ui.search import DateSearchFilter, Today
+from kiwi.ui.search import DateSearchFilter, Today, ComboSearchFilter
 from kiwi.ui.widgets.list import Column, ColoredColumn
 from stoqlib.api import api
 from stoqlib.database.orm import INNERJOINOn, Viewable, LEFTJOINOn
@@ -85,6 +85,10 @@ class TillFiscalOperationsView(Viewable):
         method_name=PaymentMethod.q.description,
         card_type=CreditCardData.q.card_type,
         card_provider_name=PersonAdaptToCreditProvider.q.short_name,
+        payment_status=Payment.q.status,
+        payment_paid_date=Payment.q.paid_date,
+        payment_due_date=Payment.q.due_date,
+        payment_open_date=Payment.q.open_date,
     )
 
     joins = [
@@ -129,7 +133,7 @@ class TillHistoryDialog(SearchDialog):
     def get_columns(self, *args):
         return [Column('id', _('Number'), data_type=int, width=100,
                        format='%03d', sorted=True),
-                SearchColumn('date', _('Date'),
+                SearchColumn('date', title='Data do caixa',
                              data_type=datetime.date, width=110),
                 Column('description', _('Description'), data_type=str,
                        expand=True,
@@ -142,7 +146,17 @@ class TillHistoryDialog(SearchDialog):
                              width=120),
                 ColoredColumn('value', _('Value'), data_type=currency,
                               color='red', data_func=payment_value_colorize,
-                              width=140)]
+                              width=140),
+                SearchColumn('card_provider_name', title=_('Cartão'), data_type=str,
+                             width=80, visible=False),
+                SearchColumn('card_type', title=_('Tipo de cartão'), data_type=str,
+                             width=130, visible=False, format_func=self._get_card_description),
+                SearchColumn('payment_paid_date', title=_('Dia do pagamento'), data_type=datetime.date,
+                             width=110, visible=True),
+                SearchColumn('payment_due_date', title=_('Dia do vencimento'), data_type=datetime.date,
+                             width=110, visible=False),
+                SearchColumn('payment_open_date', title=_('Dia da abertura do pagamento'), data_type=datetime.date,
+                             width=110, visible=False)]
 
     def _get_card_description(self, arg):
         return CreditCardData.types.get(arg)
@@ -153,6 +167,12 @@ class TillHistoryDialog(SearchDialog):
         date_filter = DateSearchFilter(_('Date:'))
         date_filter.select(Today)
         self.add_filter(date_filter, columns=['date'])
+        # payment status
+        items = [(value, key) for key, value in Payment.statuses.items()]
+        items.insert(0, (_('Any'), None))
+        status_filter = ComboSearchFilter('Pagametos com status', items)
+        self.add_filter(status_filter, SearchFilterPosition.TOP, ['payment_status'])
+
         # add summary label
         value_format = '<b>%s</b>'
         total_label = '<b>%s</b>' % _(u'Total:')

@@ -25,22 +25,22 @@
 """ Installment confirmation slave """
 
 import datetime
-
+from kiwi import ValueUnset
 from kiwi.datatypes import currency, ValidationError
 from kiwi.ui.objectlist import Column
-from kiwi import ValueUnset
-
-from stoqlib.gui.base.dialogs import run_dialog
-from stoqlib.gui.dialogs.purchasedetails import PurchaseDetailsDialog
-from stoqlib.gui.dialogs.saledetails import SaleDetailsDialog
-from stoqlib.gui.editors.baseeditor import BaseEditor
-from stoqlib.lib.pluginmanager import get_plugin_manager
-from stoqlib.lib.translation import stoqlib_gettext
-from stoqlib.lib.parameters import sysparam
+from stoqlib.api import api
 from stoqlib.domain.account import Account
 from stoqlib.domain.payment.operation import register_payment_operations
 from stoqlib.domain.purchase import PurchaseOrder
 from stoqlib.domain.sale import Sale, SaleView
+from stoqlib.domain.till import Till
+from stoqlib.gui.base.dialogs import run_dialog
+from stoqlib.gui.dialogs.purchasedetails import PurchaseDetailsDialog
+from stoqlib.gui.dialogs.saledetails import SaleDetailsDialog
+from stoqlib.gui.editors.baseeditor import BaseEditor
+from stoqlib.lib.parameters import sysparam
+from stoqlib.lib.pluginmanager import get_plugin_manager
+from stoqlib.lib.translation import stoqlib_gettext
 
 _ = stoqlib_gettext
 
@@ -224,6 +224,7 @@ class _InstallmentConfirmationSlave(BaseEditor):
         """
         self._payments = payments
         self._proxy = None
+        self.is_lonely_payment = False
 
         # We're about to pay a payment, fill in all paid_values
         # with the base value which is the initial value to be paid,
@@ -322,6 +323,12 @@ class _InstallmentConfirmationSlave(BaseEditor):
             payment.pay(pay_date, payment.paid_value,
                         account=self.account.get_selected())
         self.model.confirm()
+        if self.is_lonely_payment:
+            trans = api.new_transaction()
+            till = Till.get_current(trans)
+            for payment in self._payments:
+                till.add_entry(payment)
+            trans.commit(close=True)
         return True
 
     #
@@ -334,7 +341,7 @@ class _InstallmentConfirmationSlave(BaseEditor):
 
         if date > datetime.date.today() or date < self.model.open_date:
             return ValidationError(_("Paid date must be between "
-                                     "%s and today") % (self.model.open_date, ))
+                                     "%s and today") % (self.model.open_date,))
 
     def after_penalty__content_changed(self, proxy_entry):
         if proxy_entry.is_valid() and proxy_entry.read() == ValueUnset:
@@ -363,7 +370,7 @@ class _InstallmentConfirmationSlave(BaseEditor):
         total = self.model.get_installment_value()
         if value >= total:
             return ValidationError(_("Discount can not be greater or "
-                                     "equal than %.2f" % (total, )))
+                                     "equal than %.2f" % (total,)))
         if value < 0:
             return ValidationError(_("Discount can not be less than zero"))
 
@@ -395,12 +402,13 @@ class SaleInstallmentConfirmationSlave(_InstallmentConfirmationSlave):
         if group and group.sale:
             return _SaleConfirmationModel(self._payments, group.sale)
         else:
+            self.is_lonely_payment = True
             self._setup_widgets = self._lonely_setup_widgets
             return _LonelyConfirmationModel(self._payments)
 
     def run_details_dialog(self):
         sale_view = SaleView.select(
-                        SaleView.q.id == self.model.get_order_number())[0]
+            SaleView.q.id == self.model.get_order_number())[0]
         run_dialog(SaleDetailsDialog, self, self.conn, sale_view)
 
     def on_close_date__changed(self, proxy_date_entry):
