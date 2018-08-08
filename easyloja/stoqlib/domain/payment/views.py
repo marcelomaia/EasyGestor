@@ -237,7 +237,10 @@ class InPaymentView(BasePaymentView):
         fee=CreditCardData.q.fee,
         branch=PersonAdaptToBranch.q.id,
         branch_name=Person_Company.q.fancy_name,
-    ))
+        card_type=CreditCardData.q.card_type))
+
+    def get_card_type_str(self):
+        return CreditCardData.types.get(self.card_type, None)
 
     @property
     def real_value(self):

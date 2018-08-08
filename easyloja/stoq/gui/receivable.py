@@ -47,7 +47,7 @@ from stoqlib.domain.events import CancelBillEvent, GenerateDuplicateEvent, Verif
 from stoqlib.domain.events import (CreatedInPaymentEvent, PrintBillEvent, GenerateBillEvent, CheckBillStatusEvent,
                                    CheckPaidBillEvent)
 from stoqlib.domain.payment.bill import PaymentIuguBill
-from stoqlib.domain.payment.method import PaymentMethod
+from stoqlib.domain.payment.method import PaymentMethod, CreditCardData
 from stoqlib.domain.payment.operation import register_payment_operations
 from stoqlib.domain.payment.payment import Payment
 from stoqlib.domain.payment.views import InPaymentView
@@ -249,6 +249,10 @@ class ReceivableApp(SearchableAppWindow):
                              data_type=str, search_attribute='status',
                              valid_values=self._get_status_values(),
                              visible=False),
+                SearchColumn('card_type_str', title=_(u'Tipo de cartão'), width=100,
+                             data_type=str, search_attribute='card_type',
+                             valid_values=self._get_card_values(),
+                             visible=False),
                 SearchColumn('method_description', title=_('Payment Method'), width=100,
                              data_type=str, visible=False,
                              valid_values=self._get_payment_method_values()),
@@ -369,6 +373,11 @@ class ReceivableApp(SearchableAppWindow):
 
     def _get_status_values(self):
         values = [(v, k) for k, v in Payment.statuses.items()]
+        values.insert(0, (_("Any"), None))
+        return values
+
+    def _get_card_values(self):
+        values = [(v, k) for k, v in CreditCardData.types.items()]
         values.insert(0, (_("Any"), None))
         return values
 
