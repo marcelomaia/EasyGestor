@@ -38,6 +38,7 @@ from stoqlib.gui.dialogs.sintegradialog import SintegraDialog
 from stoqlib.gui.dialogs.suppliercategorydialog import SupplierCategoryDialog
 from stoqlib.gui.dialogs.tillhistory import DailyFlowListDialog
 from stoqlib.gui.editors.backupeditor import BackupEditor
+from stoqlib.gui.editors.emaileditor import EmailConfEditor
 from stoqlib.gui.editors.formfieldeditor import FormFieldEditor
 from stoqlib.gui.editors.invoiceeditor import (InvoiceLayoutDialog)
 from stoqlib.gui.editors.nfeeditor import NFeContractListEditor
@@ -117,6 +118,7 @@ class Tasks(object):
             (_('Users'), 'users', STOQ_HR),
             (_('User Profiles'), 'user_profiles', STOQ_USER_PROFILES),
             (_('Contratos'), 'contracts', STOQ_CONTRACTS),
+            (_('Email'), 'email', STOQ_SUPPLIERS),
             ('Backup', 'backup_system', STOQ_BACKUP)]
 
         for label, name, pixbuf in items:
@@ -277,6 +279,11 @@ class Tasks(object):
 
     def _open_backup_system(self):
         self.app.run_dialog(BackupEditor, self.app.conn)
+
+    def _open_email(self):
+        trans = api.new_transaction()
+        self.app.run_dialog(EmailConfEditor, trans)
+        trans.commit(close=True)
 
 
 class AdminApp(AppWindow):

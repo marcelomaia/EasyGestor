@@ -24,7 +24,7 @@
 ##
 """ Domain classes for handling parameters """
 
-from stoqlib.database.orm import UnicodeCol, BoolCol, StringCol
+from stoqlib.database.orm import UnicodeCol, BoolCol, StringCol, IntCol
 from stoqlib.domain.base import Domain
 from stoqlib.lib.translation import stoqlib_gettext as _
 
@@ -49,8 +49,16 @@ class ParameterData(Domain):
         return get_parameter_details(self.field_name).short_desc
 
     def get_field_value(self):
-        #FIXME: This is a workaround to handle some parameters which are
+        # FIXME: This is a workaround to handle some parameters which are
         #       locale specific.
         if self.field_value:
             return _(self.field_value)
         return self.field_value
+
+
+class EmailConf(Domain):
+    """Email configuration setup"""
+    smtp_server = UnicodeCol()
+    port = IntCol()
+    email = UnicodeCol()
+    password = UnicodeCol()
