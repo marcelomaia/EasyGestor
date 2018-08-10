@@ -31,7 +31,7 @@ from kiwi.log import Logger
 from stoqlib.database.orm import AND, const, OR, LEFTJOINOn, ILIKE
 from stoqlib.database.orm import IntCol, DateTimeCol, ForeignKey, UnicodeCol
 from stoqlib.database.orm import PriceCol
-from stoqlib.database.runtime import get_current_station
+from stoqlib.database.runtime import get_current_station, new_transaction
 from stoqlib.domain.base import Domain
 from stoqlib.domain.interfaces import IDescribable
 from stoqlib.domain.payment.payment import Payment
@@ -224,6 +224,15 @@ class Till(Domain):
 
         return self._add_till_entry(value, payment.description, payment)
 
+    def edit_entry(self, payment):
+        """
+        Edits an entry to the till.
+        @param payment:
+        @returns: till entry
+        @rtype: L{TillEntry}
+        """
+        return self._edit_till_entry(payment.value, payment.description, payment)
+
     def add_debit_entry(self, value, reason=u""):
         """Add debit to the till
         @param value: amount to add
@@ -394,6 +403,18 @@ class Till(Domain):
                          payment=payment,
                          till=self,
                          connection=self.get_connection())
+
+    def _edit_till_entry(self, value, description, payment=None):
+        # assert value != 0
+        trans = new_transaction()
+        till_entry = TillEntry.selectOneBy(payment=payment, connection=trans)
+        if till_entry:
+            till_entry.value = value
+            till_entry.description = description
+            till_entry.till = self
+            trans.commit()
+        trans.close()
+        return till_entry
 
 
 class TillEntry(Domain):

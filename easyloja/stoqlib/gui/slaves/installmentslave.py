@@ -225,6 +225,7 @@ class _InstallmentConfirmationSlave(BaseEditor):
         self._payments = payments
         self._proxy = None
         self.is_lonely_payment = False
+        self.is_sale_payment = False
 
         # We're about to pay a payment, fill in all paid_values
         # with the base value which is the initial value to be paid,
@@ -323,11 +324,15 @@ class _InstallmentConfirmationSlave(BaseEditor):
             payment.pay(pay_date, payment.paid_value,
                         account=self.account.get_selected())
         self.model.confirm()
+        trans = api.new_transaction()
+        till = Till.get_current(trans)
         if self.is_lonely_payment:
-            trans = api.new_transaction()
-            till = Till.get_current(trans)
             for payment in self._payments:
                 till.add_entry(payment)
+            trans.commit(close=True)
+        elif self.is_sale_payment:
+            for payment in self._payments:
+                till.edit_entry(payment)
             trans.commit(close=True)
         return True
 
@@ -400,6 +405,7 @@ class SaleInstallmentConfirmationSlave(_InstallmentConfirmationSlave):
     def create_model(self, conn):
         group = self._payments[0].group
         if group and group.sale:
+            self.is_sale_payment = True
             return _SaleConfirmationModel(self._payments, group.sale)
         else:
             self.is_lonely_payment = True

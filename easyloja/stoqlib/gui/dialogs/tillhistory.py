@@ -29,7 +29,7 @@ import datetime
 from kiwi.datatypes import currency
 from kiwi.enums import ListType, SearchFilterPosition
 from kiwi.ui.objectlist import SearchColumn
-from kiwi.ui.search import DateSearchFilter, Today, ComboSearchFilter
+from kiwi.ui.search import ComboSearchFilter
 from kiwi.ui.widgets.list import Column, ColoredColumn
 from stoqlib.api import api
 from stoqlib.database.orm import INNERJOINOn, Viewable, LEFTJOINOn
@@ -131,7 +131,7 @@ class TillHistoryDialog(SearchDialog):
     #
 
     def get_columns(self, *args):
-        return [Column('id', _('Number'), data_type=int, width=100,
+        return [Column('id', _('Entrada de caixa'), data_type=int, width=100,
                        format='%03d', sorted=True),
                 SearchColumn('date', title='Data do caixa',
                              data_type=datetime.date, width=110),
@@ -164,13 +164,10 @@ class TillHistoryDialog(SearchDialog):
     def create_filters(self):
         self.set_text_field_columns(['description'])
 
-        date_filter = DateSearchFilter(_('Date:'))
-        date_filter.select(Today)
-        self.add_filter(date_filter, columns=['date'])
-        # payment status
         items = [(value, key) for key, value in Payment.statuses.items()]
         items.insert(0, (_('Any'), None))
         status_filter = ComboSearchFilter('Pagametos com status', items)
+        status_filter.select(Payment.STATUS_PAID)
         self.add_filter(status_filter, SearchFilterPosition.TOP, ['payment_status'])
 
         # add summary label
