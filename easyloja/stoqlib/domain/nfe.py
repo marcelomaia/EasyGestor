@@ -278,3 +278,18 @@ class NFCESaleHistory(Domain):
         return conn.queryOne("""SELECT MAX(nfce.number) FROM nfce_sale_history nfce
                 INNER JOIN sale ON nfce.sale_id=sale.id
                 WHERE sale.branch_id=%s""" % (branch.id,))[0]
+
+
+class NFeCartaCorrecao(Domain):
+    """ This class refers to a NFeSaleHistory
+    """
+    sequence = IntCol()
+    nfe_key = StringCol(default=None)
+    nfe_sale_history = ForeignKey('NFESaleHistory', default=None)
+    reason = StringCol(default=None)
+    xml64 = BLOBCol(default=None)
+    pdf64 = BLOBCol(default=None)
+
+    @classmethod
+    def get_last_sequence(cls, sale_hist, conn):
+        return NFeCartaCorrecao.selectBy(nfe_sale_history=sale_hist, connection=conn).max('sequence') or 0
