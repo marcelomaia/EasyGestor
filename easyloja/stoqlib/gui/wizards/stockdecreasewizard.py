@@ -227,6 +227,7 @@ class StockDecreaseWizard(BaseWizard):
         return StockDecrease(responsible=user,
                              removed_by=employee,
                              branch=branch,
+                             reason='Ajuste de estoque',
                              status=StockDecrease.STATUS_INITIAL,
                              cfop=cfop,
                              connection=conn)

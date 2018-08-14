@@ -219,6 +219,7 @@ class StockIncreaseWizard(BaseWizard):
         cfop = sysparam(conn).DEFAULT_STOCK_DECREASE_CFOP
         return StockIncrease(responsible=user,
                              added_by=employee,
+                             reason='Ajuste de estoque',
                              branch=branch,
                              status=StockIncrease.STATUS_INITIAL,
                              cfop=cfop,

@@ -334,6 +334,7 @@ class SalesApp(SearchableAppWindow):
 
     def _can_edit(self, view):
         return bool(view and (view.status == Sale.STATUS_QUOTE or
+                              view.status == Sale.STATUS_FISCAL_NOTE,
                               view.status == Sale.STATUS_ORDERED))
 
     def _update_toolbar(self, *args):

@@ -628,7 +628,9 @@ class SaleQuoteWizard(BaseWizard):
         title = self._get_title(model)
         model = model or self._create_model(conn)
 
-        if model.status not in [Sale.STATUS_QUOTE, Sale.STATUS_ORDERED]:
+        if model.status not in [Sale.STATUS_QUOTE,
+                                Sale.STATUS_ORDERED,
+                                Sale.STATUS_FISCAL_NOTE]:
             raise ValueError('Invalid sale status. It should '
                              'be STATUS_QUOTE or STATUS_ORDERED')
 
