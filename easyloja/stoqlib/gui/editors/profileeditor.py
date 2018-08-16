@@ -24,15 +24,14 @@
 """ User profile editor implementation.  """
 
 import gtk
+
 from kiwi.component import get_utility
 from kiwi.datatypes import ValidationError
 from kiwi.ui.widgets.checkbutton import ProxyCheckButton
-
 from stoqlib.domain.profile import UserProfile, ProfileSettings, ProfileActionSettings
 from stoqlib.gui.editors.baseeditor import BaseEditor
 from stoqlib.lib.interfaces import IApplicationDescriptions, IActionDescriptions
 from stoqlib.lib.translation import stoqlib_gettext
-
 
 _ = stoqlib_gettext
 
@@ -41,7 +40,7 @@ class UserProfileEditor(BaseEditor):
     model_name = _('User Profile')
     model_type = UserProfile
     gladefile = 'UserProfileEditor'
-    proxy_widgets = ('profile_name', )
+    proxy_widgets = ('profile_name',)
     help_section = 'user-profile'
 
     def __init__(self, conn, model):
@@ -118,15 +117,14 @@ class UserProfileEditor(BaseEditor):
             button.show()
             box.pack_start(button, padding=6)
 
-
             self.actions_vbox.pack_start(box, False)
 
             model = settings.get(name)
             if model is None:
                 model = ProfileActionSettings(connection=self.conn,
-                                        has_permission=False,
-                                        action_name=name,
-                                        user_profile=self.model)
+                                              has_permission=False,
+                                              action_name=name,
+                                              user_profile=self.model)
 
             setattr(self, name, button)
             self.add_proxy(model, [name])

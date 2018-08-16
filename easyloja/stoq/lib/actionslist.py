@@ -7,15 +7,16 @@ from kiwi.component import implements
 from stoqlib.lib.interfaces import IActionDescriptions
 
 _ACTIONS = {
-    'reprint_nfce': 'Reimprimir NFC-e',
-    'cancel_nfce': 'Cancelar NFC-e',
+    'reprint_nfce': 'Reimprimir NFCe',
+    'cancel_nfce': 'Cancelar NFCe',
     'reprint_nonfiscal': 'Reimpressao Nao Fiscal',
     'nonfiscal_report': 'Relatorio Nao Fiscal',
     'cancel_nonfiscal': 'Cancelamento N Fiscal',
     'cancel_order': 'Cancelar Venda',
     'cancel_order_item': 'Cancelar Item da Venda',
     'quit_pos': 'Sair do PDV',
-    'add_remove_till': 'Sangria/Suprimento PDV'
+    'add_remove_till': 'Sangria/Suprimento PDV',
+    'inutilizar_nfce': 'Inutilizar NFCe'
 }
 
 
