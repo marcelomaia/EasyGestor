@@ -46,7 +46,8 @@ class SaleQuoteItemEditor(BaseEditor):
                      'quantity',
                      'cfop',
                      'total',
-                     'notes']
+                     'notes',
+                     'fcp']
 
     def __init__(self, conn, model):
         self.icms_slave = None

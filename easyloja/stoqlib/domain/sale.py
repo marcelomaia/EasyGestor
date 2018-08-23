@@ -53,7 +53,7 @@ from stoqlib.domain.person import (Person,
                                    PersonAdaptToUser,
                                    PersonAdaptToIndividual,
                                    PersonAdaptToCompany, PersonAdaptToBranch)
-from stoqlib.domain.product import Product, ProductHistory, ProductSerialNumber, ProductComponent, ProductStockItem
+from stoqlib.domain.product import Product, ProductHistory, ProductSerialNumber, ProductComponent
 from stoqlib.domain.renegotiation import RenegotiationData
 from stoqlib.domain.sellable import Sellable
 from stoqlib.domain.service import Service
@@ -111,6 +111,7 @@ class SaleItem(Domain):
     ipi_info = ForeignKey('SaleItemIpi')
     pis_info = ForeignKey('SaleItemPis')
     cofins_info = ForeignKey('SaleItemCofins')
+    fcp = PriceCol(default=0)  # fundo de combate a pobreza
 
     def _create(self, id, **kw):
         if not 'kw' in kw:
@@ -140,7 +141,7 @@ class SaleItem(Domain):
     def sell(self, branch):
         conn = self.get_connection()
         if not (branch and
-                        branch.id == get_current_branch(conn).id):
+                branch.id == get_current_branch(conn).id):
             raise SellError(_(u"Stoq still doesn't support sales for "
                               u"branch companies different than the "
                               u"current one"))
@@ -787,7 +788,7 @@ class Sale(Domain):
 
         # ordered and quote sale items did not change the stock of such items
         if (self.status != Sale.STATUS_ORDERED and
-                    self.status != Sale.STATUS_QUOTE):
+                self.status != Sale.STATUS_QUOTE):
             branch = get_current_branch(self.get_connection())
             for item in self.get_items():
                 item.cancel(branch)
