@@ -19,16 +19,6 @@
             <property name="column_spacing">5</property>
             <property name="row_spacing">5</property>
             <child>
-              <object class="GtkLabel" id="label6">
-                <property name="visible">True</property>
-                <property name="xalign">1</property>
-                <property name="label" translatable="yes">Cliente/Fornecedor:</property>
-              </object>
-              <packing>
-                <property name="x_options">GTK_FILL</property>
-              </packing>
-            </child>
-            <child>
               <object class="ProxyComboEntry" id="identification">
                 <property name="visible">True</property>
               </object>
@@ -42,6 +32,11 @@
             </child>
             <child>
               <placeholder/>
+            </child>
+            <child>
+              <object class="ProxyLabel" id="iface_lbl">
+                <property name="visible">True</property>
+              </object>
             </child>
           </object>
           <packing>

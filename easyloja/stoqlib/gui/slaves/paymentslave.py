@@ -25,20 +25,18 @@
 """ Slaves for payment management """
 
 import gtk
-
 from copy import deepcopy
-import datetime
-from dateutil.relativedelta import relativedelta
 from decimal import Decimal
 
+import datetime
+from dateutil.relativedelta import relativedelta
 from kiwi import ValueUnset
 from kiwi.component import get_utility
 from kiwi.datatypes import format_price, currency, ValidationError
 from kiwi.python import Settable
-from kiwi.utils import gsignal
 from kiwi.ui.delegates import GladeSlaveDelegate
 from kiwi.ui.objectlist import Column
-
+from kiwi.utils import gsignal
 from stoqlib.api import api
 from stoqlib.domain.events import CreatePaymentEvent
 from stoqlib.domain.interfaces import IInPayment, IOutPayment
@@ -57,9 +55,9 @@ from stoqlib.gui.interfaces import IDomainSlaveMapper
 from stoqlib.lib.defaults import (interval_types, INTERVALTYPE_MONTH,
                                   DECIMAL_PRECISION)
 from stoqlib.lib.message import info, warning
+from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.payment import (generate_payments_values,
                                  generate_payments_due_dates)
-from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.translation import stoqlib_gettext
 
 _ = stoqlib_gettext
@@ -829,9 +827,16 @@ class CardMethodSlave(BaseEditorSlave):
         if isinstance(self._order, PurchaseOrder):
             payments = self.method.create_outpayments(self._payment_group,
                                                       self.total_value, due_dates)
-        else:
+        elif isinstance(self._order, Sale):
             payments = self.method.create_inpayments(self._payment_group,
                                                      self.total_value, due_dates)
+        elif isinstance(self._order, PaymentRenegotiation):
+            if self._order.client:
+                payments = self.method.create_inpayments(self._payment_group,
+                                                         self.total_value, due_dates)
+            elif self._order.supplier:
+                payments = self.method.create_outpayments(self._payment_group,
+                                                          self.total_value, due_dates)
 
         operation = self.method.operation
         for payment in payments:
@@ -1060,12 +1065,12 @@ class MultipleMethodSlave(BaseEditorSlave):
 
         # bill and store_credit payment method is not allowed without a client.
         if (payment_method.method_name == 'bill' or
-                    payment_method.method_name == 'store_credit'):
+                payment_method.method_name == 'store_credit'):
             if (not isinstance(self.model, PurchaseOrder) and
-                        self.model.client is None):
+                    self.model.client is None):
                 return
             elif (isinstance(self.model, PurchaseOrder) and
-                          payment_method.method_name == 'store_credit'):
+                  payment_method.method_name == 'store_credit'):
                 return
 
         radio = gtk.RadioButton(self.cash_radio,

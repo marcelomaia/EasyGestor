@@ -55,6 +55,10 @@ class PaymentRenegotiationPaymentListStep(BaseMethodSelectionStep,
         self.groups = groups
         WizardEditorStep.__init__(self, conn, wizard, model)
         BaseMethodSelectionStep.__init__(self)
+        iface_lbl = 'Fornecedor:'
+        if model_attr == 'client':
+            iface_lbl = 'Cliente:'
+        self.iface_lbl.update(iface_lbl)
 
     def _setup_widgets(self):
         self.total.set_sensitive(False)
