@@ -441,7 +441,9 @@ class ClientSearch(BasePersonSearch):
                 SearchColumn('cnpj', self.company_doc_l10n.label, str, width=150),
                 SearchColumn('cpf', _('CPF'), str, width=130),
                 SearchColumn('rg_number', _('RG'), str, width=120),
-                ]
+                SearchColumn('email', _('Email'), str, visible=False, width=120),
+                SearchColumn('postal_code', _('CEP'), str, visible=False, width=120),
+                SearchColumn('state_registry', _('Inscrição estadual'), str, visible=False, width=120)]
 
     @argcheck(ClientView)
     def get_editor_model(self, client_view):

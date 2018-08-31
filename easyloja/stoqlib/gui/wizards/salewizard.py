@@ -212,13 +212,14 @@ class BaseMethodSelectionStep(object):
             return None
         elif selected_method.method_name == 'store_credit' or selected_method.method_name == 'bill':
             client = self.model.client
-            credit = client.remaining_store_credit
-            total = self._get_total_amount()
+            if client:
+                credit = client.remaining_store_credit
+                total = self._get_total_amount()
 
-            if credit < total:
-                warning(_(u"Client %s does not have enought credit left.") % \
-                        client.person.name)
-                return self
+                if credit < total:
+                    warning(_(u"Client %s does not have enought credit left.") % \
+                            client.person.name)
+                    return self
 
             step_class = PaymentMethodStep
         elif selected_method.method_name == 'card':

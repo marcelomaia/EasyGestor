@@ -62,7 +62,7 @@ class PaymentRenegotiationPaymentListStep(BaseMethodSelectionStep,
 
         idt = getattr(self.groups[0].get_parent(), self.model_attr)
         self.identification.model_attribute = self.model_attr
-        self.identification.prefill([(idt.person.name, id)])
+        self.identification.prefill([(idt.person.name, idt)])
         self.identification.select(idt)
         self.identification.set_sensitive(False)
 
@@ -95,8 +95,8 @@ class PaymentRenegotiationPaymentListStep(BaseMethodSelectionStep,
                        width=100)]
 
     def _update_totals(self):
-        surcharge = self.model.surcharge_value
-        discount = self.model.discount_value
+        surcharge = self.model.surcharge_value or 0
+        discount = self.model.discount_value or 0
         self.model.total = self._subtotal + surcharge - discount
         self.proxy.update('total')
 

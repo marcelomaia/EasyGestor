@@ -65,7 +65,7 @@ class PaymentRenegotiation(Domain):
     total = PriceCol(default=0)
     responsible = ForeignKey('PersonAdaptToUser')
     client = ForeignKey('PersonAdaptToClient', default=None)
-  #  supplier = ForeignKey('PersonAdaptToSupplier', default=None)
+    supplier = ForeignKey('PersonAdaptToSupplier', default=None)
     branch = ForeignKey('PersonAdaptToBranch', default=None)
     group = ForeignKey('PaymentGroup')
 
