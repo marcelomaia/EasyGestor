@@ -25,17 +25,15 @@
 """ Payments Renegotiation Wizard """
 
 import datetime
-
 from kiwi.datatypes import currency, ValidationError
 from kiwi.ui.widgets.list import Column
-
 from stoqlib.api import api
+from stoqlib.domain.payment.group import PaymentGroup
 from stoqlib.domain.payment.operation import register_payment_operations
 from stoqlib.domain.payment.renegotiation import PaymentRenegotiation
-from stoqlib.domain.payment.group import PaymentGroup
-from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.gui.base.wizards import WizardEditorStep, BaseWizard
 from stoqlib.gui.wizards.salewizard import BaseMethodSelectionStep
+from stoqlib.lib.translation import stoqlib_gettext
 
 _ = stoqlib_gettext
 
@@ -123,7 +121,7 @@ class PaymentRenegotiationPaymentListStep(BaseMethodSelectionStep,
     def setup_proxies(self):
         self._setup_widgets()
         self.proxy = self.add_proxy(self.model,
-                            PaymentRenegotiationPaymentListStep.proxy_widgets)
+                                    PaymentRenegotiationPaymentListStep.proxy_widgets)
         self._update_totals()
 
     #
@@ -133,15 +131,15 @@ class PaymentRenegotiationPaymentListStep(BaseMethodSelectionStep,
     def on_surcharge_value__validate(self, entry, value):
         if value < 0:
             return ValidationError(
-                    _('Surcharge must be greater than 0'))
+                _('Surcharge must be greater than 0'))
 
     def on_discount_value__validate(self, entry, value):
         if value < 0:
             return ValidationError(
-                    _('Discount must be greater than 0'))
+                _('Discount must be greater than 0'))
         if value >= self._subtotal:
             return ValidationError(
-                    _('Discount can not be greater than total amount'))
+                _('Discount can not be greater than total amount'))
 
     def after_surcharge_value__changed(self, entry):
         self._update_totals()
@@ -169,7 +167,7 @@ class PaymentRenegotiationWizard(BaseWizard):
         BaseWizard.__init__(self, conn, first, self.model)
 
     def _create_model(self, conn):
-        value = 0 # will be updated in the first step.
+        value = 0  # will be updated in the first step.
         branch = api.get_current_branch(conn)
         user = api.get_current_user(conn)
         extra = self.params_for_model(conn)
@@ -196,6 +194,7 @@ class PaymentRenegotiationWizard(BaseWizard):
 
     def params_for_model(self, conn):
         raise Exception("This method must be override")
+
 
 #
 # Decorator Classes

@@ -1161,8 +1161,10 @@ class PosApp(AppWindow):
             try:
                 self.nfce_coupon(sale)
             except Exception, e:
-                log.info("NFCe error: %s" % e)
+                msg = "NFCe error: %s" % e
+                log.info(msg)
                 self._cancel_nfce_sale(sale, trans)
+                warning('Erro NFCe! Por favor, entre em contato com o nosso suporte', msg)
             try:
                 self.nf_coupon(sale)
             except Exception, e:
