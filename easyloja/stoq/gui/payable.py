@@ -356,23 +356,23 @@ class PayableApp(SearchableAppWindow):
 
     def _can_renegotiate(self, payable_views):
         if not len(payable_views):
-            return False
+            return False, u'Tente novamente'
 
         # Parent is a PurchaseOrder or a PaymentRenegotiation
         parent = payable_views[0].get_parent()
 
         if not parent:
-            return False
+            return False, u'Deve ser oriundo de ordem de compra ou renegociação'
 
         supplier = parent.supplier
 
         if not supplier:
-            return False
-
-        return all(view.get_parent() and
-                   view.get_parent().supplier is supplier and
-                   view.get_parent().can_set_renegotiated()
-                   for view in payable_views)
+            return False, u'A ordem de compra ou de renegociação deve conter um fornecedor'
+        for view in payable_views:
+            if not (view.get_parent() and view.get_parent().supplier is supplier
+                    and view.get_parent().can_set_renegotiated()):
+                return False, u'Algum pagamento da ordem de compra ou renegociação não pode ser renegociado'
+        return True, 'ok'
 
     def _edit(self, payable_views):
         with api.trans() as trans:
@@ -486,7 +486,7 @@ class PayableApp(SearchableAppWindow):
         self.PrintReceipt.set_sensitive(self._are_paid(selected,
                                                        respect_purchase=True))
         self.SetNotPaid.set_sensitive(self._are_paid(selected, respect_purchase=False))
-        self.Renegotiate.set_sensitive(self._can_renegotiate(selected))
+        # self.Renegotiate.set_sensitive(self._can_renegotiate(selected))
 
     def _on_search__search_completed(self, search, results, states):
         self.search_completed(results, states)
@@ -633,9 +633,10 @@ class PayableApp(SearchableAppWindow):
             warning(str(e))
             return
         payable_views = self.results.get_selected_rows()
-        # if not self._can_renegotiate(payable_views):
-        #     warning(_('Cannot renegotiate selected payments'))
-        #     return
+        retval, desc = self._can_renegotiate(payable_views)
+        if not retval:
+            warning(desc)
+            return
         trans = api.new_transaction()
         groups = list(set([trans.get(v.group) for v in payable_views]))
         retval = run_dialog(PayableRenegotiationWizard, self, trans,

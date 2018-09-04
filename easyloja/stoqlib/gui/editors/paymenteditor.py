@@ -41,7 +41,7 @@ from stoqlib.domain.payment.costcenter import PaymentCostCenter
 from stoqlib.domain.payment.group import PaymentGroup
 from stoqlib.domain.payment.method import PaymentMethod
 from stoqlib.domain.payment.payment import Payment
-from stoqlib.domain.payment.views import PaymentChangeHistoryView
+from stoqlib.domain.payment.views import PaymentChangeHistoryView, BasePaymentView
 from stoqlib.domain.person import PersonAdaptToClient, PersonAdaptToSupplier, PersonCategoryPaymentInfo, \
     PersonAdaptToBranch, PersonAdaptToAffiliate, AffiliateView
 from stoqlib.domain.sale import SaleView
@@ -254,7 +254,16 @@ class PaymentEditor(BaseEditor):
     def _fill_method_combo(self):
         methods = PaymentMethod.select(
             connection=self.trans).orderBy('description')
-        self.method.set_sensitive(False)
+        bpv = [p for p in BasePaymentView.select(BasePaymentView.q.id == self.model.id,
+                                                 connection=self.conn)]
+        try:
+            bpv = bpv[0]
+            if bpv.is_lonely():
+                self.method.set_sensitive(True)
+            else:
+                self.method.set_sensitive(False)
+        except:
+            self.method.set_sensitive(False)
         self.method.prefill([(m.description, m) for m in methods])
         self.method.select(self.model.method)
 
