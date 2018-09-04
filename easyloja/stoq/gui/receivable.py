@@ -523,23 +523,24 @@ class ReceivableApp(SearchableAppWindow):
         renegotiate.
         """
         if not len(receivable_views):
-            return False
+            return False, u'Tente novamente'
 
         # Parent is a Sale or a PaymentRenegotiation
         parent = receivable_views[0].get_parent()
 
         if not parent:
-            return False
+            return False, u'Deve ser oriundo de uma venda ou renegociação'
 
         client = parent.client
 
         if not client:
-            return False
+            return False, u'Deve conter um cliente'
 
-        return all(view.get_parent() and
-                   view.get_parent().client is client and
-                   view.get_parent().can_set_renegotiated()
-                   for view in receivable_views)
+        for view in receivable_views:
+            if not (view.get_parent() and view.get_parent().client is client
+                    and view.get_parent().can_set_renegotiated()):
+                return False, u'Algum pagamento da venda ou renegociação não pode ser renegociado'
+        return True, ''
 
     def _can_cancel_payment(self, receivable_views):
         """whether or not we can cancel the receiving.
@@ -716,8 +717,9 @@ class ReceivableApp(SearchableAppWindow):
             warning(str(e))
             return
         receivable_views = self.results.get_selected_rows()
-        if not self._can_renegotiate(receivable_views):
-            warning(_('Cannot renegotiate selected payments'))
+        can_renegotiate, msg = self._can_renegotiate(receivable_views)
+        if not can_renegotiate:
+            warning(msg)
             return
         trans = api.new_transaction()
         groups = list(set([trans.get(v.group) for v in receivable_views]))
