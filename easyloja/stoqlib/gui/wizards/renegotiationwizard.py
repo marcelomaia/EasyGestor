@@ -29,6 +29,7 @@ from kiwi.datatypes import currency, ValidationError
 from kiwi.ui.widgets.list import Column
 from stoqlib.api import api
 from stoqlib.domain.payment.group import PaymentGroup
+from stoqlib.domain.payment.method import PaymentMethod
 from stoqlib.domain.payment.operation import register_payment_operations
 from stoqlib.domain.payment.renegotiation import PaymentRenegotiation
 from stoqlib.gui.base.wizards import WizardEditorStep, BaseWizard
@@ -57,6 +58,14 @@ class PaymentRenegotiationPaymentListStep(BaseMethodSelectionStep,
         if model_attr == 'client':
             iface_lbl = 'Cliente:'
         self.iface_lbl.update(iface_lbl)
+
+    def setup_cash_payment(self, total=None):
+        money_method = PaymentMethod.get_by_name(self.conn, 'money')
+        total = total or self._get_total_amount()
+        if self.model_attr == 'supplier':
+            return money_method.create_outpayment(self.model.group, total)
+        else:
+            return money_method.create_inpayment(self.model.group, total)
 
     def _setup_widgets(self):
         self.total.set_sensitive(False)
