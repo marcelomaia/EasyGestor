@@ -53,13 +53,13 @@ class _RenegotiationItem(object):
         self.open_date = parent.open_date
 
         if isinstance(parent, Sale):
-            desc = "Sale %04d" % parent.id
+            desc = u"Venda {}: {}".format(parent.id, parent.notes)
             self.total_amount = parent.total_amount
         elif isinstance(parent, PaymentRenegotiation):
-            desc = "Renegotiation %04d" % parent.id
+            desc = u"Renegociação {}".format(parent.id)
             self.total_amount = parent.total
         elif isinstance(parent, PurchaseOrder):
-            desc = "Purchase Order %04d" % parent.id
+            desc = u"Ordem de compra {}".format(parent.id)
             self.total_amount = parent.get_purchase_total()
         self.description = desc
 

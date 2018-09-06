@@ -91,6 +91,7 @@ class BasePaymentChangeDialog(BaseEditor):
 
     def create_model(self, conn):
         return PaymentChangeHistory(payment=self._payment,
+                                    change_reason=u'Alteração de pagamento',
                                     connection=conn)
 
     def setup_proxies(self):

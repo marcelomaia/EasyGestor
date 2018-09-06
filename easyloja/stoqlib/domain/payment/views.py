@@ -145,7 +145,7 @@ class BasePaymentView(Viewable):
         return self.status == Payment.STATUS_PENDING
 
     def is_lonely(self):
-        return not(self.sale_id or self.purchase_id)
+        return not(self.sale_id or self.purchase_id or self.renegotiated_id)
 
     def get_status_str(self):
         return Payment.statuses[self.status]
