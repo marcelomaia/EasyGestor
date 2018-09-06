@@ -92,9 +92,11 @@ class ProductsListSlave(SlaveView):
 
     def create_nfe_product(self, prod_info):
         nfe_product = _Product()
-
+        barcode = prod_info[PRODUCT_CEAN]
+        # somente digitos
+        barcode = ''.join([p for p in barcode if p in '0123456789'])
         nfe_product.description = prod_info[PRODUCT_DESCRIPTION]
-        nfe_product.barcode = prod_info[PRODUCT_CEAN]
+        nfe_product.barcode = barcode
         nfe_product.price = prod_info[PRODUCT_UNITARY_TRADE_VALUE]
         nfe_product.quantity = Decimal(prod_info[PRODUCT_COMMERCIAL_QUANTITY])
         nfe_product.unit = prod_info[PRODUCT_COMMERCIAL_UNITY]
