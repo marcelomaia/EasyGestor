@@ -24,24 +24,24 @@
 ##
 """ Classes for sale details """
 
+import gtk
 
 import datetime
-
 import pango
-import gtk
 from kiwi.datatypes import currency
 from kiwi.ui.widgets.list import Column, SummaryLabel, ColoredColumn
-from stoqlib.domain.purchase import PurchaseOrder
-from stoqlib.gui.dialogs.supplierdetails import SupplierDetailsDialog
-
-from stoqlib.lib.translation import stoqlib_gettext
-from stoqlib.lib.defaults import payment_value_colorize
-from stoqlib.gui.editors.baseeditor import BaseEditor
+from stoqlib.domain.payment.renegotiation import PaymentRenegotiation
+from stoqlib.domain.payment.views import PaymentChangeHistoryView
+from stoqlib.domain.purchase import PurchaseOrder, PurchaseItemView
+from stoqlib.domain.sale import Sale
+from stoqlib.domain.views import SaleItemsView
 from stoqlib.gui.base.dialogs import run_dialog, get_current_toplevel
 from stoqlib.gui.dialogs.clientdetails import ClientDetailsDialog
-from stoqlib.domain.sale import Sale
-from stoqlib.domain.payment.views import PaymentChangeHistoryView
-from stoqlib.domain.payment.renegotiation import PaymentRenegotiation
+from stoqlib.gui.dialogs.supplierdetails import SupplierDetailsDialog
+from stoqlib.gui.editors.baseeditor import BaseEditor
+from stoqlib.lib.defaults import payment_value_colorize
+from stoqlib.lib.formatters import get_formatted_cost
+from stoqlib.lib.translation import stoqlib_gettext
 
 _ = stoqlib_gettext
 
@@ -115,6 +115,28 @@ class RenegotiationDetailsDialog(BaseEditor):
 
         self._setup_summary_labels()
 
+        self.ordered_items.set_columns(self._get_ordered_columns())
+        parent = self.model.get_items()[0].get_parent()
+        if isinstance(parent, PurchaseOrder):
+            purchase_items = PurchaseItemView.select_by_purchase(parent, self.conn)
+            self.ordered_items.add_list(purchase_items)
+        elif isinstance(parent, Sale):
+            sale_items = SaleItemsView.select(SaleItemsView.q.sale_id == parent.id, connection=self.conn)
+            self.ordered_items.add_list(sale_items)
+
+    def _get_ordered_columns(self):
+        return [Column('description',
+                       title=_('Description'),
+                       data_type=str, expand=True, searchable=True,
+                       ellipsize=pango.ELLIPSIZE_END),
+                Column('quantity', title=_('Quantity'),
+                       data_type=float, width=90, editable=True,
+                       justify=gtk.JUSTIFY_RIGHT),
+                Column('cost', title=_('Cost'), data_type=currency,
+                       format_func=get_formatted_cost, width=90),
+                Column('total', title=_('Total'), data_type=currency,
+                       width=100)]
+
     def _get_payments_columns(self):
         return [Column('id', "#", data_type=int, width=50,
                        format='%04d', justify=gtk.JUSTIFY_RIGHT),
@@ -146,19 +168,20 @@ class RenegotiationDetailsDialog(BaseEditor):
 
     def _get_payments_info_columns(self):
         return [Column('change_date', _(u"When"),
-                        data_type=datetime.date, sorted=True, ),
+                       data_type=datetime.date, sorted=True, ),
                 Column('description', _(u"Payment"),
-                        data_type=str, expand=True,
-                        ellipsize=pango.ELLIPSIZE_END),
+                       data_type=str, expand=True,
+                       ellipsize=pango.ELLIPSIZE_END),
                 Column('changed_field', _(u"Changed"),
-                        data_type=str, justify=gtk.JUSTIFY_RIGHT),
+                       data_type=str, justify=gtk.JUSTIFY_RIGHT),
                 Column('from_value', _(u"From"),
-                        data_type=str, justify=gtk.JUSTIFY_RIGHT),
+                       data_type=str, justify=gtk.JUSTIFY_RIGHT),
                 Column('to_value', _(u"To"),
-                        data_type=str, justify=gtk.JUSTIFY_RIGHT),
+                       data_type=str, justify=gtk.JUSTIFY_RIGHT),
                 Column('reason', _(u"Reason"),
-                        data_type=str, expand=True,
-                        ellipsize=pango.ELLIPSIZE_END)]
+                       data_type=str, expand=True,
+                       ellipsize=pango.ELLIPSIZE_END)]
+
     #
     # BaseEditor hooks
     #
