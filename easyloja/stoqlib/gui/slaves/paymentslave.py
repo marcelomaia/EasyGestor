@@ -816,12 +816,12 @@ class CardMethodSlave(BaseEditorSlave):
         first_duedate = datetime.datetime.today().replace(day=self.model.due_date)
         for i in range(self.model.installments_number):
             if first_duedate.day > provider.closing_day:
-                first_duedate += relativedelta(months=+1)
+                first_duedate += relativedelta(days=+30)
             else:
                 if i == 0:
                     pass
                 else:
-                    first_duedate += relativedelta(months=+1)
+                    first_duedate += relativedelta(days=+30)
             due_dates.append(first_duedate)
 
         if isinstance(self._order, PurchaseOrder):
