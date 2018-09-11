@@ -1,0 +1,2 @@
+ALTER TABLE payment_renegotiation ADD COLUMN supplier_id bigint;
+ALTER TABLE payment_renegotiation ADD CONSTRAINT payment_renegotiation_supplier_id_fkey FOREIGN KEY (supplier_id)   REFERENCES public.person_adapt_to_supplier (id) MATCH SIMPLE ON UPDATE NO ACTION ON DELETE NO ACTION;

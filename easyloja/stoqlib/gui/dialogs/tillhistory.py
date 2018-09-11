@@ -86,10 +86,14 @@ class TillFiscalOperationsView(Viewable):
         card_type=CreditCardData.q.card_type,
         card_provider_name=PersonAdaptToCreditProvider.q.short_name,
         payment_status=Payment.q.status,
+        paid_value=Payment.q.paid_value,
         payment_paid_date=Payment.q.paid_date,
         payment_due_date=Payment.q.due_date,
         payment_open_date=Payment.q.open_date,
     )
+
+    def get_card_type_str(self):
+        return CreditCardData.types.get(self.card_type, None)
 
     joins = [
         LEFTJOINOn(None, Till,
@@ -147,10 +151,15 @@ class TillHistoryDialog(SearchDialog):
                 ColoredColumn('value', _('Value'), data_type=currency,
                               color='red', data_func=payment_value_colorize,
                               width=140),
+                ColoredColumn('paid_value', _('Valor pago'), data_type=currency,
+                              color='red', data_func=payment_value_colorize,
+                              width=140),
                 SearchColumn('card_provider_name', title=_('Cartão'), data_type=str,
                              width=80, visible=False),
-                SearchColumn('card_type', title=_('Tipo de cartão'), data_type=str,
-                             width=130, visible=False, format_func=self._get_card_description),
+                SearchColumn('card_type_str', title=_(u'Tipo de cartão'), width=100,
+                             data_type=str, search_attribute='card_type',
+                             valid_values=self._get_card_values(),
+                             visible=False),
                 SearchColumn('payment_paid_date', title=_('Dia do pagamento'), data_type=datetime.date,
                              width=110, visible=True),
                 SearchColumn('payment_due_date', title=_('Dia do vencimento'), data_type=datetime.date,
@@ -158,8 +167,10 @@ class TillHistoryDialog(SearchDialog):
                 SearchColumn('payment_open_date', title=_('Dia da abertura do pagamento'), data_type=datetime.date,
                              width=110, visible=False)]
 
-    def _get_card_description(self, arg):
-        return CreditCardData.types.get(arg)
+    def _get_card_values(self):
+        values = [(v, k) for k, v in CreditCardData.types.items()]
+        values.insert(0, (_("Any"), None))
+        return values
 
     def create_filters(self):
         self.set_text_field_columns(['description'])
