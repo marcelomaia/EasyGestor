@@ -22,11 +22,11 @@
 ## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 """ Main interface definition for pos application.  """
-import datetime
 import gettext
 import gtk
 from decimal import Decimal
 
+import datetime
 import pango
 from kiwi.argcheck import argcheck
 from kiwi.datatypes import ValidationError
