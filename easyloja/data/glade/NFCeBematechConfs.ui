@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <interface>
-  <requires lib="gtk+" version="2.24"/>
   <!-- interface-requires kiwiwidgets 0.0 -->
+  <requires lib="gtk+" version="2.24"/>
   <!-- interface-naming-policy project-wide -->
   <object class="GtkWindow" id="NFCeBematechConfs">
     <property name="can_focus">False</property>
@@ -9,7 +9,7 @@
       <object class="GtkTable" id="table1">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
-        <property name="n_rows">14</property>
+        <property name="n_rows">24</property>
         <property name="n_columns">3</property>
         <property name="column_spacing">6</property>
         <child>
@@ -21,16 +21,16 @@
           </object>
         </child>
         <child>
-          <object class="ProxyEntry" id="enable_gui">
+          <object class="ProxyEntry" id="ENABLE_GUI">
             <property name="visible">True</property>
-            <property name="can_focus">True</property>
+            <property name="can_focus">False</property>
             <property name="invisible_char">•</property>
             <property name="primary_icon_activatable">False</property>
             <property name="secondary_icon_activatable">False</property>
             <property name="primary_icon_sensitive">True</property>
             <property name="secondary_icon_sensitive">True</property>
             <property name="data_type">unicode</property>
-            <property name="model_attribute">enable_gui</property>
+            <property name="model_attribute">ENABLE_GUI</property>
           </object>
           <packing>
             <property name="left_attach">1</property>
@@ -62,16 +62,16 @@
           </packing>
         </child>
         <child>
-          <object class="ProxyEntry" id="impostos_item">
+          <object class="ProxyEntry" id="INCLUIR_IMPOSTOS_POR_ITEM">
             <property name="visible">True</property>
-            <property name="can_focus">True</property>
+            <property name="can_focus">False</property>
             <property name="invisible_char">•</property>
             <property name="primary_icon_activatable">False</property>
             <property name="secondary_icon_activatable">False</property>
             <property name="primary_icon_sensitive">True</property>
             <property name="secondary_icon_sensitive">True</property>
             <property name="data_type">unicode</property>
-            <property name="model_attribute">impostos_item</property>
+            <property name="model_attribute">INCLUIR_IMPOSTOS_POR_ITEM</property>
           </object>
           <packing>
             <property name="left_attach">1</property>
@@ -107,16 +107,16 @@
           </packing>
         </child>
         <child>
-          <object class="ProxyEntry" id="desc_asc">
+          <object class="ProxyEntry" id="INCLUIR_DESC_ACRES_NOTA">
             <property name="visible">True</property>
-            <property name="can_focus">True</property>
+            <property name="can_focus">False</property>
             <property name="invisible_char">•</property>
             <property name="primary_icon_activatable">False</property>
             <property name="secondary_icon_activatable">False</property>
             <property name="primary_icon_sensitive">True</property>
             <property name="secondary_icon_sensitive">True</property>
             <property name="data_type">unicode</property>
-            <property name="model_attribute">desc_asc</property>
+            <property name="model_attribute">INCLUIR_DESC_ACRES_NOTA</property>
           </object>
           <packing>
             <property name="left_attach">1</property>
@@ -152,16 +152,16 @@
           </packing>
         </child>
         <child>
-          <object class="ProxyEntry" id="troco">
+          <object class="ProxyEntry" id="INCLUIR_RECEBIDO_TROCO_NOTA">
             <property name="visible">True</property>
-            <property name="can_focus">True</property>
+            <property name="can_focus">False</property>
             <property name="invisible_char">•</property>
             <property name="primary_icon_activatable">False</property>
             <property name="secondary_icon_activatable">False</property>
             <property name="primary_icon_sensitive">True</property>
             <property name="secondary_icon_sensitive">True</property>
             <property name="data_type">unicode</property>
-            <property name="model_attribute">troco</property>
+            <property name="model_attribute">INCLUIR_RECEBIDO_TROCO_NOTA</property>
           </object>
           <packing>
             <property name="left_attach">1</property>
@@ -341,16 +341,16 @@
           </packing>
         </child>
         <child>
-          <object class="ProxyEntry" id="desc_asc_item">
+          <object class="ProxyEntry" id="INCLUIR_DESC_ACRES_ITEM">
             <property name="visible">True</property>
-            <property name="can_focus">True</property>
+            <property name="can_focus">False</property>
             <property name="invisible_char">•</property>
             <property name="primary_icon_activatable">False</property>
             <property name="secondary_icon_activatable">False</property>
             <property name="primary_icon_sensitive">True</property>
             <property name="secondary_icon_sensitive">True</property>
             <property name="data_type">unicode</property>
-            <property name="model_attribute">desc_asc_item</property>
+            <property name="model_attribute">INCLUIR_DESC_ACRES_ITEM</property>
           </object>
           <packing>
             <property name="left_attach">1</property>
@@ -360,16 +360,16 @@
           </packing>
         </child>
         <child>
-          <object class="ProxyEntry" id="danfe_red">
+          <object class="ProxyEntry" id="DANFE_REDUZIDO">
             <property name="visible">True</property>
-            <property name="can_focus">True</property>
+            <property name="can_focus">False</property>
             <property name="invisible_char">•</property>
             <property name="primary_icon_activatable">False</property>
             <property name="secondary_icon_activatable">False</property>
             <property name="primary_icon_sensitive">True</property>
             <property name="secondary_icon_sensitive">True</property>
             <property name="data_type">unicode</property>
-            <property name="model_attribute">danfe_red</property>
+            <property name="model_attribute">DANFE_REDUZIDO</property>
           </object>
           <packing>
             <property name="left_attach">1</property>
@@ -379,16 +379,16 @@
           </packing>
         </child>
         <child>
-          <object class="ProxyEntry" id="danfe_itens">
+          <object class="ProxyEntry" id="PRINT_DANFE_ITEMS">
             <property name="visible">True</property>
-            <property name="can_focus">True</property>
+            <property name="can_focus">False</property>
             <property name="invisible_char">•</property>
             <property name="primary_icon_activatable">False</property>
             <property name="secondary_icon_activatable">False</property>
             <property name="primary_icon_sensitive">True</property>
             <property name="secondary_icon_sensitive">True</property>
             <property name="data_type">unicode</property>
-            <property name="model_attribute">danfe_itens</property>
+            <property name="model_attribute">PRINT_DANFE_ITEMS</property>
           </object>
           <packing>
             <property name="left_attach">1</property>
@@ -398,16 +398,16 @@
           </packing>
         </child>
         <child>
-          <object class="ProxyEntry" id="salva_danfe">
+          <object class="ProxyEntry" id="SALVA_DANFE">
             <property name="visible">True</property>
-            <property name="can_focus">True</property>
+            <property name="can_focus">False</property>
             <property name="invisible_char">•</property>
             <property name="primary_icon_activatable">False</property>
             <property name="secondary_icon_activatable">False</property>
             <property name="primary_icon_sensitive">True</property>
             <property name="secondary_icon_sensitive">True</property>
             <property name="data_type">unicode</property>
-            <property name="model_attribute">salva_danfe</property>
+            <property name="model_attribute">SALVA_DANFE</property>
           </object>
           <packing>
             <property name="left_attach">1</property>
@@ -417,16 +417,16 @@
           </packing>
         </child>
         <child>
-          <object class="ProxyEntry" id="danfe_via_emit">
+          <object class="ProxyEntry" id="DANFE_VIA_EMIT">
             <property name="visible">True</property>
-            <property name="can_focus">True</property>
+            <property name="can_focus">False</property>
             <property name="invisible_char">•</property>
             <property name="primary_icon_activatable">False</property>
             <property name="secondary_icon_activatable">False</property>
             <property name="primary_icon_sensitive">True</property>
             <property name="secondary_icon_sensitive">True</property>
             <property name="data_type">unicode</property>
-            <property name="model_attribute">danfe_via_emit</property>
+            <property name="model_attribute">DANFE_VIA_EMIT</property>
           </object>
           <packing>
             <property name="left_attach">1</property>
@@ -436,16 +436,16 @@
           </packing>
         </child>
         <child>
-          <object class="ProxyEntry" id="timeout">
+          <object class="ProxyEntry" id="CONNECTION_TIMEOUT_IN_SECONDS">
             <property name="visible">True</property>
-            <property name="can_focus">True</property>
+            <property name="can_focus">False</property>
             <property name="invisible_char">•</property>
             <property name="primary_icon_activatable">False</property>
             <property name="secondary_icon_activatable">False</property>
             <property name="primary_icon_sensitive">True</property>
             <property name="secondary_icon_sensitive">True</property>
             <property name="data_type">unicode</property>
-            <property name="model_attribute">timeout</property>
+            <property name="model_attribute">CONNECTION_TIMEOUT_IN_SECONDS</property>
           </object>
           <packing>
             <property name="left_attach">1</property>
@@ -559,16 +559,16 @@
           </packing>
         </child>
         <child>
-          <object class="ProxyEntry" id="info_rodape">
+          <object class="ProxyEntry" id="INFO_RODAPE_DANFE">
             <property name="visible">True</property>
-            <property name="can_focus">True</property>
+            <property name="can_focus">False</property>
             <property name="invisible_char">•</property>
             <property name="primary_icon_activatable">False</property>
             <property name="secondary_icon_activatable">False</property>
             <property name="primary_icon_sensitive">True</property>
             <property name="secondary_icon_sensitive">True</property>
             <property name="data_type">unicode</property>
-            <property name="model_attribute">info_rodape</property>
+            <property name="model_attribute">INFO_RODAPE_DANFE</property>
           </object>
           <packing>
             <property name="left_attach">1</property>
@@ -578,16 +578,16 @@
           </packing>
         </child>
         <child>
-          <object class="ProxyEntry" id="dados_rodape">
+          <object class="ProxyEntry" id="DADOS_RODAPE_DANFE">
             <property name="visible">True</property>
-            <property name="can_focus">True</property>
+            <property name="can_focus">False</property>
             <property name="invisible_char">•</property>
             <property name="primary_icon_activatable">False</property>
             <property name="secondary_icon_activatable">False</property>
             <property name="primary_icon_sensitive">True</property>
             <property name="secondary_icon_sensitive">True</property>
             <property name="data_type">unicode</property>
-            <property name="model_attribute">dados_rodape</property>
+            <property name="model_attribute">DADOS_RODAPE_DANFE</property>
           </object>
           <packing>
             <property name="left_attach">1</property>
@@ -597,16 +597,16 @@
           </packing>
         </child>
         <child>
-          <object class="ProxyEntry" id="enable_cloud">
+          <object class="ProxyEntry" id="FISCAL_CLOUD_ENABLE">
             <property name="visible">True</property>
-            <property name="can_focus">True</property>
+            <property name="can_focus">False</property>
             <property name="invisible_char">•</property>
             <property name="primary_icon_activatable">False</property>
             <property name="secondary_icon_activatable">False</property>
             <property name="primary_icon_sensitive">True</property>
             <property name="secondary_icon_sensitive">True</property>
             <property name="data_type">unicode</property>
-            <property name="model_attribute">enable_cloud</property>
+            <property name="model_attribute">FISCAL_CLOUD_ENABLE</property>
           </object>
           <packing>
             <property name="left_attach">1</property>
@@ -616,16 +616,16 @@
           </packing>
         </child>
         <child>
-          <object class="ProxyEntry" id="small_qr">
+          <object class="ProxyEntry" id="SMALL_QRCODE">
             <property name="visible">True</property>
-            <property name="can_focus">True</property>
+            <property name="can_focus">False</property>
             <property name="invisible_char">•</property>
             <property name="primary_icon_activatable">False</property>
             <property name="secondary_icon_activatable">False</property>
             <property name="primary_icon_sensitive">True</property>
             <property name="secondary_icon_sensitive">True</property>
             <property name="data_type">unicode</property>
-            <property name="model_attribute">small_qr</property>
+            <property name="model_attribute">SMALL_QRCODE</property>
           </object>
           <packing>
             <property name="left_attach">1</property>
@@ -633,6 +633,240 @@
             <property name="top_attach">13</property>
             <property name="bottom_attach">14</property>
           </packing>
+        </child>
+        <child>
+          <object class="ProxyLabel" id="kiwilabel29">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="xalign">1</property>
+            <property name="label" translatable="yes">NFCE_AMBIENTE:</property>
+          </object>
+          <packing>
+            <property name="top_attach">14</property>
+            <property name="bottom_attach">15</property>
+          </packing>
+        </child>
+        <child>
+          <object class="ProxyLabel" id="kiwilabel30">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="xalign">1</property>
+            <property name="label" translatable="yes">CONTINGENCIA_AUTOMATICA:</property>
+          </object>
+          <packing>
+            <property name="top_attach">15</property>
+            <property name="bottom_attach">16</property>
+          </packing>
+        </child>
+        <child>
+          <object class="ProxyLabel" id="kiwilabel33">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="xalign">1</property>
+            <property name="label" translatable="yes">URL_DANFE:</property>
+          </object>
+          <packing>
+            <property name="top_attach">18</property>
+            <property name="bottom_attach">19</property>
+          </packing>
+        </child>
+        <child>
+          <object class="ProxyLabel" id="kiwilabel34">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="xalign">0</property>
+            <property name="label" translatable="yes">Campo onde é definido o ambiente de emissão da NFC-e.</property>
+          </object>
+          <packing>
+            <property name="left_attach">2</property>
+            <property name="right_attach">3</property>
+            <property name="top_attach">14</property>
+            <property name="bottom_attach">15</property>
+          </packing>
+        </child>
+        <child>
+          <object class="ProxyLabel" id="kiwilabel35">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="xalign">0</property>
+            <property name="label" translatable="yes">Campo que permite a parametrização do modo de contingência da solução NFC-e.</property>
+          </object>
+          <packing>
+            <property name="left_attach">2</property>
+            <property name="right_attach">3</property>
+            <property name="top_attach">15</property>
+            <property name="bottom_attach">16</property>
+          </packing>
+        </child>
+        <child>
+          <object class="ProxyLabel" id="kiwilabel38">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="xalign">0</property>
+            <property name="label" translatable="yes">Campo destinado ao registro da URL de Consulta do DANFE emitido.</property>
+          </object>
+          <packing>
+            <property name="left_attach">2</property>
+            <property name="right_attach">3</property>
+            <property name="top_attach">18</property>
+            <property name="bottom_attach">19</property>
+          </packing>
+        </child>
+        <child>
+          <object class="ProxyEntry" id="NFCE_AMBIENTE">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="invisible_char">•</property>
+            <property name="primary_icon_activatable">False</property>
+            <property name="secondary_icon_activatable">False</property>
+            <property name="primary_icon_sensitive">True</property>
+            <property name="secondary_icon_sensitive">True</property>
+            <property name="data_type">unicode</property>
+            <property name="model_attribute">NFCE_AMBIENTE</property>
+          </object>
+          <packing>
+            <property name="left_attach">1</property>
+            <property name="right_attach">2</property>
+            <property name="top_attach">14</property>
+            <property name="bottom_attach">15</property>
+          </packing>
+        </child>
+        <child>
+          <object class="ProxyEntry" id="CONTINGENCIA_AUTOMATICA">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="invisible_char">•</property>
+            <property name="primary_icon_activatable">False</property>
+            <property name="secondary_icon_activatable">False</property>
+            <property name="primary_icon_sensitive">True</property>
+            <property name="secondary_icon_sensitive">True</property>
+            <property name="data_type">unicode</property>
+            <property name="model_attribute">CONTINGENCIA_AUTOMATICA</property>
+          </object>
+          <packing>
+            <property name="left_attach">1</property>
+            <property name="right_attach">2</property>
+            <property name="top_attach">15</property>
+            <property name="bottom_attach">16</property>
+          </packing>
+        </child>
+        <child>
+          <object class="ProxyEntry" id="URL_DANFE">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="invisible_char">•</property>
+            <property name="primary_icon_activatable">False</property>
+            <property name="secondary_icon_activatable">False</property>
+            <property name="primary_icon_sensitive">True</property>
+            <property name="secondary_icon_sensitive">True</property>
+            <property name="data_type">unicode</property>
+            <property name="model_attribute">URL_DANFE</property>
+          </object>
+          <packing>
+            <property name="left_attach">1</property>
+            <property name="right_attach">2</property>
+            <property name="top_attach">18</property>
+            <property name="bottom_attach">19</property>
+          </packing>
+        </child>
+        <child>
+          <object class="ProxyLabel" id="kiwilabel39">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="xalign">1</property>
+            <property name="label" translatable="yes">URL_QRCODE_CONSULTA:</property>
+          </object>
+          <packing>
+            <property name="top_attach">19</property>
+            <property name="bottom_attach">20</property>
+          </packing>
+        </child>
+        <child>
+          <object class="ProxyLabel" id="kiwilabel44">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="xalign">0</property>
+            <property name="label" translatable="yes">Campo destinado ao registro da URL de Consulta do QR_Code.</property>
+          </object>
+          <packing>
+            <property name="left_attach">2</property>
+            <property name="right_attach">3</property>
+            <property name="top_attach">19</property>
+            <property name="bottom_attach">20</property>
+          </packing>
+        </child>
+        <child>
+          <object class="ProxyEntry" id="URL_QRCODE_CONSULTA">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="invisible_char">•</property>
+            <property name="primary_icon_activatable">False</property>
+            <property name="secondary_icon_activatable">False</property>
+            <property name="primary_icon_sensitive">True</property>
+            <property name="secondary_icon_sensitive">True</property>
+            <property name="data_type">unicode</property>
+            <property name="model_attribute">URL_QRCODE_CONSULTA</property>
+          </object>
+          <packing>
+            <property name="left_attach">1</property>
+            <property name="right_attach">2</property>
+            <property name="top_attach">19</property>
+            <property name="bottom_attach">20</property>
+          </packing>
+        </child>
+        <child>
+          <placeholder/>
+        </child>
+        <child>
+          <placeholder/>
+        </child>
+        <child>
+          <placeholder/>
+        </child>
+        <child>
+          <placeholder/>
+        </child>
+        <child>
+          <placeholder/>
+        </child>
+        <child>
+          <placeholder/>
+        </child>
+        <child>
+          <placeholder/>
+        </child>
+        <child>
+          <placeholder/>
+        </child>
+        <child>
+          <placeholder/>
+        </child>
+        <child>
+          <placeholder/>
+        </child>
+        <child>
+          <placeholder/>
+        </child>
+        <child>
+          <placeholder/>
+        </child>
+        <child>
+          <placeholder/>
+        </child>
+        <child>
+          <placeholder/>
+        </child>
+        <child>
+          <placeholder/>
+        </child>
+        <child>
+          <placeholder/>
+        </child>
+        <child>
+          <placeholder/>
+        </child>
+        <child>
+          <placeholder/>
         </child>
       </object>
     </child>
