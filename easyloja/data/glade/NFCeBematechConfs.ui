@@ -4,18 +4,15 @@
   <requires lib="gtk+" version="2.24"/>
   <!-- interface-naming-policy project-wide -->
   <object class="GtkWindow" id="NFCeBematechConfs">
-    <property name="can_focus">False</property>
     <child>
       <object class="GtkTable" id="table1">
         <property name="visible">True</property>
-        <property name="can_focus">False</property>
         <property name="n_rows">24</property>
         <property name="n_columns">3</property>
         <property name="column_spacing">6</property>
         <child>
           <object class="ProxyLabel" id="kiwilabel1">
             <property name="visible">True</property>
-            <property name="can_focus">False</property>
             <property name="xalign">1</property>
             <property name="label" translatable="yes">ENABLE_GUI:</property>
           </object>
@@ -23,7 +20,6 @@
         <child>
           <object class="ProxyEntry" id="ENABLE_GUI">
             <property name="visible">True</property>
-            <property name="can_focus">False</property>
             <property name="invisible_char">•</property>
             <property name="primary_icon_activatable">False</property>
             <property name="secondary_icon_activatable">False</property>
@@ -40,7 +36,6 @@
         <child>
           <object class="ProxyLabel" id="kiwilabel2">
             <property name="visible">True</property>
-            <property name="can_focus">False</property>
             <property name="xalign">0</property>
             <property name="label" translatable="yes">Campo utilizado para ativar o "Tray Icon" de execução do Fiscal Manager.</property>
           </object>
@@ -52,7 +47,6 @@
         <child>
           <object class="ProxyLabel" id="kiwilabel3">
             <property name="visible">True</property>
-            <property name="can_focus">False</property>
             <property name="xalign">1</property>
             <property name="label" translatable="yes">INCLUIR_IMPOSTOS_POR_ITEM:</property>
           </object>
@@ -64,7 +58,6 @@
         <child>
           <object class="ProxyEntry" id="INCLUIR_IMPOSTOS_POR_ITEM">
             <property name="visible">True</property>
-            <property name="can_focus">False</property>
             <property name="invisible_char">•</property>
             <property name="primary_icon_activatable">False</property>
             <property name="secondary_icon_activatable">False</property>
@@ -83,7 +76,6 @@
         <child>
           <object class="ProxyLabel" id="kiwilabel4">
             <property name="visible">True</property>
-            <property name="can_focus">False</property>
             <property name="xalign">0</property>
             <property name="label" translatable="yes">Permitir a impressão dos totais de impostos por item na nota</property>
           </object>
@@ -97,7 +89,6 @@
         <child>
           <object class="ProxyLabel" id="kiwilabel5">
             <property name="visible">True</property>
-            <property name="can_focus">False</property>
             <property name="xalign">1</property>
             <property name="label" translatable="yes">INCLUIR_DESC_ACRES_NOTA:</property>
           </object>
@@ -109,7 +100,6 @@
         <child>
           <object class="ProxyEntry" id="INCLUIR_DESC_ACRES_NOTA">
             <property name="visible">True</property>
-            <property name="can_focus">False</property>
             <property name="invisible_char">•</property>
             <property name="primary_icon_activatable">False</property>
             <property name="secondary_icon_activatable">False</property>
@@ -128,7 +118,6 @@
         <child>
           <object class="ProxyLabel" id="kiwilabel6">
             <property name="visible">True</property>
-            <property name="can_focus">False</property>
             <property name="xalign">0</property>
             <property name="label" translatable="yes">Para aparecer o desconto</property>
           </object>
@@ -142,7 +131,6 @@
         <child>
           <object class="ProxyLabel" id="kiwilabel7">
             <property name="visible">True</property>
-            <property name="can_focus">False</property>
             <property name="xalign">1</property>
             <property name="label" translatable="yes">INCLUIR_RECEBIDO_TROCO_NOTA:</property>
           </object>
@@ -154,7 +142,6 @@
         <child>
           <object class="ProxyEntry" id="INCLUIR_RECEBIDO_TROCO_NOTA">
             <property name="visible">True</property>
-            <property name="can_focus">False</property>
             <property name="invisible_char">•</property>
             <property name="primary_icon_activatable">False</property>
             <property name="secondary_icon_activatable">False</property>
@@ -173,7 +160,6 @@
         <child>
           <object class="ProxyLabel" id="kiwilabel8">
             <property name="visible">True</property>
-            <property name="can_focus">False</property>
             <property name="xalign">0</property>
             <property name="label" translatable="yes">Descrição: Inclusão da linha com informações do troco na DANFE.</property>
           </object>
@@ -187,7 +173,6 @@
         <child>
           <object class="ProxyLabel" id="kiwilabel9">
             <property name="visible">True</property>
-            <property name="can_focus">False</property>
             <property name="xalign">1</property>
             <property name="label" translatable="yes">INCLUIR_DESC_ACRES_ITEM:</property>
           </object>
@@ -199,7 +184,6 @@
         <child>
           <object class="ProxyLabel" id="kiwilabel10">
             <property name="visible">True</property>
-            <property name="can_focus">False</property>
             <property name="xalign">0</property>
             <property name="label" translatable="yes">Inclusão dos dados de acréscimo/desconto por item na DANFE.</property>
           </object>
@@ -213,7 +197,6 @@
         <child>
           <object class="ProxyLabel" id="kiwilabel11">
             <property name="visible">True</property>
-            <property name="can_focus">False</property>
             <property name="xalign">1</property>
             <property name="label" translatable="yes">DANFE_REDUZIDO:</property>
           </object>
@@ -225,7 +208,6 @@
         <child>
           <object class="ProxyLabel" id="kiwilabel12">
             <property name="visible">True</property>
-            <property name="can_focus">False</property>
             <property name="xalign">1</property>
             <property name="label" translatable="yes">PRINT_DANFE_ITEMS:</property>
           </object>
@@ -237,7 +219,6 @@
         <child>
           <object class="ProxyLabel" id="kiwilabel13">
             <property name="visible">True</property>
-            <property name="can_focus">False</property>
             <property name="xalign">1</property>
             <property name="label" translatable="yes">SALVA_DANFE:</property>
           </object>
@@ -249,7 +230,6 @@
         <child>
           <object class="ProxyLabel" id="kiwilabel14">
             <property name="visible">True</property>
-            <property name="can_focus">False</property>
             <property name="xalign">1</property>
             <property name="label" translatable="yes">DANFE_VIA_EMIT:</property>
           </object>
@@ -261,7 +241,6 @@
         <child>
           <object class="ProxyLabel" id="kiwilabel15">
             <property name="visible">True</property>
-            <property name="can_focus">False</property>
             <property name="xalign">1</property>
             <property name="label" translatable="yes">CONNECTION_TIMEOUT_IN_SECONDS:</property>
           </object>
@@ -273,7 +252,6 @@
         <child>
           <object class="ProxyLabel" id="kiwilabel16">
             <property name="visible">True</property>
-            <property name="can_focus">False</property>
             <property name="xalign">0</property>
             <property name="label" translatable="yes">Permite configurar o layout de impressão da DANFE.</property>
           </object>
@@ -287,7 +265,6 @@
         <child>
           <object class="ProxyLabel" id="kiwilabel17">
             <property name="visible">True</property>
-            <property name="can_focus">False</property>
             <property name="xalign">0</property>
             <property name="label" translatable="yes">Campo destinado a configuração de registro dos itens na DANFE.</property>
           </object>
@@ -301,7 +278,6 @@
         <child>
           <object class="ProxyLabel" id="kiwilabel18">
             <property name="visible">True</property>
-            <property name="can_focus">False</property>
             <property name="xalign">0</property>
             <property name="label" translatable="yes">Define se a DANFE será salva também em arquivo, com extensão .pdf.</property>
           </object>
@@ -315,7 +291,6 @@
         <child>
           <object class="ProxyLabel" id="kiwilabel19">
             <property name="visible">True</property>
-            <property name="can_focus">False</property>
             <property name="xalign">0</property>
             <property name="label" translatable="yes">Quando emitida em contingência, gerar via do estabelecimento da DANFE.</property>
           </object>
@@ -329,7 +304,6 @@
         <child>
           <object class="ProxyLabel" id="kiwilabel20">
             <property name="visible">True</property>
-            <property name="can_focus">False</property>
             <property name="xalign">0</property>
             <property name="label" translatable="yes">Parâmetro utilizado para configuração do tempo de timeout de conexão com a Sefaz.</property>
           </object>
@@ -343,7 +317,6 @@
         <child>
           <object class="ProxyEntry" id="INCLUIR_DESC_ACRES_ITEM">
             <property name="visible">True</property>
-            <property name="can_focus">False</property>
             <property name="invisible_char">•</property>
             <property name="primary_icon_activatable">False</property>
             <property name="secondary_icon_activatable">False</property>
@@ -362,7 +335,6 @@
         <child>
           <object class="ProxyEntry" id="DANFE_REDUZIDO">
             <property name="visible">True</property>
-            <property name="can_focus">False</property>
             <property name="invisible_char">•</property>
             <property name="primary_icon_activatable">False</property>
             <property name="secondary_icon_activatable">False</property>
@@ -381,7 +353,6 @@
         <child>
           <object class="ProxyEntry" id="PRINT_DANFE_ITEMS">
             <property name="visible">True</property>
-            <property name="can_focus">False</property>
             <property name="invisible_char">•</property>
             <property name="primary_icon_activatable">False</property>
             <property name="secondary_icon_activatable">False</property>
@@ -400,7 +371,6 @@
         <child>
           <object class="ProxyEntry" id="SALVA_DANFE">
             <property name="visible">True</property>
-            <property name="can_focus">False</property>
             <property name="invisible_char">•</property>
             <property name="primary_icon_activatable">False</property>
             <property name="secondary_icon_activatable">False</property>
@@ -419,7 +389,6 @@
         <child>
           <object class="ProxyEntry" id="DANFE_VIA_EMIT">
             <property name="visible">True</property>
-            <property name="can_focus">False</property>
             <property name="invisible_char">•</property>
             <property name="primary_icon_activatable">False</property>
             <property name="secondary_icon_activatable">False</property>
@@ -438,7 +407,6 @@
         <child>
           <object class="ProxyEntry" id="CONNECTION_TIMEOUT_IN_SECONDS">
             <property name="visible">True</property>
-            <property name="can_focus">False</property>
             <property name="invisible_char">•</property>
             <property name="primary_icon_activatable">False</property>
             <property name="secondary_icon_activatable">False</property>
@@ -457,7 +425,6 @@
         <child>
           <object class="ProxyLabel" id="kiwilabel21">
             <property name="visible">True</property>
-            <property name="can_focus">False</property>
             <property name="xalign">1</property>
             <property name="label" translatable="yes">INFO_RODAPE_DANFE:</property>
           </object>
@@ -469,7 +436,6 @@
         <child>
           <object class="ProxyLabel" id="kiwilabel22">
             <property name="visible">True</property>
-            <property name="can_focus">False</property>
             <property name="xalign">1</property>
             <property name="label" translatable="yes">DADOS_RODAPE_DANFE:</property>
           </object>
@@ -481,7 +447,6 @@
         <child>
           <object class="ProxyLabel" id="kiwilabel23">
             <property name="visible">True</property>
-            <property name="can_focus">False</property>
             <property name="xalign">1</property>
             <property name="label" translatable="yes">FISCAL_CLOUD_ENABLE:</property>
           </object>
@@ -493,7 +458,6 @@
         <child>
           <object class="ProxyLabel" id="kiwilabel24">
             <property name="visible">True</property>
-            <property name="can_focus">False</property>
             <property name="xalign">1</property>
             <property name="label" translatable="yes">SMALL_QRCODE:</property>
           </object>
@@ -505,7 +469,6 @@
         <child>
           <object class="ProxyLabel" id="kiwilabel25">
             <property name="visible">True</property>
-            <property name="can_focus">False</property>
             <property name="xalign">0</property>
             <property name="label" translatable="yes">Ativa a impressão de informação no rodapé.</property>
           </object>
@@ -519,7 +482,6 @@
         <child>
           <object class="ProxyLabel" id="kiwilabel26">
             <property name="visible">True</property>
-            <property name="can_focus">False</property>
             <property name="xalign">0</property>
             <property name="label" translatable="yes">Permite a impressão de de mensagem no rodapé da DANFE.</property>
           </object>
@@ -533,7 +495,6 @@
         <child>
           <object class="ProxyLabel" id="kiwilabel27">
             <property name="visible">True</property>
-            <property name="can_focus">False</property>
             <property name="xalign">0</property>
             <property name="label" translatable="yes">Campo destinado a parametrização de integração da Solução Fiscal NFC-e com o Fiscal Cloud.</property>
           </object>
@@ -547,7 +508,6 @@
         <child>
           <object class="ProxyLabel" id="kiwilabel28">
             <property name="visible">True</property>
-            <property name="can_focus">False</property>
             <property name="xalign">0</property>
             <property name="label" translatable="yes">Campo que permite definir o tamanho de impressão do QR-Code.</property>
           </object>
@@ -561,7 +521,6 @@
         <child>
           <object class="ProxyEntry" id="INFO_RODAPE_DANFE">
             <property name="visible">True</property>
-            <property name="can_focus">False</property>
             <property name="invisible_char">•</property>
             <property name="primary_icon_activatable">False</property>
             <property name="secondary_icon_activatable">False</property>
@@ -580,7 +539,6 @@
         <child>
           <object class="ProxyEntry" id="DADOS_RODAPE_DANFE">
             <property name="visible">True</property>
-            <property name="can_focus">False</property>
             <property name="invisible_char">•</property>
             <property name="primary_icon_activatable">False</property>
             <property name="secondary_icon_activatable">False</property>
@@ -599,7 +557,6 @@
         <child>
           <object class="ProxyEntry" id="FISCAL_CLOUD_ENABLE">
             <property name="visible">True</property>
-            <property name="can_focus">False</property>
             <property name="invisible_char">•</property>
             <property name="primary_icon_activatable">False</property>
             <property name="secondary_icon_activatable">False</property>
@@ -618,7 +575,6 @@
         <child>
           <object class="ProxyEntry" id="SMALL_QRCODE">
             <property name="visible">True</property>
-            <property name="can_focus">False</property>
             <property name="invisible_char">•</property>
             <property name="primary_icon_activatable">False</property>
             <property name="secondary_icon_activatable">False</property>
@@ -637,7 +593,6 @@
         <child>
           <object class="ProxyLabel" id="kiwilabel29">
             <property name="visible">True</property>
-            <property name="can_focus">False</property>
             <property name="xalign">1</property>
             <property name="label" translatable="yes">NFCE_AMBIENTE:</property>
           </object>
@@ -649,7 +604,6 @@
         <child>
           <object class="ProxyLabel" id="kiwilabel30">
             <property name="visible">True</property>
-            <property name="can_focus">False</property>
             <property name="xalign">1</property>
             <property name="label" translatable="yes">CONTINGENCIA_AUTOMATICA:</property>
           </object>
@@ -661,7 +615,6 @@
         <child>
           <object class="ProxyLabel" id="kiwilabel33">
             <property name="visible">True</property>
-            <property name="can_focus">False</property>
             <property name="xalign">1</property>
             <property name="label" translatable="yes">URL_DANFE:</property>
           </object>
@@ -673,7 +626,6 @@
         <child>
           <object class="ProxyLabel" id="kiwilabel34">
             <property name="visible">True</property>
-            <property name="can_focus">False</property>
             <property name="xalign">0</property>
             <property name="label" translatable="yes">Campo onde é definido o ambiente de emissão da NFC-e.</property>
           </object>
@@ -687,7 +639,6 @@
         <child>
           <object class="ProxyLabel" id="kiwilabel35">
             <property name="visible">True</property>
-            <property name="can_focus">False</property>
             <property name="xalign">0</property>
             <property name="label" translatable="yes">Campo que permite a parametrização do modo de contingência da solução NFC-e.</property>
           </object>
@@ -701,7 +652,6 @@
         <child>
           <object class="ProxyLabel" id="kiwilabel38">
             <property name="visible">True</property>
-            <property name="can_focus">False</property>
             <property name="xalign">0</property>
             <property name="label" translatable="yes">Campo destinado ao registro da URL de Consulta do DANFE emitido.</property>
           </object>
@@ -715,7 +665,6 @@
         <child>
           <object class="ProxyEntry" id="NFCE_AMBIENTE">
             <property name="visible">True</property>
-            <property name="can_focus">False</property>
             <property name="invisible_char">•</property>
             <property name="primary_icon_activatable">False</property>
             <property name="secondary_icon_activatable">False</property>
@@ -734,7 +683,6 @@
         <child>
           <object class="ProxyEntry" id="CONTINGENCIA_AUTOMATICA">
             <property name="visible">True</property>
-            <property name="can_focus">False</property>
             <property name="invisible_char">•</property>
             <property name="primary_icon_activatable">False</property>
             <property name="secondary_icon_activatable">False</property>
@@ -753,7 +701,6 @@
         <child>
           <object class="ProxyEntry" id="URL_DANFE">
             <property name="visible">True</property>
-            <property name="can_focus">False</property>
             <property name="invisible_char">•</property>
             <property name="primary_icon_activatable">False</property>
             <property name="secondary_icon_activatable">False</property>
@@ -772,7 +719,6 @@
         <child>
           <object class="ProxyLabel" id="kiwilabel39">
             <property name="visible">True</property>
-            <property name="can_focus">False</property>
             <property name="xalign">1</property>
             <property name="label" translatable="yes">URL_QRCODE_CONSULTA:</property>
           </object>
@@ -784,7 +730,6 @@
         <child>
           <object class="ProxyLabel" id="kiwilabel44">
             <property name="visible">True</property>
-            <property name="can_focus">False</property>
             <property name="xalign">0</property>
             <property name="label" translatable="yes">Campo destinado ao registro da URL de Consulta do QR_Code.</property>
           </object>
@@ -798,7 +743,6 @@
         <child>
           <object class="ProxyEntry" id="URL_QRCODE_CONSULTA">
             <property name="visible">True</property>
-            <property name="can_focus">False</property>
             <property name="invisible_char">•</property>
             <property name="primary_icon_activatable">False</property>
             <property name="secondary_icon_activatable">False</property>
