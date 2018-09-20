@@ -1,11 +1,12 @@
 # -*- coding: utf-8 -*-
-import datetime
 import gtk
 import os
 import platform
 import subprocess
 import sys
+import time
 
+import datetime
 from kiwi.environ import environ
 from kiwi.log import Logger
 from kiwi.ui.dialogs import info
@@ -120,6 +121,10 @@ class ImpnfUI(object):
 
         sumatra_path = environ.find_resource('sumatraPDF', 'SumatraPDF.exe')
         printer = self._get_default_printer()
+        if not printer:
+            info('Nao tem impressora configurada')
+            return
+        time.sleep(2)
 
         if spooler_mode == LEITOR:
             return self._print_on_spooler2(filename)
@@ -141,6 +146,10 @@ class ImpnfUI(object):
         """
         import win32api
         printer = self._get_default_printer()
+        if not printer:
+            info('Nao tem impressora configurada')
+            return
+        time.sleep(2)
         SW_HIDE = 0
         # SW_SHOWMINIMIZED = 2
         if os.path.exists(filename):

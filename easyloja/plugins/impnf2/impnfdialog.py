@@ -3,6 +3,7 @@
 import gtk
 import os
 import subprocess
+import time
 from gtk import keysyms
 
 import datetime
@@ -63,6 +64,7 @@ class ImpnfEditor(BaseEditor):
         printer = self.spooler_printer.read()
         if spooler_mode == LEITOR:
             return self._print_on_spooler2(filename)
+        time.sleep(2)
 
         if os.path.exists(filename):
             cmd = '{exe} -print-to {printer} {fname}'.format(exe=sumatra_path,
@@ -82,6 +84,7 @@ class ImpnfEditor(BaseEditor):
         import win32api
         printer = self.spooler_printer.read()
         SW_HIDE = 0
+        time.sleep(2)
         # SW_SHOWMINIMIZED = 2
         if os.path.exists(filename):
             retval = win32api.ShellExecute(
