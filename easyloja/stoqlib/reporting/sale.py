@@ -168,7 +168,8 @@ class SaleOrderReport(BaseStoqReport):
                        Sale.STATUS_CANCELLED: 'cancel_date',
                        Sale.STATUS_QUOTE: 'open_date',
                        Sale.STATUS_RETURNED: 'return_date',
-                       Sale.STATUS_RENEGOTIATED: 'close_date'}
+                       Sale.STATUS_RENEGOTIATED: 'close_date',
+                       Sale.STATUS_FISCAL_NOTE: 'open_date'}
         return getattr(self.sale, status_date[status])
 
     #
