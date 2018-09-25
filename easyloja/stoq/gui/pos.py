@@ -1451,11 +1451,11 @@ class PosApp(AppWindow):
             category = payment.category
             if category:
                 category_name = category.name
-            till_entry = till.add_credit_entry(
-                payment.value, (u'Suprimento: {}-{}'.format(category_name, description)))
+            # till_entry = till.add_credit_entry(
+            #     payment.value, (u'Suprimento: {}-{}'.format(category_name, description)))
 
-            TillAddTillEntryEvent.emit(till_entry, trans)
-            _create_transaction(trans, till_entry)
+            # TillAddTillEntryEvent.emit(till_entry, trans)
+            # _create_transaction(trans, till_entry)
             retval = run_dialog(SaleInstallmentConfirmationSlave, self, trans,
                                 payments=payments)
 
@@ -1483,11 +1483,11 @@ class PosApp(AppWindow):
                 category_name = category.name
             retval = run_dialog(SaleInstallmentConfirmationSlave, self, trans,
                                 payments=payments)
-            till_entry = till.add_debit_entry(
-                payment.value, (u'Despesa: {}-{}'.format(category_name, description)))
+            # till_entry = till.add_debit_entry(
+            #     payment.value, (u'Despesa: {}-{}'.format(category_name, description)))
 
-            TillAddTillEntryEvent.emit(till_entry, trans)
-            _create_transaction(trans, till_entry)
+            # TillAddTillEntryEvent.emit(till_entry, trans)
+            # _create_transaction(trans, till_entry)
 
             self._update_widgets()
             trans.commit(True)
