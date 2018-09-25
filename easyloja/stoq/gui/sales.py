@@ -26,17 +26,16 @@
 import decimal
 import gettext
 import gtk
-from datetime import date
 from decimal import Decimal
 from sys import maxint as MAXINT
 
 import pango
+from datetime import date
 from kiwi.currency import format_price
 from kiwi.datatypes import currency
 from kiwi.enums import SearchFilterPosition
 from kiwi.ui.objectlist import Column, SearchColumn
 from kiwi.ui.search import ComboSearchFilter
-
 from stoq.gui.application import SearchableAppWindow
 from stoqlib.api import api
 from stoqlib.database.orm import AND, IN
@@ -559,6 +558,9 @@ class SalesApp(SearchableAppWindow):
                  gtk.RESPONSE_YES, _("Yes"), _("No")):
             sale_view = self.results.get_selected()
             assert sale_view
+            if sale_view.nfce_invoice:
+                info(u'Já foi emitida uma nfce para essa venda.')
+                return
             sale = Sale.get(sale_view.id, connection=self.conn)
             if sale.status == Sale.STATUS_QUOTE:
                 sale.status = Sale.STATUS_FISCAL_NOTE
