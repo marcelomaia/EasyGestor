@@ -313,15 +313,16 @@ class AffiliateSearch(BasePersonSearch):
 
     def _create_affiliate(self, *args):
         affiliate_view = self.results.get_selected()
-        if affiliate_view.user_token:
-            if VerifySubaccountEvent.emit(affiliate_view):
-                warning('Validação solicitada... Aguarde um dia para autorizar')
+        if affiliate_view:
+            if affiliate_view.user_token:
+                if VerifySubaccountEvent.emit(affiliate_view):
+                    warning('Validação solicitada... Aguarde um dia para autorizar')
+                else:
+                    warning('Tente novamente')
             else:
-                warning('Tente novamente')
-        else:
-            retval = CreateAffiliateEvent.emit(affiliate_view)
-            if retval:
-                warning('Afiliado criado...')
+                retval = CreateAffiliateEvent.emit(affiliate_view)
+                if retval:
+                    warning('Afiliado criado...')
 
     def _on_results__has_rows(self, widget, has_rows):
         self.create_affiliate_button.set_sensitive(has_rows)
