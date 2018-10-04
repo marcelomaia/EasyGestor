@@ -1,9 +1,9 @@
 # coding=utf-8
 import unicodedata
-from datetime import datetime
 
+from datetime import datetime
 from kiwi.log import Logger
-from stoqlib.database.orm import AND, OR, LIKE
+from stoqlib.database.orm import AND, OR
 from stoqlib.database.runtime import get_connection, get_current_user, get_current_station
 from stoqlib.domain.interfaces import ICompany, ISalesPerson
 from stoqlib.domain.sale import Sale
@@ -519,50 +519,31 @@ def salesperson_financial_report(open_date, close_date):
         payment_values += payment_str
 
     # Sangrias
-    despesa_src_str = '%%%s%%' % 'Despesa:'
-    quantia_removida_src_str = '%%%s%%' % 'Quantia removida'
     sangria_valor = 0
     sangria_str = ''
+    # Suprimento
+    suprimento_valor = 0
+    suprimento_str = ''
 
-    despesa_results = TillFiscalOperationsView.select(
+    despesa_suprimento_results = TillFiscalOperationsView.select(
         AND(
-            OR(LIKE(TillFiscalOperationsView.q.description, despesa_src_str),
-               LIKE(TillFiscalOperationsView.q.description, quantia_removida_src_str)),
             TillFiscalOperationsView.q.date > open_date,
             TillFiscalOperationsView.q.date <= close_date,
             TillFiscalOperationsView.q.station_id == station.id,
+            TillFiscalOperationsView.q.sale_id == None,
+            TillFiscalOperationsView.q.purchase_id == None,
+            TillFiscalOperationsView.q.renegotiation_id == None,
         ))
     try:
-        for value, description in [(p.value, p.description) for p in despesa_results]:
-            sangria_valor += value
-            sangria_str += '{description}: {value}\n'.format(description=description, value=value)
+        for value, description in [(p.value, p.description) for p in despesa_suprimento_results]:
+            if value <= 0:
+                sangria_valor += value
+                sangria_str += '{description}: {value}\n'.format(description=description, value=value)
+            else:
+                suprimento_valor += value
+                suprimento_str += '{description}: {value}\n'.format(description=description, value=value)
     except:
         pass
-    sangria_str += "Total de Sangria %s\n" % sangria_valor
-
-    suprimento_str = ''
-
-    # Suprimentos
-    suprimento_src_str = '%%%s%%' % 'Suprimento:'
-    caixa_iniciado_str = '%%%s%%' % 'Caixa iniciado'
-    suprimento_valor = 0
-    suprimento_results = TillFiscalOperationsView.select(
-        AND(OR
-            (LIKE(TillFiscalOperationsView.q.description, suprimento_src_str),
-             LIKE(TillFiscalOperationsView.q.description, caixa_iniciado_str)),
-            TillFiscalOperationsView.q.date > open_date,
-            TillFiscalOperationsView.q.station_id == station.id,
-            TillFiscalOperationsView.q.date <= close_date))
-
-    try:
-        for value, description in [(p.value, p.description) for p in suprimento_results]:
-            suprimento_valor += value
-            suprimento_str += '{description}: {value}\n'.format(description=description, value=value)
-    except:
-        pass
-
-    suprimento_str += "Total de Suprimento %s\n" % suprimento_valor
-
     s = "===RELATORIO DE MOVIMENTAÇÃO DE CAIXA==\n" \
         "Vendedor: {vendedor}\n" \
         "Estação: {estacao}\n" \
@@ -581,8 +562,8 @@ def salesperson_financial_report(open_date, close_date):
     s += '=============SUPRIMENTOS===============\n'
     s += suprimento_str
     s += "%s" % '_' * 40
-    s += "\nValor esperado na contagem: {}\n".format(total + suprimento_valor - abs(sangria_valor))
-    s += "%s" % '_' * 40
+    s += "\nValor esperado na contagem: {}\n".format(
+        total + suprimento_valor - abs(sangria_valor))
     s += "\n\t\tAssinatura"
 
     ps = PrintSolution(conn, '')
@@ -650,48 +631,29 @@ def gerencial_report(open_date, close_date):
         produto += "%s%s" % ('=' * 19, '\n')
         payment_values += produto
 
-    # Sangrias
-    despesa_src_str = '%%%s%%' % 'Despesa:'
-    quantia_removida_str = '%%%s%%' % 'Quantia removida'
-
+    suprimento_valor = 0
     sangria_valor = 0
     sangria_str = ''
-
-    despesa_results = TillFiscalOperationsView.select(
-        AND(OR(
-            LIKE(TillFiscalOperationsView.q.description, despesa_src_str),
-            LIKE(TillFiscalOperationsView.q.description, quantia_removida_str)),
-            TillFiscalOperationsView.q.date > open_date,
-            TillFiscalOperationsView.q.date <= close_date))
-    try:
-        for value, description in [(p.value, p.description) for p in despesa_results]:
-            sangria_valor += value
-            sangria_str += '{description}: {value}\n'.format(description=description, value=value)
-    except:
-        pass
-    sangria_str += "Total de Sangria %s\n" % sangria_valor
-
     suprimento_str = ''
-
-    # Suprimentos
-    suprimento_src_str = '%%%s%%' % 'Suprimento:'
-    caixa_iniciado_str = '%%%s%%' % 'Caixa iniciado'
-    suprimento_valor = 0
-    suprimento_results = TillFiscalOperationsView.select(
-        AND(OR
-            (LIKE(TillFiscalOperationsView.q.description, suprimento_src_str),
-             LIKE(TillFiscalOperationsView.q.description, caixa_iniciado_str)),
+    despesa_suprimento_results = TillFiscalOperationsView.select(
+        AND(
             TillFiscalOperationsView.q.date > open_date,
-            TillFiscalOperationsView.q.date <= close_date))
+            TillFiscalOperationsView.q.date <= close_date,
+            TillFiscalOperationsView.q.sale_id == None,
+            TillFiscalOperationsView.q.purchase_id == None,
+            TillFiscalOperationsView.q.renegotiation_id == None,
+        ))
 
     try:
-        for value, description in [(p.value, p.description) for p in suprimento_results]:
-            suprimento_valor += value
-            suprimento_str += '{description}: {value}\n'.format(description=description, value=value)
+        for value, description in [(p.value, p.description) for p in despesa_suprimento_results]:
+            if value > 0:
+                suprimento_valor += value
+                suprimento_str += '{description}: {value}\n'.format(description=description, value=value)
+            else:
+                sangria_valor += value
+                sangria_str += '{description}: {value}\n'.format(description=description, value=value)
     except:
         pass
-
-    suprimento_str += "Total de Suprimento %s\n" % suprimento_valor
 
     sold_items = ""
     sellable_qqtt_dict = {}

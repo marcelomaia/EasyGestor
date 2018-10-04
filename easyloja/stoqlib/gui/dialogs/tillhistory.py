@@ -32,12 +32,15 @@ from kiwi.ui.objectlist import SearchColumn
 from kiwi.ui.search import ComboSearchFilter
 from kiwi.ui.widgets.list import Column, ColoredColumn
 from stoqlib.api import api
+from stoqlib.database.orm import Alias
 from stoqlib.database.orm import INNERJOINOn, Viewable, LEFTJOINOn
 from stoqlib.domain.fiscal import CfopData
 from stoqlib.domain.payment.group import PaymentGroup
 from stoqlib.domain.payment.method import PaymentMethod, CreditCardData
 from stoqlib.domain.payment.payment import Payment
-from stoqlib.domain.person import PersonAdaptToBranch, PersonAdaptToSalesPerson, Person, PersonAdaptToCreditProvider
+from stoqlib.domain.person import (PersonAdaptToBranch, PersonAdaptToSalesPerson,
+                                   Person, PersonAdaptToCreditProvider)
+from stoqlib.domain.purchase import PurchaseOrder
 from stoqlib.domain.sale import Sale
 from stoqlib.domain.station import BranchStation
 from stoqlib.domain.till import Till, DailyFlow
@@ -67,6 +70,9 @@ class TillFiscalOperationsView(Viewable):
     @ivar value:        the entry value
     @ivar station_name: the value of name branch_station name column
     """
+    PaymentGroup_Purchase = Alias(PaymentGroup, 'payment_group_purchase')
+    PaymentGroup_Sale = Alias(PaymentGroup, 'payment_group_sale')
+
     columns = dict(
         id=TillEntry.q.id,
         date=TillEntry.q.date,
@@ -90,7 +96,9 @@ class TillFiscalOperationsView(Viewable):
         payment_paid_date=Payment.q.paid_date,
         payment_due_date=Payment.q.due_date,
         payment_open_date=Payment.q.open_date,
-    )
+        sale_id=Sale.q.id,
+        purchase_id=PurchaseOrder.q.id,
+        renegotiation_id=PaymentGroup.q.renegotiationID)
 
     def get_card_type_str(self):
         return CreditCardData.types.get(self.card_type, None)
@@ -112,8 +120,17 @@ class TillFiscalOperationsView(Viewable):
                     PersonAdaptToBranch.q.id == BranchStation.q.branchID),
         LEFTJOINOn(None, PaymentGroup,
                    PaymentGroup.q.id == Payment.q.groupID),
+
+        LEFTJOINOn(None, PaymentGroup_Sale,
+                   PaymentGroup_Sale.q.id == Payment.q.groupID),
         LEFTJOINOn(None, Sale,
-                   Sale.q.groupID == PaymentGroup.q.id),
+                   Sale.q.groupID == PaymentGroup_Sale.q.id),
+
+        LEFTJOINOn(None, PaymentGroup_Purchase,
+                   PaymentGroup_Purchase.q.id == Payment.q.groupID),
+        LEFTJOINOn(None, PurchaseOrder,
+                   PurchaseOrder.q.groupID == PaymentGroup_Purchase.q.id),
+
         LEFTJOINOn(None, PersonAdaptToSalesPerson,
                    PersonAdaptToSalesPerson.q.id == Sale.q.salespersonID),
         LEFTJOINOn(None, Person,
