@@ -29,6 +29,7 @@ import datetime
 from kiwi.datatypes import ValidationError, currency
 from kiwi.python import Settable
 from kiwi.ui.objectlist import Column, ColoredColumn, SummaryLabel
+from sqlobject import SQLObjectNotFound
 from stoqdrivers.exceptions import DriverError
 from stoqlib.api import api
 from stoqlib.database.orm import const
@@ -38,6 +39,7 @@ from stoqlib.domain.events import (TillOpenEvent, TillCloseEvent,
                                    TillAddTillEntryEvent,
                                    TillAddCashEvent, TillRemoveCashEvent)
 from stoqlib.domain.interfaces import IEmployee
+from stoqlib.domain.payment.views import BasePaymentView
 from stoqlib.domain.person import Person
 from stoqlib.domain.till import Till
 from stoqlib.exceptions import DeviceError, TillError
@@ -229,14 +231,36 @@ class TillClosingEditor(BaseEditor):
         day_history[_(u'Initial Amount')] = self.model.initial_cash_amount
 
         for entry in self.model.get_entries():
+            # colocar um if pra ver se o pagamento é solitario aqui... se for, entao tratar como sangria e suprimento
             payment = entry.payment
             if payment is not None:
-                desc = payment.method.get_description()
-            else:
-                if entry.value > 0:
-                    desc = _(u'Cash In')
+                try:
+                    bpv = BasePaymentView.select(BasePaymentView.q.id == payment.id).getOne()
+                except SQLObjectNotFound, e:
+                    bpv = None
+                if bpv:
+                    if bpv.is_lonely():
+                        if entry.value > 0:
+                            default_desc = 'Suprimento'
+                        else:
+                            default_desc = 'Despesa'
+                        pay_desc = bpv.description or default_desc
+                        if bpv.category:
+                            desc = "{}; {}".format(pay_desc, bpv.category)
+                        else:
+                            desc = "{}".format(pay_desc)
+                    else:
+                        desc = payment.method.get_description()
                 else:
-                    desc = _(u'Cash Out')
+                    desc = payment.method.get_description()
+
+            else:
+                # o que nao tiver pagamento, é assumido como sangria  e suprimento
+                desc = entry.description
+                # if entry.value > 0:
+                #     desc = _(u'Cash In')
+                # else:
+                #     desc = _(u'Cash Out')
 
             if desc in day_history.keys():
                 day_history[desc] += entry.value
