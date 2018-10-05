@@ -653,7 +653,7 @@
               <object class="ProxyLabel" id="kiwilabel2">
                 <property name="visible">True</property>
                 <property name="xalign">1</property>
-                <property name="label" translatable="yes">Escala?</property>
+                <property name="label" translatable="yes">Feito em escala?</property>
               </object>
               <packing>
                 <property name="expand">True</property>
@@ -700,10 +700,34 @@
           <placeholder/>
         </child>
         <child>
-          <placeholder/>
+          <object class="ProxyLabel" id="cnpj_fab_lbl">
+            <property name="visible">True</property>
+            <property name="label" translatable="yes">CNPJ Fabricante:</property>
+          </object>
+          <packing>
+            <property name="left_attach">2</property>
+            <property name="right_attach">3</property>
+            <property name="top_attach">9</property>
+            <property name="bottom_attach">10</property>
+          </packing>
         </child>
         <child>
-          <placeholder/>
+          <object class="ProxyEntry" id="cnpj_fab">
+            <property name="visible">True</property>
+            <property name="invisible_char">•</property>
+            <property name="primary_icon_activatable">False</property>
+            <property name="secondary_icon_activatable">False</property>
+            <property name="primary_icon_sensitive">True</property>
+            <property name="secondary_icon_sensitive">True</property>
+            <property name="data_type">unicode</property>
+            <property name="model_attribute">cnpj_fab</property>
+          </object>
+          <packing>
+            <property name="left_attach">3</property>
+            <property name="right_attach">4</property>
+            <property name="top_attach">9</property>
+            <property name="bottom_attach">10</property>
+          </packing>
         </child>
       </object>
     </child>

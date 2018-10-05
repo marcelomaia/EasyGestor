@@ -47,7 +47,7 @@ class ProductInformationSlave(BaseEditorSlave):
     model_type = Product
     proxy_widgets = ['location', 'part_number', 'manufacturer', 'width', 'cest',
                      'height', 'depth', 'weight', 'ncm', 'ex_tipi', 'genero', 'weighable',
-                     'scale'
+                     'scale', 'cnpj_fab'
                      ]
     storable_widgets = ['minimum_quantity', 'maximum_quantity']
 
@@ -64,6 +64,17 @@ class ProductInformationSlave(BaseEditorSlave):
 
         for label in [self.min_unit, self.max_unit]:
             label.set_text(unit_desc)
+
+    def on_scale__content_changed(self, button):
+        value = self.scale.read()
+        # produtos que nao sao em escala tem que informar o cnpj do fabricante
+        if value is False:
+            self.cnpj_fab.show()
+            self.cnpj_fab_lbl.show()
+            self.cnpj_fab.set_mask('00.000.000/0000-00')
+        else:
+            self.cnpj_fab.hide()
+            self.cnpj_fab_lbl.hide()
 
     def _setup_widgets(self):
         self._setup_unit_labels()
@@ -108,6 +119,15 @@ class ProductInformationSlave(BaseEditorSlave):
 
         p_type = Product.product_types
         self.product_type.prefill([(p_type[p], p) for p in p_type])
+        value = self.model.scale
+        # produtos que nao sao em escala tem que informar o cnpj do fabricante
+        if value is False:
+            self.cnpj_fab.show()
+            self.cnpj_fab_lbl.show()
+            self.cnpj_fab.set_mask('00.000.000/0000-00')
+        else:
+            self.cnpj_fab.hide()
+            self.cnpj_fab_lbl.hide()
 
     def setup_proxies(self):
         self._setup_widgets()

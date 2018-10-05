@@ -183,6 +183,7 @@ class Product(Domain):
     production_time = IntCol(default=1)
     weighable = BoolCol(default=True)
     scale = BoolCol(default=True)
+    cnpj_fab = UnicodeCol(default='')
 
     # Tax details
     icms_template = ForeignKey('ProductIcmsTemplate', default=None)
