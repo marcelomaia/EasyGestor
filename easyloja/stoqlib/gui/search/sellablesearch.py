@@ -24,12 +24,11 @@
 ##
 """ Implementation of sellable search """
 
+import gtk
 from decimal import Decimal
 
-import gtk
 from kiwi.datatypes import currency
 from kiwi.ui.objectlist import SearchColumn
-
 from stoqlib.api import api
 from stoqlib.database.orm import AND
 from stoqlib.domain.interfaces import IStorable
@@ -38,8 +37,8 @@ from stoqlib.domain.views import SellableFullStockView
 from stoqlib.gui.base.columns import AccessorColumn
 from stoqlib.gui.base.search import SearchEditor
 from stoqlib.lib.defaults import sort_sellable_code
-from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.formatters import format_quantity
+from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.translation import stoqlib_gettext
 
 _ = stoqlib_gettext
@@ -129,7 +128,7 @@ class SellableSearch(SearchEditor):
             return
         super(SellableSearch, self).confirm()
 
-    def create_filters(self):                                   # searching for code is more important EBI
+    def create_filters(self):  # searching for code is more important EBI
         self.set_text_field_columns(['code', 'description',
                                      'barcode'])
         self.executer.set_query(self._executer_query)
@@ -163,7 +162,7 @@ class SellableSearch(SearchEditor):
             return
         sellable = Sellable.get(sellable_view.id, self.conn)
         if (IStorable(sellable.product, None) and
-            self.quantity > self._get_available_stock(sellable_view) and
+                self.quantity > self._get_available_stock(sellable_view) and
                 not self._permission_negative_stock()):
             self.ok_button.set_sensitive(False)
         else:
@@ -210,3 +209,23 @@ class SellableSearch(SearchEditor):
 
     def _permission_negative_stock(self):
         return sysparam(self.conn).NEGATIVE_STOCK
+
+
+class SellableSearch2(SellableSearch):
+    def _executer_query(self, query, having, conn):
+        queries = []
+        if query is not None:
+            queries.append(query)
+
+        if self._delivery_sellable:
+            queries.append(AND(
+                # SellableFullStockView.q.status == Sellable.STATUS_AVAILABLE,
+                SellableFullStockView.q.id != self._delivery_sellable.id))
+        # If we select a quantity which is not an integer, filter out
+        # sellables without a unit set
+        if self.quantity is not None and (self.quantity % 1) != 0:
+            queries.append(Sellable.q.unitID != None)
+        branch = api.get_current_branch(conn)
+        query = AND(*queries)
+        return SellableFullStockView.select_by_branch(query, branch,
+                                                      connection=conn)

@@ -19,7 +19,7 @@ from stoqlib.domain.sellable import Sellable
 from stoqlib.gui.base.dialogs import get_current_toplevel, run_dialog
 from stoqlib.gui.editors.baseeditor import BaseEditor
 from stoqlib.gui.editors.producteditor import ProductEditor
-from stoqlib.gui.search.sellablesearch import SellableSearch
+from stoqlib.gui.search.sellablesearch import SellableSearch2
 from stoqlib.lib.formatters import get_formatted_price, format_quantity
 from stoqlib.lib.nfeimporter import (NFeImporter, PRODUCT_DESCRIPTION, PRODUCT_CEAN, PRODUCT_UNITARY_TRADE_VALUE,
                                      PRODUCT_COMMERCIAL_QUANTITY, PRODUCT_COMMERCIAL_UNITY, PRODUCT_TOTAL_GROSS_AMOUNT,
@@ -209,7 +209,7 @@ class ProductListSlave(ListSlave):
         if yesno('Associar a Produto:', parent=get_current_toplevel(), default=gtk.RESPONSE_YES,
                  buttons=(('Existente', gtk.RESPONSE_YES), ('Novo', gtk.RESPONSE_NO))) == gtk.RESPONSE_YES:
 
-            sellable_view_item = run_dialog(SellableSearch, get_current_toplevel(),
+            sellable_view_item = run_dialog(SellableSearch2, get_current_toplevel(),
                                             self.conn,
                                             selection_mode=gtk.SELECTION_BROWSE, quantity=1,
                                             double_click_confirm=True,
