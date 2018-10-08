@@ -42,6 +42,29 @@ class _Product():
     sellable = None
     select = True
 
+    def _compute_checksum(self, arg):
+        """ Compute the checksum of bar code """
+        # UPCA/EAN13
+        weight = [1, 3] * 6
+        magic = 10
+        sum = 0
+
+        for i in range(12):  # checksum based on first 12 digits.
+            sum = sum + int(arg[i]) * weight[i]
+        z = (magic - (sum % magic)) % magic
+        if z < 0 or z >= magic:
+            return None
+        return z
+
+    def validate_barcode(self, barcode):
+        # if len == 12, calculate checksum
+        if len(barcode) == 12:
+            checksum = self._compute_checksum(barcode)
+            if not checksum:
+                return barcode
+            barcode = barcode + str(checksum)
+        return barcode
+
     def create_domain_product(self, conn):
         tax_constant = sysparam(conn).DEFAULT_PRODUCT_TAX_CONSTANT
         sellable = Sellable(description=self.description,
@@ -49,8 +72,9 @@ class _Product():
                             tax_constant=tax_constant,
                             cost=self.price,
                             connection=conn)
+        barcode = self.barcode if not sellable.check_barcode_exists(self.barcode) else ''
         sellable.code = self.product if not sellable.check_code_exists(self.product) else ''
-        sellable.barcode = self.barcode if not sellable.check_barcode_exists(self.barcode) else ''
+        sellable.barcode = self.validate_barcode(barcode)
         sellable.unit = self.unity or sysparam(conn).SUGGESTED_UNIT
         retval = Product(connection=conn,
                          sellable=sellable,
