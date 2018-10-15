@@ -130,14 +130,15 @@ class ImpnfUI(object):
             return self._print_on_spooler2(filename)
 
         if os.path.exists(filename):
-            cmd = '{exe} -print-to {printer} {fname}'.format(exe=sumatra_path,
-                                                             printer=printer.spooler_printer,
-                                                             fname=filename)
+            cmd = '"{exe}" -print-to "{printer}" "{fname}"'.format(exe=sumatra_path,
+                                                                   printer=printer.spooler_printer,
+                                                                   fname=filename)
             if spooler_mode == DIALOGO:
-                cmd = '{exe} -print-dialog {fname}'.format(exe=sumatra_path,
-                                                           fname=filename)
+                cmd = '"{exe}" -print-dialog "{fname}"'.format(exe=sumatra_path,
+                                                               fname=filename)
             log.debug('executing command: {cmd}'.format(cmd=cmd))
-            proc = subprocess.Popen(cmd.split(' '), shell=False, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+            # https://docs.python.org/2/library/subprocess.html#subprocess.Popen
+            proc = subprocess.Popen(cmd, shell=False, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
 
     def _print_on_spooler2(self, filename):
         """
