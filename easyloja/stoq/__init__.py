@@ -9,7 +9,7 @@ website = 'http://ebi.com.br'
 major_version = 1
 minor_version = 5
 micro_version = 6
-extra_version = 7
+extra_version = 8
 release_date = (2018, 9, 25)
 stable = True
 

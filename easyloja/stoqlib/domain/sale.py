@@ -59,7 +59,7 @@ from stoqlib.domain.sellable import Sellable
 from stoqlib.domain.service import Service
 from stoqlib.domain.stockdecrease import StockDecrease
 from stoqlib.domain.taxes import SaleItemIcms, SaleItemIpi, SaleItemPis, SaleItemCofins
-from stoqlib.domain.till import Till
+from stoqlib.domain.till import Till, TillEntry
 from stoqlib.exceptions import (SellError, DatabaseInconsistency,
                                 StoqlibError)
 from stoqlib.gui.base.dialogs import get_current_toplevel, run_dialog
@@ -1181,6 +1181,7 @@ class SaleAdaptToPaymentTransaction(object):
         for sale_item in self.sale.get_items():
             sale_item.cancel(self.sale.branch)
         self._payback_paid_payments(renegotiation.penalty_value)
+        self._return_other_till_entry(self.sale.group)
         self._revert_fiscal_entry(renegotiation.invoice_number)
         self.sale.group.cancel()
 
@@ -1249,6 +1250,17 @@ class SaleAdaptToPaymentTransaction(object):
         if old_commission_value > 0:
             commission = self._create_commission(payment)
             commission.value = -old_commission_value
+
+    def _return_other_till_entry(self, group):
+        trans = api.new_transaction()
+        for payment in group.get_items():
+            # ajusta os pagamentos de till entry que nao sao em dinheiro para 0
+            if payment.method.method_name != 'money':
+                till_entry = TillEntry.selectOneBy(payment=payment, connection=trans)
+                if till_entry:
+                    till_entry.value = 0
+                    till_entry.description = 'CANCELADO: {}'.format(till_entry.description)
+        trans.commit(close=True)
 
     def _payback_paid_payments(self, penalty_value):
         conn = self.sale.get_connection()
