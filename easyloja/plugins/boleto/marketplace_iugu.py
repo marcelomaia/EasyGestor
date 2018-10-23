@@ -9,8 +9,11 @@ class MarketPlace():
 
     def create_subaccount(self, name, commission_percent):
         """Cria uma subconta, é super importante salvar esses dados no BD"""
+        # 0% pra conta mestre. a transferencia dos valores sera feita via script
         params = {'name': name,
-                  'commission_percent': commission_percent}
+                  'commission_percent': 0
+                  # 'commission_percent': commission_percent
+                  }
         return self.mp.create(data=params)
 
     def get_subacount_data(self, account_id):
