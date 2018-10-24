@@ -151,9 +151,9 @@ class WelcomeStep(BaseWizardStep):
         if self._postgres_from_stoq_installer():
             settings = self.wizard.settings
             settings.address = "localhost"
-            settings.dbname = "easyloja"
+            settings.dbname = "easygestor"
             settings.username = "postgres"
-            settings.port = self._get_postgres_port()
+            settings.port = 6543
             return PostgresAdminPasswordStep(self.wizard, self)
         else:
             return DatabaseLocationStep(self.wizard, self)
@@ -217,7 +217,7 @@ class DatabaseSettingsStep(WizardEditorStep):
         self.register_validate_function(self.wizard.refresh_next)
         self.force_validation()
         if self.focus_dbname:
-            self.dbname.update('easyloja')
+            self.dbname.update('easygestor')
             self.dbname.grab_focus()
         else:
             self.address.grab_focus()

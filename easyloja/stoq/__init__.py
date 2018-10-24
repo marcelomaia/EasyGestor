@@ -8,9 +8,9 @@ program_codename = 'Bacaba'
 website = 'http://ebi.com.br'
 major_version = 1
 minor_version = 5
-micro_version = 6
-extra_version = 8
-release_date = (2018, 9, 25)
+micro_version = 7
+extra_version = 0
+release_date = (2018, 10, 24)
 stable = True
 
 version = '%d.%d.%d' % (major_version, minor_version, micro_version)

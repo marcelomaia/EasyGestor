@@ -65,11 +65,11 @@ class DatabaseSettings(object):
             if not address:
                 address = os.environ.get('PGHOST', '')
             if not dbname:
-                dbname = os.environ.get('PGDATABASE', 'easyloja')
+                dbname = os.environ.get('PGDATABASE', 'easygestor')
             if not username:
-                username = os.environ.get('PGUSER', get_username())
+                username = os.environ.get('PGUSER', 'postgres')
             if not port:
-                port = os.environ.get('PGPORT', 5432)
+                port = os.environ.get('PGPORT', 6543)
         self.rdbms = rdbms
         self.address = address
         self.port = port
