@@ -89,7 +89,10 @@ class PluginManager(object):
     @property
     def installed_plugins_names(self):
         """A list of names of all installed plugins"""
-        return [line.replace('\n', '') for line in self.lines]
+        plugin_path = os.path.join(get_application_dir(), 'plugins')
+        with open(plugin_path, "r") as plugin_file:
+            lines = plugin_file.readlines()
+        return [line.replace('\n', '') for line in lines]
 
     @property
     def active_plugins_names(self):
@@ -190,24 +193,17 @@ class PluginManager(object):
 
         @param plugin: the L{IPlugin} implementation of the plugin
         """
-        # Try to get the plugin first. If it was't registered yet,
-        # PluginError will be raised.
-        plugin = self.get_plugin(plugin_name)
-
         if plugin_name in self.installed_plugins_names:
             raise PluginError("Plugin %s is already installed on database"
                               % (plugin_name,))
 
-        trans = new_transaction()
-        InstalledPlugin(connection=trans,
-                        plugin_name=plugin_name,
-                        plugin_version=0)
-        trans.commit()
-        trans.close()
+        plugin_path = os.path.join(get_application_dir(), 'plugins')
+        if not os.path.exists(plugin_path):
+            f = open(plugin_path, 'w')
+            f.close()
 
-        migration = plugin.get_migration()
-        if migration:
-            migration.apply_all_patches()
+        with open(plugin_path, "a") as plugin_file:
+            plugin_file.write('{}\n'.format(plugin_name))
 
     def activate_installed_plugins(self):
         """Activate all installed plugins

@@ -3,13 +3,12 @@
 
 """ Splash screen helper """
 
-import time
-
 import gobject
 import gtk
-import pango
 import pangocairo
+import time
 
+import pango
 from kiwi.component import get_utility
 from kiwi.environ import environ
 from stoqlib.lib.interfaces import IAppInfo
@@ -17,7 +16,7 @@ from stoqlib.lib.translation import stoqlib_gettext
 
 WIDTH = 400
 HEIGHT = 260
-BORDER = 8 # This includes shadow out border from GtkFrame
+BORDER = 8  # This includes shadow out border from GtkFrame
 _ = stoqlib_gettext
 
 
@@ -51,7 +50,7 @@ class SplashScreen(gtk.Window):
         if ' ' in version:
             ver, rev = version.split(' ')
             version = ver
-        return _("Version: %s") % (version, )
+        return _("Version: %s") % (version,)
 
     def expose(self, widget, event):
         cr = widget.window.cairo_create()
@@ -67,7 +66,7 @@ class SplashScreen(gtk.Window):
         layout.set_markup(self._get_label())
         pcr.update_layout(layout)
         w, h = layout.get_pixel_size()
-        cr.move_to(WIDTH - w - BORDER, HEIGHT - h - BORDER)
+        cr.move_to(0 + BORDER, HEIGHT - h - BORDER)
         pcr.show_layout(layout)
 
     def show(self):
