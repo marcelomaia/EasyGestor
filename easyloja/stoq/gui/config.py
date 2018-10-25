@@ -150,7 +150,7 @@ class WelcomeStep(BaseWizardStep):
     def next_step(self):
         if self._postgres_from_stoq_installer():
             settings = self.wizard.settings
-            settings.address = "localhost"
+            settings.address = "127.0.0.1"
             settings.dbname = "easygestor"
             settings.username = "postgres"
             settings.port = 6543
@@ -177,7 +177,7 @@ class DatabaseLocationStep(BaseWizardStep):
         settings.address = "" # Unix socket really
         # FIXME: Allow developers to specify another database
         #        is_developer_mode() or STOQ_DATABASE_NAME
-        settings.dbname = "easyloja"
+        settings.dbname = "easygestor"
 
         return self.wizard.connect_for_settings(self)
 
@@ -230,7 +230,7 @@ class DatabaseSettingsStep(WizardEditorStep):
             warning(_(u'Invalid database address'), msg)
             # '' is not strictly invalid, since it's an alias for
             # unix socket, so don't tell that to the user, make him
-            # belive that he still uses "localhost"
+            # belive that he still uses "127.0.0.1"
             if self.model.address != "":
                 self.address.set_invalid(_("Invalid database address"))
                 self.force_validation()
@@ -238,18 +238,18 @@ class DatabaseSettingsStep(WizardEditorStep):
 
         settings = self.wizard.settings
 
-        # If we configured setting to localhost, try connecting
+        # If we configured setting to 127.0.0.1, try connecting
         # with address == '', eg unix socket first before trying
-        # to connect to localhost. This is done because the default
-        # postgres configuration doesn't allow you to connect via localhost,
+        # to connect to 127.0.0.1. This is done because the default
+        # postgres configuration doesn't allow you to connect via 127.0.0.1,
         # only unix socket.
-        if settings.address == 'localhost':
+        if settings.address == '127.0.0.1':
             if not self.wizard.try_connect(settings, warn=False):
                 settings.address = ''
 
         if not self.wizard.try_connect(settings):
             # Restore it
-            settings.address = 'localhost'
+            settings.address = '127.0.0.1'
             return False
 
         if settings.address == '':
@@ -266,10 +266,10 @@ class DatabaseSettingsStep(WizardEditorStep):
             (_("Trust"), TRUST_AUTHENTICATION)])
 
         self.add_proxy(self.model, DatabaseSettingsStep.proxy_widgets)
-        # Show localhost instead of empty for unix socket, not strictly
+        # Show 127.0.0.1 instead of empty for unix socket, not strictly
         # correct but better than showing nothing.
         if not self.model.address:
-            self.address.set_text("localhost")
+            self.address.set_text("127.0.0.1")
         self.model.stoq_user_data = Settable(password='')
         self.add_proxy(self.model.stoq_user_data)
 
@@ -998,7 +998,7 @@ class FirstTimeConfigWizard(BaseWizard):
         # it and should warn the user
 
         # Not 100% correct, should perhaps say "unix socket"
-        address = self.settings.address or "localhost"
+        address = self.settings.address or "127.0.0.1"
         msg = _("Database {dbname} at {address}:{port} is not "
                 "a Stoq database.").format(
             dbname=self.settings.dbname,
@@ -1009,7 +1009,7 @@ class FirstTimeConfigWizard(BaseWizard):
             "{dbname} at the database server {address}, however it "
             "is not a Stoq database or it was corrupted, please select "
             "another one.").format(dbname=self.settings.dbname,
-                                   address=self.settings.address or "localhost")
+                                   address=self.settings.address or "127.0.0.1")
         warning(msg, description)
         return True
 
