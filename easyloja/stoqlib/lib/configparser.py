@@ -180,7 +180,7 @@ class StoqConfig:
         port = self.get('Database', 'port')
         if port:
             port = int(port)
-        password = self.get_password()
+        password = self.get_password() or 'adminadmin'
         return DatabaseSettings(rdbms, address, port,
                                 dbname, username, password)
 
