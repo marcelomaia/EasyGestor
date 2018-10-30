@@ -9,6 +9,7 @@ from reportlab.platypus.doctemplate import PageTemplate, BaseDocTemplate
 from reportlab.platypus.frames import Frame
 from reportlab.platypus.paragraph import Paragraph
 from stoqlib.database.orm import AND, OR, LIKE
+from stoqlib.database.orm import IN
 from stoqlib.database.runtime import get_current_user, get_current_branch, get_current_station, get_connection
 from stoqlib.domain.interfaces import IIndividual, ICompany, ISalesPerson
 from stoqlib.domain.payment.payment import Payment
@@ -20,7 +21,6 @@ from stoqlib.lib.formatters import format_phone_number
 from stoqlib.lib.osutils import get_application_dir
 from stoqlib.lib.parameters import sysparam
 from stoqlib.reporting.base.flowables import ReportLine
-from stoqlib.database.orm import IN
 
 width_doc = sysparam(get_connection()).IMPNF_WIDTH * mm
 height_doc = sysparam(get_connection()).IMPNF_HEIGHT * mm
@@ -191,32 +191,33 @@ def build_sale_document(sale, conn):
     story.append(ReportLine())
     for item in sale.get_items():
         sellable = item.sellable
+        if not item.notes:
+            line = '{code} {prod}'.replace(' ', '&nbsp;').format(
+                code=align_text(sellable.code, 10, LEFT),
+                prod=align_text(sellable.description, 58, LEFT))
+
+        else:
+            line = '{code} {prod} <br/> <b>{notes}</b>'.replace(' ', '&nbsp;').format(
+                code=align_text(sellable.code, 10, LEFT),
+                prod=align_text(sellable.description, 58, LEFT),
+                notes=align_text(item.notes, 58, LEFT)
+            )
         story.append(
-            Paragraph('{code} {prod}'
-                      .replace(' ', '&nbsp;').format(code=align_text(sellable.code, 10, LEFT),
-                                                     prod=align_text(sellable.description,
-                                                                     58, LEFT)), items_1))
+            Paragraph(line, items_1))
+
         try:
             story.append(
-                Paragraph('{qtd} X {unit_price} {total}'
-                          .replace(' ', '&nbsp;').format(qtd=align_text('{}'.format(float(item.quantity)), 5, CENTER),
-                                                         unit_price=align_text('{}'.format(float(item.price)), 9,
-                                                                               CENTER),
-                                                         total=align_text('<b>{}</b>'.format(float(item.get_total())),
-                                                                          12,
-                                                                          CENTER)),
-                          items_2))
+                Paragraph('{qtd} X {unit_price} {total}'.replace(' ', '&nbsp;').format(
+                    qtd=align_text('{}'.format(float(item.quantity)), 5, CENTER),
+                    unit_price=align_text('{}'.format(float(item.price)), 9, CENTER),
+                    total=align_text('<b>{}</b>'.format(float(item.get_total())), 12, CENTER)), items_2))
         except ValueError, e:
             # dá um erro de tag xml aqui em alguns produtos, erro exclusivo do ruindows
             story.append(
-                Paragraph('{qtd} X {unit_price} {total}'
-                          .replace(' ', '&nbsp;').format(qtd=align_text('{}'.format(float(item.quantity)), 5,
-                                                                        CENTER),
-                                                         unit_price=align_text('{}'.format(float(item.price)), 9,
-                                                                               CENTER),
-                                                         total=align_text('{}'.format(float(item.get_total())),
-                                                                          12, CENTER)),
-                          items_2))
+                Paragraph('{qtd} X {unit_price} {total}'.replace(' ', '&nbsp;').format(
+                    qtd=align_text('{}'.format(float(item.quantity)), 5, CENTER),
+                    unit_price=align_text('{}'.format(float(item.price)), 9, CENTER),
+                    total=align_text('{}'.format(float(item.get_total())), 12, CENTER)), items_2))
 
     story.append(ReportLine())
     for payment in sale.payments:
@@ -246,7 +247,14 @@ def build_sale_document(sale, conn):
             story.append(Paragraph('CNPJ: {cnpj}'.format(cnpj=company.cnpj), header_items_l))
         else:
             story.append(Paragraph('CPF: {cpf}'.format(cpf=individual.cpf), header_items_l))
+        story.append(Paragraph('{address}'.format(address=sale.client.person.get_address_string()), header_items_l))
+        story.append(Paragraph(
+            'Fone: {phone}'.format(phone=format_phone_number(sale.client.person.phone_number)), header_items_l))
+        story.append(Paragraph(
+            'Celular: {phone}'.format(phone=format_phone_number(sale.client.person.mobile_number)), header_items_l))
         story.append(ReportLine())
+    if sale.notes:
+        story.append(Paragraph('<b>OBS: {obs}</b>'.format(obs=sale.notes), header_items_l))
     if sale.status not in [Sale.STATUS_CONFIRMED, Sale.STATUS_PAID]:
         story.append(Paragraph('Data de abertura: {open_date}. Vence em: {expire_date}'
                                .format(open_date=sale.open_date.strftime('%d/%m/%Y %X'),
