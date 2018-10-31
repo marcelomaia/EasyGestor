@@ -30,6 +30,7 @@ import urllib
 import platform
 import sys
 
+from stoqlib.domain.plugin import InstalledPlugin
 from zope.interface import implements
 from kiwi.component import get_utility
 from kiwi.log import Logger
@@ -42,7 +43,6 @@ from twisted.web.iweb import IBodyProducer
 from stoqlib.database.runtime import get_connection
 from stoqlib.lib.interfaces import IAppInfo
 from stoqlib.lib.parameters import sysparam
-from stoqlib.lib.pluginmanager import InstalledPlugin
 
 log = Logger('stoqlib.webservice')
 

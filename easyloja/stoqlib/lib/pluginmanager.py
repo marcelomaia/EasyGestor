@@ -24,13 +24,12 @@
 
 import imp
 import os
+from ConfigParser import ConfigParser
 
 from kiwi.component import get_utility, provide_utility
 from kiwi.desktopparser import DesktopParser
 from kiwi.log import Logger
 from stoqlib import library
-from stoqlib.database.runtime import new_transaction
-from stoqlib.domain.plugin import InstalledPlugin
 from stoqlib.lib.interfaces import IPlugin, IPluginManager
 from stoqlib.lib.osutils import get_application_dir
 from zope.interface import implements
@@ -121,6 +120,18 @@ class PluginManager(object):
         dp.read(filename)
         desc = PluginDescription(dp, filename)
         self._plugin_descriptions[desc.name] = desc
+
+    def get_plugin_version(self, plugin_name):
+        config = ConfigParser()
+        for path in library.get_resource_paths('plugin'):
+            plugindir = os.path.join(path, plugin_name)
+            if not os.path.isdir(plugindir):
+                continue
+            filename = os.path.join(plugindir, plugin_name + '.plugin')
+            if not os.path.exists(filename):
+                continue
+            config.read(filename)
+            return config['Plugin']['Version']
 
     def _import_plugin(self, plugin_desc):
         plugin_name = plugin_desc.name
@@ -215,7 +226,7 @@ class PluginManager(object):
         # FIXME: Get intersection to avoid trying to activate a plugin that
         #        isn't available. We should do something to remove such ones.
         for plugin_name in (set(self.installed_plugins_names) &
-                                set(self.available_plugins_names)):
+                            set(self.available_plugins_names)):
             if plugin_name + "\n" in self.lines:
                 self.activate_plugin(plugin_name)
 
