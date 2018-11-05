@@ -1,6 +1,6 @@
 [Plugin]
 Module=boletoplugin
-Version=1
+Version=1.1
 Name=Boleto iugu
 Name[pt_BR]=Boleto iugu
 Authors=EBI

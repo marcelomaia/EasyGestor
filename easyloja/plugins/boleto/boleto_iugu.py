@@ -262,6 +262,7 @@ class Boleto(object):
                 interest = float(payment.method.interest)
                 data = dict(items=items, due_date=due_date, email=email,
                             payer=payer, late_payment_fine=interest,
+                            payable_with='bank_slip',
                             per_day_interest=True, fines=True)
                 self._save_bill(payment, data)
 
@@ -274,6 +275,7 @@ class Boleto(object):
         interest = float(payment.method.interest)
         data = dict(items=items, due_date=due_date, email=email,
                     payer=payer, late_payment_fine=interest,
+                    payable_with='bank_slip',
                     per_day_interest=True, fines=True)
         if payment.method.method_name == 'bill' \
                 and payment.is_inpayment() \
