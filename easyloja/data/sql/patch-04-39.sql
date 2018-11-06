@@ -1,0 +1,1 @@
+alter table account_transaction drop constraint nonzero_value

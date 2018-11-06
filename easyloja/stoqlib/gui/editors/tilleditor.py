@@ -356,9 +356,6 @@ class TillClosingEditor(BaseEditor):
             return ValidationError(_("You can not specify an amount "
                                      "removed greater than the "
                                      "till balance."))
-        if self.till.get_balance() <= 0:
-            self.proxy.update('balance', currency(0))
-            return ValidationError("O caixa não tem movimentação.")
 
     def after_value__content_changed(self, entry):
         self.proxy.update('balance')
@@ -408,9 +405,10 @@ class BaseCashSlave(BaseEditorSlave):
     #
 
     def on_value__validate(self, widget, value):
-        zero = currency(0)
-        if value <= zero:
-            return ValidationError(_("Value cannot be zero or less than zero"))
+        pass
+        # zero = currency(0)
+        # if value <= zero:
+        #     return ValidationError(_("Value cannot be zero or less than zero"))
 
 
 class RemoveCashSlave(BaseCashSlave):
