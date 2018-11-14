@@ -151,17 +151,16 @@ class TillOpeningEditor(BaseEditor):
             return None
         username = get_current_user(self.conn).person.name
         value = self.proxy.model.value
-        if value:
-            TillAddCashEvent.emit(till=till,
-                                  value=value,
-                                  reason=(_(u'Caixa iniciado por %s com a quantia de %s em %s') %
-                                          (username, value, till.opening_date.strftime('%x'))))
-            till_entry = till.add_credit_entry(value,
-                                               (_(u'Caixa iniciado por %s com a quantia de %s em %s')
-                                                % (username, value, till.opening_date.strftime('%x'))))
-            _create_transaction(self.conn, till_entry)
-            # The callsite is responsible for interacting with
-            # the fiscal printer
+        TillAddCashEvent.emit(till=till,
+                              value=value,
+                              reason=(_(u'Caixa iniciado por %s com a quantia de %s em %s') %
+                                      (username, value, till.opening_date.strftime('%x'))))
+        till_entry = till.add_credit_entry(value,
+                                           (_(u'Caixa iniciado por %s com a quantia de %s em %s')
+                                            % (username, value, till.opening_date.strftime('%x'))))
+        _create_transaction(self.conn, till_entry)
+        # The callsite is responsible for interacting with
+        # the fiscal printer
         return self.model
 
     #
