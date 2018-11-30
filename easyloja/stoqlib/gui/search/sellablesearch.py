@@ -134,7 +134,8 @@ class SellableSearch(SearchEditor):
         self.executer.set_query(self._executer_query)
 
     def get_columns(self):
-        """Hook called by SearchEditor"""
+        """Hook called by SearchEditor""",
+
         return [SearchColumn('code', title=_('Code'), data_type=str,
                              sort_func=sort_sellable_code,
                              sorted=True),

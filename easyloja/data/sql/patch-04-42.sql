@@ -1,0 +1,1 @@
+ALTER TABLE  person_adapt_to_company ADD COLUMN main_cnae bigint UNIQUE REFERENCES cnae(id);

@@ -513,6 +513,8 @@ class PersonAdaptToCompany(PersonAdapter):
     responsible_mobile_phone = UnicodeCol(default='')
     responsible_email = UnicodeCol(default='')
     responsible_cpf = UnicodeCol(default='')
+    main_cnae = ForeignKey('Cnae', default=None)
+    social_capital = PriceCol(default=0)
 
     def get_cnpj_number(self):
         """Returns the cnpj number without any non-numeric characters
@@ -540,6 +542,19 @@ class PersonAdaptToCompany(PersonAdapter):
 
 
 Person.registerFacet(PersonAdaptToCompany, ICompany)
+
+
+class Cnae(Domain):
+    code = UnicodeCol(default='')
+    description = UnicodeCol(default='')
+
+    def get_code(self):
+        return self.code
+
+
+class CompanyCnae(Domain):
+    company_id = ForeignKey('PersonAdaptToCompany', default='')
+    cnae_id = ForeignKey('Cnae', default=None)
 
 
 class ClientCategory(Domain):

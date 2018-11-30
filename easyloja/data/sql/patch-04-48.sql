@@ -1,0 +1,1 @@
+ALTER TABLE  person_adapt_to_company DROP COLUMN main_cnae_id;

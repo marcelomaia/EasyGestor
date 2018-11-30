@@ -2,6 +2,7 @@ import os
 
 import requests
 from stoqlib.lib.osutils import get_application_dir
+from decimal import Decimal
 
 certifi_path = os.path.join(get_application_dir(), 'cacert.pem')
 os.environ['REQUESTS_CA_BUNDLE'] = certifi_path
@@ -71,6 +72,13 @@ class CompanyData(object):
             partner_nome = partner.get('nome')
             return partner_nome
 
+    def _get_main_cnae(self, data):
+        main_activity_data = data.get('atividade_principal')
+        for main_activity in main_activity_data:
+            code = main_activity.get('code')
+            text = main_activity.get('text')
+            return code
+
     def get_company_data(self):
         if self.data.get('status') == 'ERROR':
             return False
@@ -89,4 +97,6 @@ class CompanyData(object):
                         legal_nature=self.data.get('natureza_juridica'),
                         cnpj=self.data.get('cnpj'),
                         fancy_name=self.data.get('fantasia'),
-                        responsible_name=self._get_responsible_name(self.data))
+                        responsible_name=self._get_responsible_name(self.data),
+                        social_capital=Decimal(self.data.get('capital_social')),
+                        main_cnae_code=self._get_main_cnae(self.data))

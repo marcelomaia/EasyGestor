@@ -1,0 +1,1 @@
+ALTER TABLE person_adapt_to_company RENAME main_cnae TO main_cnae_id;

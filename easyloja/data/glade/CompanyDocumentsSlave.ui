@@ -4,9 +4,11 @@
   <!-- interface-requires kiwiwidgets 0.0 -->
   <!-- interface-naming-policy toplevel-contextual -->
   <object class="GtkWindow" id="CompanyDocumentsSlave">
+    <property name="can_focus">False</property>
     <child>
       <object class="GtkTable" id="table1">
         <property name="visible">True</property>
+        <property name="can_focus">False</property>
         <property name="n_rows">7</property>
         <property name="n_columns">4</property>
         <property name="column_spacing">5</property>
@@ -14,6 +16,7 @@
         <child>
           <object class="GtkLabel" id="label1">
             <property name="visible">True</property>
+            <property name="can_focus">False</property>
             <property name="xalign">1</property>
             <property name="label" translatable="yes">Nome fantasia:</property>
           </object>
@@ -24,6 +27,7 @@
         <child>
           <object class="GtkLabel" id="cnpj_lbl">
             <property name="visible">True</property>
+            <property name="can_focus">False</property>
             <property name="xalign">1</property>
             <property name="label" translatable="yes">CNPJ:</property>
           </object>
@@ -36,6 +40,7 @@
         <child>
           <object class="ProxyEntry" id="fancy_name">
             <property name="visible">True</property>
+            <property name="can_focus">False</property>
             <property name="primary_icon_activatable">False</property>
             <property name="secondary_icon_activatable">False</property>
             <property name="primary_icon_sensitive">True</property>
@@ -52,6 +57,7 @@
         <child>
           <object class="ProxyEntry" id="cnpj">
             <property name="visible">True</property>
+            <property name="can_focus">False</property>
             <property name="text">  .   .   /    -  </property>
             <property name="primary_icon_activatable">False</property>
             <property name="secondary_icon_activatable">False</property>
@@ -72,6 +78,7 @@
         <child>
           <object class="ProxyEntry" id="responsible_phone">
             <property name="visible">True</property>
+            <property name="can_focus">False</property>
             <property name="invisible_char">•</property>
             <property name="invisible_char_set">True</property>
             <property name="primary_icon_activatable">False</property>
@@ -92,6 +99,7 @@
         <child>
           <object class="ProxyEntry" id="responsible_name">
             <property name="visible">True</property>
+            <property name="can_focus">False</property>
             <property name="invisible_char">•</property>
             <property name="invisible_char_set">True</property>
             <property name="primary_icon_activatable">False</property>
@@ -112,6 +120,7 @@
         <child>
           <object class="ProxyLabel" id="kiwilabel2">
             <property name="visible">True</property>
+            <property name="can_focus">False</property>
             <property name="xalign">1</property>
             <property name="label" translatable="yes">Resp. Telefone:</property>
           </object>
@@ -124,6 +133,7 @@
         <child>
           <object class="ProxyLabel" id="responsible_namelbl">
             <property name="visible">True</property>
+            <property name="can_focus">False</property>
             <property name="xalign">1</property>
             <property name="label" translatable="yes">Responsável:</property>
             <property name="data_type">unicode</property>
@@ -137,6 +147,7 @@
         <child>
           <object class="ProxyEntry" id="responsible_mobile_phone">
             <property name="visible">True</property>
+            <property name="can_focus">False</property>
             <property name="invisible_char">•</property>
             <property name="invisible_char_set">True</property>
             <property name="primary_icon_activatable">False</property>
@@ -157,6 +168,7 @@
         <child>
           <object class="ProxyEntry" id="responsible_email">
             <property name="visible">True</property>
+            <property name="can_focus">False</property>
             <property name="invisible_char">•</property>
             <property name="invisible_char_set">True</property>
             <property name="primary_icon_activatable">False</property>
@@ -177,6 +189,7 @@
         <child>
           <object class="ProxyLabel" id="kiwilabel4">
             <property name="visible">True</property>
+            <property name="can_focus">False</property>
             <property name="xalign">1</property>
             <property name="label" translatable="yes">Resp. Celular:</property>
           </object>
@@ -191,6 +204,7 @@
         <child>
           <object class="ProxyLabel" id="responsible_email_lbl">
             <property name="visible">True</property>
+            <property name="can_focus">False</property>
             <property name="xalign">1</property>
             <property name="label" translatable="yes">Resp. E-mail:</property>
           </object>
@@ -205,6 +219,7 @@
         <child>
           <object class="ProxyEntry" id="city_registry">
             <property name="visible">True</property>
+            <property name="can_focus">False</property>
             <property name="invisible_char">•</property>
             <property name="primary_icon_activatable">False</property>
             <property name="secondary_icon_activatable">False</property>
@@ -224,6 +239,7 @@
         <child>
           <object class="GtkLabel" id="label4">
             <property name="visible">True</property>
+            <property name="can_focus">False</property>
             <property name="xalign">1</property>
             <property name="label" translatable="yes">Registro municipal:</property>
           </object>
@@ -236,6 +252,7 @@
         <child>
           <object class="GtkLabel" id="label3">
             <property name="visible">True</property>
+            <property name="can_focus">False</property>
             <property name="xalign">1</property>
             <property name="label" translatable="yes">Inscrição estadual:</property>
           </object>
@@ -248,6 +265,7 @@
         <child>
           <object class="ProxyEntry" id="state_registry">
             <property name="visible">True</property>
+            <property name="can_focus">False</property>
             <property name="invisible_char">•</property>
             <property name="primary_icon_activatable">False</property>
             <property name="secondary_icon_activatable">False</property>
@@ -267,6 +285,7 @@
         <child>
           <object class="ProxyButton" id="search_cnpj">
             <property name="visible">True</property>
+            <property name="can_focus">False</property>
             <property name="receives_default">True</property>
             <property name="use_action_appearance">False</property>
             <property name="xalign">0</property>
@@ -274,9 +293,11 @@
             <child>
               <object class="GtkHBox" id="hbox1">
                 <property name="visible">True</property>
+                <property name="can_focus">False</property>
                 <child>
                   <object class="GtkImage" id="image1">
                     <property name="visible">True</property>
+                    <property name="can_focus">False</property>
                     <property name="stock">gtk-find</property>
                   </object>
                   <packing>
@@ -288,6 +309,7 @@
                 <child>
                   <object class="GtkLabel" id="label2">
                     <property name="visible">True</property>
+                    <property name="can_focus">False</property>
                     <property name="label" translatable="yes">Buscar</property>
                   </object>
                   <packing>
@@ -309,29 +331,9 @@
           </packing>
         </child>
         <child>
-          <placeholder/>
-        </child>
-        <child>
-          <placeholder/>
-        </child>
-        <child>
-          <placeholder/>
-        </child>
-        <child>
-          <placeholder/>
-        </child>
-        <child>
-          <placeholder/>
-        </child>
-        <child>
-          <placeholder/>
-        </child>
-        <child>
-          <placeholder/>
-        </child>
-        <child>
           <object class="ProxyLabel" id="kiwilabel1">
             <property name="visible">True</property>
+            <property name="can_focus">False</property>
             <property name="xalign">1</property>
             <property name="label" translatable="yes">Responsável CPF:</property>
           </object>
@@ -343,6 +345,7 @@
         <child>
           <object class="ProxyEntry" id="responsible_cpf">
             <property name="visible">True</property>
+            <property name="can_focus">False</property>
             <property name="invisible_char">•</property>
             <property name="primary_icon_activatable">False</property>
             <property name="secondary_icon_activatable">False</property>
@@ -357,6 +360,74 @@
             <property name="top_attach">6</property>
             <property name="bottom_attach">7</property>
           </packing>
+        </child>
+        <child>
+          <object class="ProxyLabel" id="label6">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="label" translatable="yes">CNAE principal:</property>
+          </object>
+          <packing>
+            <property name="left_attach">2</property>
+            <property name="right_attach">3</property>
+            <property name="top_attach">2</property>
+            <property name="bottom_attach">3</property>
+          </packing>
+        </child>
+        <child>
+          <object class="ProxyLabel" id="kiwilabel3">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="label" translatable="yes">Capital social:</property>
+          </object>
+          <packing>
+            <property name="left_attach">2</property>
+            <property name="right_attach">3</property>
+            <property name="top_attach">3</property>
+            <property name="bottom_attach">4</property>
+          </packing>
+        </child>
+        <child>
+          <object class="ProxyEntry" id="social_capital">
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="invisible_char">•</property>
+            <property name="primary_icon_activatable">False</property>
+            <property name="secondary_icon_activatable">False</property>
+            <property name="primary_icon_sensitive">True</property>
+            <property name="secondary_icon_sensitive">True</property>
+            <property name="data_type">currency</property>
+            <property name="model_attribute">social_capital</property>
+          </object>
+          <packing>
+            <property name="left_attach">3</property>
+            <property name="right_attach">4</property>
+            <property name="top_attach">3</property>
+            <property name="bottom_attach">4</property>
+          </packing>
+        </child>
+        <child>
+          <object class="ProxyComboBox" id="cnae">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="data_type">object</property>
+            <property name="model_attribute">cnae</property>
+          </object>
+          <packing>
+            <property name="left_attach">3</property>
+            <property name="right_attach">4</property>
+            <property name="top_attach">2</property>
+            <property name="bottom_attach">3</property>
+          </packing>
+        </child>
+        <child>
+          <placeholder/>
+        </child>
+        <child>
+          <placeholder/>
+        </child>
+        <child>
+          <placeholder/>
         </child>
       </object>
     </child>

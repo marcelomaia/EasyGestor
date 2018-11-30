@@ -2,8 +2,11 @@
 <project version="4">
   <component name="VcsDirectoryMappings">
     <mapping directory="" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/../coupon" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/../easyloja" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/../energyio" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/../energyioapi" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/../naturascrap" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/../tatuwhatsapp" vcs="Git" />
   </component>
 </project>

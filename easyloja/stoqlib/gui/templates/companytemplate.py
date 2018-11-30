@@ -25,6 +25,7 @@ from kiwi.datatypes import ValidationError
 from kiwi.utils import gsignal
 from stoqlib.api import api
 from stoqlib.domain.interfaces import ICompany
+from stoqlib.domain.person import Cnae
 from stoqlib.gui.editors.baseeditor import BaseEditorSlave
 from stoqlib.lib.receitaws import CompanyData
 from stoqlib.lib.translation import stoqlib_gettext
@@ -32,7 +33,7 @@ from stoqlib.lib.validators import (validate_phone_number,
                                     validate_email,
                                     validate_mobile_number,
                                     validate_fancy_name)
-
+import logging
 _ = stoqlib_gettext
 
 
@@ -48,13 +49,18 @@ class CompanyDocumentsSlave(BaseEditorSlave):
                      'responsible_cpf',
                      'responsible_phone',
                      'responsible_mobile_phone',
-                     'responsible_email')
+                     'responsible_email',
+                     'cnae',
+                     'social_capital')
 
     def setup_proxies(self):
         self.document_l10n = api.get_l10n_field(self.conn, 'company_document')
         self.cnpj_lbl.set_label(self.document_l10n.label)
         self.cnpj.set_mask(self.document_l10n.entry_mask)
         self.responsible_cpf.set_mask('000.000.000-00')
+        items = [(cnae.code, cnae)
+                     for cnae in Cnae.select(connection=self.conn)]
+        self.cnae.prefill(items)
         self.proxy = self.add_proxy(self.model,
                                     CompanyDocumentsSlave.proxy_widgets)
 
@@ -113,10 +119,15 @@ class CompanyDocumentsSlave(BaseEditorSlave):
         if data:
             fancy_name = data.get('fancy_name')
             responsible = data.get('responsible_name')
+            social_capital = data.get('social_capital')
+            main_cnae_code = data.get('main_cnae_code')
+            cnae = Cnae.selectOneBy(code=main_cnae_code, connection=self.conn)
             if not fancy_name:
                 fancy_name = data.get('company_name')
             self.fancy_name.update(fancy_name)
             self.responsible_name.update(responsible)
+            self.social_capital.update(social_capital)
+            self.cnae.update(cnae)
             self.emit('cnpj_search', data)
 
 
