@@ -164,10 +164,10 @@ class DatabaseLocationStep(BaseWizardStep):
 
     def post_init(self):
         self.radio_network.grab_focus()
-        self.radio_local.set_sensitive(False)
+        # self.radio_local.set_sensitive(False)
 
     def next_step(self):
-        self.wizard.db_is_local = self.radio_local.get_active()
+        # self.wizard.db_is_local = self.radio_local.get_active()
         # If we're not connecting to a local, ask for the
         # connection settings
         if not self.wizard.db_is_local:
@@ -181,8 +181,8 @@ class DatabaseLocationStep(BaseWizardStep):
 
         return self.wizard.connect_for_settings(self)
 
-    def on_radio_local__activate(self, radio):
-        self.wizard.go_to_next()
+    # def on_radio_local__activate(self, radio):
+    #     self.wizard.go_to_next()
 
     def on_radio_network__activate(self, radio):
         self.wizard.go_to_next()
