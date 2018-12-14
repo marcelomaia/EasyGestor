@@ -176,27 +176,24 @@ class NFeContract(Domain):
     """
     implements(IDescribable)
 
-    (NFE100,
-     NFE200,
-     NFCE300,
-     NFCE600,
-     NFE_LICENCIAMENTO,
-     NCFE_LICENCIAMENTO) = range(6)
+    (NF50,
+     NF100,
+     NF200,
+     NF300,
+     NF_LICENCIAMENTO) = range(5)
 
-    contract_values = {NFE100: 100,
-                       NFE200: 200,
-                       NFCE300: 300,
-                       NFCE600: 600,
-                       NFE_LICENCIAMENTO: 10000,
-                       NCFE_LICENCIAMENTO: 10000}
+    contract_values = {NF50: 50,
+                       NF100: 100,
+                       NF200: 200,
+                       NF300: 300,
+                       NF_LICENCIAMENTO: 10000}
 
     contract_types = {
-        NFE100: '100 -- NFes mensais',
-        NFE200: '200 -- NFes mensais',
-        NFCE300: '300 -- NFCes mensais',
-        NFCE600: '600 -- NFCes mensais',
-        NFE_LICENCIAMENTO: 'LICENCIAMENTO NFe',
-        NCFE_LICENCIAMENTO: 'LICENCIAMENTO NFCe'
+        NF50: '50 -- NFes e NFCes mensais',
+        NF100: '100 -- NFes e NFCes mensais',
+        NF200: '200 -- NFes e NFCes mensais',
+        NF300: '300 -- NFes e NFCes mensais',
+        NF_LICENCIAMENTO: 'LICENCIAMENTO NF'
     }
 
     key = UnicodeCol(default='')
