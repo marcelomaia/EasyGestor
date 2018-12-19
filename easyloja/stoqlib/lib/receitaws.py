@@ -62,7 +62,7 @@ class CompanyData(object):
     def __init__(self, cnpj):
         url = 'https://www.receitaws.com.br/v1/cnpj/{cnpj}'.format(
             cnpj=extract_digits(cnpj))
-        r = requests.get(url, timeout=3)
+        r = requests.get(url, timeout=60)
         self.data = r.json()
 
     def _get_responsible_name(self, data):
