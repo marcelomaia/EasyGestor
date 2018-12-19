@@ -20,7 +20,7 @@
 ## Foundation, Inc., or visit: http://www.gnu.org/.
 ##
 """Company template editor"""
-
+from stoqlib.database.orm import STARTSWITH, LIKE, OR, LOWER
 from kiwi.datatypes import ValidationError
 from kiwi.utils import gsignal
 from stoqlib.api import api
@@ -34,8 +34,11 @@ from stoqlib.lib.validators import (validate_phone_number,
                                     validate_mobile_number,
                                     validate_fancy_name)
 import logging
+import gtk
+from stoqlib.lib.parameters import sysparam
+from kiwi.log import Logger
 _ = stoqlib_gettext
-
+log = Logger("stoq-companytemplate")
 
 class CompanyDocumentsSlave(BaseEditorSlave):
     gsignal('cnpj_search', object)
@@ -58,11 +61,48 @@ class CompanyDocumentsSlave(BaseEditorSlave):
         self.cnpj_lbl.set_label(self.document_l10n.label)
         self.cnpj.set_mask(self.document_l10n.entry_mask)
         self.responsible_cpf.set_mask('000.000.000-00')
-        items = [(cnae.code, cnae)
-                     for cnae in Cnae.select(connection=self.conn)]
-        self.cnae.prefill(items)
+        # self.cnae.set_mask('00.00-0-00')
+
         self.proxy = self.add_proxy(self.model,
                                     CompanyDocumentsSlave.proxy_widgets)
+        if self.model.main_cnae:
+            self.proxy.update('cnae', self.model.main_cnae.code)
+        cnae_completion = gtk.EntryCompletion()
+        liststore = gtk.ListStore(str, object)
+        cnae_completion.set_model(liststore)
+        cnae_completion.set_text_column(0)
+        cnae_completion.connect('match-selected', self.on_completion_match)
+        cnae_completion.set_match_func(self.match_func, None)
+        self.cnae.set_completion(cnae_completion)
+
+    def match_func(self, completion, key_string, iter, data):
+        return True
+
+
+    def on_completion_match(self, completion, model, iter):
+        slug_field = model[iter][1].code or model[iter][1].description
+        current_text = "%s" % slug_field
+        self.cnae.set_text(current_text)
+        self.cnae.activate()
+        cnae = Cnae.selectOneBy(code=current_text, connection=self.conn)
+        if cnae:
+            self.model.main_cnae = cnae.id
+        return True
+
+    def on_cnae__changed(self, entry):
+
+        value = entry.get_text()
+        if len(value) < 2 or not sysparam(self.conn).AUTO_COMPLETE:
+            return
+        clause = OR(STARTSWITH(Cnae.q.code, value), LIKE(LOWER(Cnae.q.description), '%%%s%%' % value.lower(), escape='\\'))
+        results = [item for item in Cnae.select(clause=clause, connection=self.conn)]
+        model = gtk.ListStore(str, object)
+        for cnae in results:
+            label = '%s -- %s' % (cnae.code, cnae.description)
+            model.append((label, cnae))
+        completion = self.cnae.get_completion()
+        completion.set_model(model)
+
 
     def set_cnpj(self, cnpj):
         import re
@@ -111,6 +151,14 @@ class CompanyDocumentsSlave(BaseEditorSlave):
         if not validate_fancy_name(value):
             return ValidationError(u'O nome fantasia {} é muito grande'.format(value))
 
+    def on_cnae__validate(self, widget, value):
+        if self.cnae.is_empty():
+            return
+        items = [cnae.code
+                 for cnae in Cnae.select(connection=self.conn)]
+        if value not in items:
+            return ValidationError(_('%s is not a valid cnae') % value)
+
     def on_search_cnpj__clicked(self, *args):
         cnpj = self.cnpj.read()
         cnpj = ''.join([p for p in cnpj if p in '0123456789'])
@@ -121,13 +169,14 @@ class CompanyDocumentsSlave(BaseEditorSlave):
             responsible = data.get('responsible_name')
             social_capital = data.get('social_capital')
             main_cnae_code = data.get('main_cnae_code')
-            cnae = Cnae.selectOneBy(code=main_cnae_code, connection=self.conn)
+            # cnae = Cnae.selectOneBy(code=main_cnae_code, connection=self.conn)
             if not fancy_name:
                 fancy_name = data.get('company_name')
             self.fancy_name.update(fancy_name)
             self.responsible_name.update(responsible)
             self.social_capital.update(social_capital)
-            self.cnae.update(cnae)
+            self.cnae.update(main_cnae_code)
+            # self.model.main_cnae = cnae.id
             self.emit('cnpj_search', data)
 
 

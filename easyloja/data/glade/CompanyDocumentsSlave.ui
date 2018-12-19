@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <interface>
-  <!-- interface-requires gtk+ 2.12 -->
   <!-- interface-requires kiwiwidgets 0.0 -->
+  <!-- interface-requires gtk+ 2.12 -->
   <!-- interface-naming-policy toplevel-contextual -->
   <object class="GtkWindow" id="CompanyDocumentsSlave">
     <property name="can_focus">False</property>
@@ -9,7 +9,7 @@
       <object class="GtkTable" id="table1">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
-        <property name="n_rows">7</property>
+        <property name="n_rows">8</property>
         <property name="n_columns">4</property>
         <property name="column_spacing">5</property>
         <property name="row_spacing">5</property>
@@ -362,19 +362,6 @@
           </packing>
         </child>
         <child>
-          <object class="ProxyLabel" id="label6">
-            <property name="visible">True</property>
-            <property name="can_focus">False</property>
-            <property name="label" translatable="yes">CNAE principal:</property>
-          </object>
-          <packing>
-            <property name="left_attach">2</property>
-            <property name="right_attach">3</property>
-            <property name="top_attach">2</property>
-            <property name="bottom_attach">3</property>
-          </packing>
-        </child>
-        <child>
           <object class="ProxyLabel" id="kiwilabel3">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
@@ -407,18 +394,39 @@
           </packing>
         </child>
         <child>
-          <object class="ProxyComboBox" id="cnae">
+          <object class="ProxyLabel" id="cna">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
-            <property name="data_type">object</property>
-            <property name="model_attribute">cnae</property>
+            <property name="label" translatable="yes">CNAE principal</property>
           </object>
           <packing>
-            <property name="left_attach">3</property>
-            <property name="right_attach">4</property>
-            <property name="top_attach">2</property>
-            <property name="bottom_attach">3</property>
+            <property name="top_attach">7</property>
+            <property name="bottom_attach">8</property>
           </packing>
+        </child>
+        <child>
+          <object class="ProxyEntry" id="cnae">
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="invisible_char">•</property>
+            <property name="primary_icon_activatable">False</property>
+            <property name="secondary_icon_activatable">False</property>
+            <property name="primary_icon_sensitive">True</property>
+            <property name="secondary_icon_sensitive">True</property>
+            <property name="data_type">unicode</property>
+          </object>
+          <packing>
+            <property name="left_attach">1</property>
+            <property name="right_attach">4</property>
+            <property name="top_attach">7</property>
+            <property name="bottom_attach">8</property>
+          </packing>
+        </child>
+        <child>
+          <placeholder/>
+        </child>
+        <child>
+          <placeholder/>
         </child>
         <child>
           <placeholder/>
