@@ -1,0 +1,8 @@
+[Plugin]
+Module=relatorioplugin
+Version=1
+Name=Relatorio
+Name[pt_BR]=Relatorio
+Authors=EBI
+Copyright=Copyright © 2016 EBI - Empresa Brasileira de Informatica
+Website=http://www.ebi.com.br/

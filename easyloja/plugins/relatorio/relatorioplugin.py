@@ -7,22 +7,22 @@ from zope.interface import implements
 
 plugin_root = os.path.dirname(__file__)
 sys.path.append(plugin_root)
-from impnf_ui import ImpnfUI
+from relatorio_ui import RelatorioUI
 
 
-class ImpnfPlugin():
+class RelatorioPlugin():
     implements(IPlugin)
-    name = "impnf2"
+    name = "relatorio"
     has_product_slave = False
 
     def activate(self):
-        self.ui = ImpnfUI()
+        self.ui = RelatorioUI()
 
     def get_migration(self):
         pass
 
     def get_tables(self):
-        return [('impnfdomain', ["Impnf"])]
+        return
 
 
-register_plugin(ImpnfPlugin)
+register_plugin(RelatorioPlugin)

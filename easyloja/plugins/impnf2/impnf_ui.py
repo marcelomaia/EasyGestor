@@ -29,9 +29,8 @@ from stoqlib.lib.pluginmanager import get_plugin_manager
 
 from impnfdialog import RemotePrinterListDialog, ReprintSaleDialog, DateDialog, CancelSaleDialog
 from impnfdomain import Impnf
-from pdfbuilder import (build_sale_document, in_out_payment_report, build_tab_document,
-                        in_payment_report, gerencial_report, salesperson_stock_report,
-                        salesperson_financial_report, out_payment_report)
+from pdfbuilder_impnf2 import (in_out_payment_report, build_sale_document, build_tab_document,
+                               in_payment_report, out_payment_report)
 
 log = Logger("stoq-impnf-plugin")
 
@@ -71,9 +70,6 @@ class ImpnfUI(object):
             <placeholder name="ExtraMenu">
               <menu action="ImpnfRemotaMenu">
                 <menuitem action="ReimprimirNotaNF" name="ReimprimirNotaNF"/>
-                <menuitem action="RelatorioDeVendasNF" name="RelatorioDeVendasNF"/>
-                <menuitem action="RelatorioDeVendasNF2" name="RelatorioDeVendasNF2"/>
-                <menuitem action="RelatorioGerencial" name="RelatorioGerencial"/>
                 <menuitem action="CancelarVenda" name="CancelarVenda"/>
               </menu>
             </placeholder>
@@ -85,12 +81,6 @@ class ImpnfUI(object):
             ('ImpnfRemotaMenu', None, 'Módulo controle'),
             ('ReimprimirNotaNF', gtk.STOCK_PRINT, 'Reimprimir Nota',
              None, None, self._on_ReimprimirNotaNF__activate),
-            ('RelatorioDeVendasNF', STOQ_DOLLAR, 'Relatorio de vendas de produtos',
-             None, None, self._on_PrinterStockReportEvent),
-            ('RelatorioDeVendasNF2', STOQ_DOLLAR, 'Relatorio de faturamento de caixa',
-             None, None, self._on_PrinterFinancialReportEvent),
-            ('RelatorioGerencial', STOQ_DOLLAR, 'Relatorio geral de faturamento  e produtos',
-             None, None, self._on_PrinterGerencialReportEvent),
             ('CancelarVenda', gtk.STOCK_CANCEL, 'Cancelar nota',
              None, None, self._on_CancelarNota__activate),
         ])
@@ -245,32 +235,6 @@ class ImpnfUI(object):
         info("Documento #{} foi cancelado".format(sale.id))
         trans.commit()
         trans.close()
-
-    def _on_PrinterStockReportEvent(self, arg):
-        log.debug('{} solicitou relatorio de estoque'.format(get_current_user(self.conn).username))
-        dates = self._get_open_and_close_date()
-        if dates:
-            open_date, close_date = dates
-            filename = salesperson_stock_report(open_date, close_date, self.conn)
-            self.print_file(filename)
-
-    def _on_PrinterFinancialReportEvent(self, arg):
-        log.debug('{} solicitou relatorio financeiro'.format(get_current_user(self.conn).username))
-        dates = self._get_open_and_close_date()
-        if dates:
-            open_date, close_date = dates
-            filename = salesperson_financial_report(open_date, close_date, self.conn)
-            self.print_file(filename)
-
-    @permission_required('nonfiscal_report')
-    def _on_PrinterGerencialReportEvent(self, arg):
-        log.debug('{} solicitou relatorio financeiro e estoque'.format(
-            get_current_user(self.conn).username))
-        dates = self._get_open_and_close_date()
-        if dates:
-            od, cd = dates
-            filename = gerencial_report(od, cd, self.conn)
-            self.print_file(filename)
 
     def _on_ConfigureRemotePrinter__activate(self):
         run_dialog(RemotePrinterListDialog, None)

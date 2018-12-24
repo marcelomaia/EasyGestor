@@ -84,9 +84,7 @@ class CompanyDocumentsSlave(BaseEditorSlave):
         current_text = "%s" % slug_field
         self.cnae.set_text(current_text)
         self.cnae.activate()
-        cnae = Cnae.selectOneBy(code=current_text, connection=self.conn)
-        if cnae:
-            self.model.main_cnae = cnae.id
+        self._set_cnae(current_text)
         return True
 
     def on_cnae__changed(self, entry):
@@ -103,6 +101,10 @@ class CompanyDocumentsSlave(BaseEditorSlave):
         completion = self.cnae.get_completion()
         completion.set_model(model)
 
+    def _set_cnae(self, code):
+        cnae = Cnae.selectOneBy(code=code, connection=self.conn)
+        if cnae:
+            self.model.main_cnae = cnae.id
 
     def set_cnpj(self, cnpj):
         import re
@@ -169,14 +171,13 @@ class CompanyDocumentsSlave(BaseEditorSlave):
             responsible = data.get('responsible_name')
             social_capital = data.get('social_capital')
             main_cnae_code = data.get('main_cnae_code')
-            # cnae = Cnae.selectOneBy(code=main_cnae_code, connection=self.conn)
             if not fancy_name:
                 fancy_name = data.get('company_name')
             self.fancy_name.update(fancy_name)
             self.responsible_name.update(responsible)
             self.social_capital.update(social_capital)
             self.cnae.update(main_cnae_code)
-            # self.model.main_cnae = cnae.id
+            self._set_cnae(main_cnae_code)
             self.emit('cnpj_search', data)
 
 
