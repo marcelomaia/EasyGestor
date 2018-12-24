@@ -62,6 +62,7 @@ from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.pluginmanager import get_plugin_manager
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.lib.validators import validate_cpf, validate_cnpj, validate_phone_number, validate_email
+from stoqlib.domain.till import Till
 
 _ = stoqlib_gettext
 INTERVALTYPE_ONCE = -1
@@ -408,8 +409,15 @@ class PaymentEditor(BaseEditor):
     #
 
     def on_value__validate(self, widget, newvalue):
+        till = Till.get_current(self.conn)
+        if newvalue > till.get_cash_amount():
+            return ValidationError(_("You can not specify an amount "
+                                     "removed greater than the "
+                                     "till balance.")) 
         if newvalue is None or newvalue <= 0:
             return ValidationError(_("The value must be greater than zero."))
+
+        
 
     def on_repeat__content_changed(self, repeat):
         self.end_date.set_sensitive(repeat.get_selected() != INTERVALTYPE_ONCE)
