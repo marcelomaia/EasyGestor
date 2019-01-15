@@ -258,7 +258,7 @@ def _set_payments_data(story, entry_quantity):
                            header_items_c))
     for payment in d_sorted_by_value_payments:
         payment_total += payment[1]
-        story.append(Paragraph('{method} : <b>{value}</b>'.format(method=payment[0],
+        story.append(Paragraph('{method} : <b>R$ {value}</b>'.format(method=payment[0],
                                                                   value=payment[1]),
                                header_items_l))
     story.append(Paragraph('<b>Total: {total}</b>'.
@@ -285,7 +285,6 @@ def _set_sangrias(story, open_date, close_date, station):
                            header_items_c))
     try:
         for value, description in [(p.value, p.description) for p in despesa_results]:
-            log.debug('sangria value: {}'.format(value))
             sangria_valor += value
             story.append(Paragraph('{description}: <b>{value}</b>\n'.format(description=description, value=value),
                                    header_items_l))
@@ -441,6 +440,13 @@ def gerencial_report(open_date, close_date, conn):
         story.append(Image(logotype_path, width=logo_width, height=logo_height))
 
     story = _get_story(company, 'RELATORIO GERAL CAIXA+PRODUTOS VENDIDOS')
+    story.append(Paragraph('Início: {open_date}'
+                           .format(open_date=open_date.strftime('%d/%m/%Y %X')),
+                           header_items_l))
+    story.append(Paragraph('Fim: {close_date}'
+                           .format(close_date=close_date.strftime('%d/%m/%Y %X')),
+                           header_items_l))
+    story.append(ReportLine())
     till_history = TillFiscalOperationsView.select(
         AND(TillFiscalOperationsView.q.date >= open_date,
             TillFiscalOperationsView.q.date <= close_date),

@@ -68,9 +68,11 @@ class RelatorioUI(object):
         uimanager.add_ui_from_string(ui_string)
 
     # def _get_default_printer(self):
-    #     return Impnf.selectOneBy(is_default=True,
-    #                              station=get_current_station(self.conn),
-    #                              connection=self.conn)
+    #     plugin_manager = get_plugin_manager()
+    #     if manager.is_active('impnf') or manager.is_active('impnf2'):
+    #         return Impnf.selectOneBy(is_default=True,
+    #                                 station=get_current_station(self.conn),
+    #                                 connection=self.conn)
 
     def print_file(self, filename):
         if platform.system() == 'Windows':
@@ -86,26 +88,35 @@ class RelatorioUI(object):
         usando agora o SumatraPDF
         https://www.sumatrapdfreader.org/docs/Command-line-arguments-0c53a79e91394eccb7535ef6fed0678e.html
         """
-        (SUMATRA, LEITOR, DIALOGO) = range(1, 4)
-        spooler_mode = sysparam(conn=self.conn).TIPO_IMPRESSAO_SPOOLER
+        manager = get_plugin_manager()
+        if manager.is_active('impnf') or manager.is_active('impnf2'):
+            (SUMATRA, LEITOR, DIALOGO) = range(1, 4)
+            spooler_mode = sysparam(conn=self.conn).TIPO_IMPRESSAO_SPOOLER
 
-        sumatra_path = environ.find_resource('sumatraPDF', 'SumatraPDF.exe')
-        printer = self._get_default_printer()
-        if not printer:
-            # info('Nao tem impressora configurada')
-            return
-        time.sleep(2)
+            sumatra_path = environ.find_resource('sumatraPDF', 'SumatraPDF.exe')
+            printer = self._get_default_printer()
+            if not printer:
+                # info('Nao tem impressora configurada')
+                return
+            time.sleep(2)
 
-        if spooler_mode == LEITOR:
-            return self._print_on_spooler2(filename)
+            if spooler_mode == LEITOR:
+                return self._print_on_spooler2(filename)
 
-        if os.path.exists(filename):
-            cmd = '"{exe}" -print-to "{printer}" "{fname}"'.format(exe=sumatra_path,
-                                                                   printer=printer.spooler_printer,
-                                                                   fname=filename)
-            if spooler_mode == DIALOGO:
-                cmd = '"{exe}" -print-dialog "{fname}"'.format(exe=sumatra_path,
-                                                               fname=filename)
+            if os.path.exists(filename):
+                cmd = '"{exe}" -print-to "{printer}" "{fname}"'.format(exe=sumatra_path,
+                                                                    printer=printer.spooler_printer,
+                                                                    fname=filename)
+                if spooler_mode == DIALOGO:
+                    cmd = '"{exe}" -print-dialog "{fname}"'.format(exe=sumatra_path,
+                                                                fname=filename)
+                log.debug('executing command: {cmd}'.format(cmd=cmd))
+                # https://docs.python.org/2/library/subprocess.html#subprocess.Popen
+                proc = subprocess.Popen(cmd, shell=False, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+        else:
+            sumatra_path = environ.find_resource('sumatraPDF', 'SumatraPDF.exe')
+            cmd = '"{exe}" -print-dialog "{fname}"'.format(exe=sumatra_path,
+                                                            fname=filename)
             log.debug('executing command: {cmd}'.format(cmd=cmd))
             # https://docs.python.org/2/library/subprocess.html#subprocess.Popen
             proc = subprocess.Popen(cmd, shell=False, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
@@ -137,13 +148,13 @@ class RelatorioUI(object):
                 log.debug("ShellExecute Error: code: %s, printer: %s, filename: %s" %
                           (retval, printer, filename))
 
-    def _print_sale(self, sale):
-        filename = build_sale_document(sale, self.conn)
-        self.print_file(filename)
-
-    def _print_tab(self, sale):
-        filename = build_tab_document(sale)
-        self.print_file(filename)
+    # def _print_sale(self, sale):
+    #     filename = build_sale_document(sale, self.conn)
+    #     self.print_file(filename)
+    #
+    # def _print_tab(self, sale):
+    #     filename = build_tab_document(sale)
+    #     self.print_file(filename)
 
     def _get_open_and_close_date(self):
         model = run_dialog(DateDialog, get_current_toplevel(), self.conn)
