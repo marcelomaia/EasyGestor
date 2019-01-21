@@ -8,6 +8,7 @@ import time
 import platform
 from kiwi.environ import environ
 import datetime
+from kiwi.ui.dialogs import info
 from kiwi.log import Logger
 from stoqlib.database.runtime import (get_connection, get_current_station, get_current_user, new_transaction)
 from stoqlib.domain.payment.operation import register_payment_operations
@@ -20,10 +21,18 @@ from stoqlib.lib.pluginmanager import get_plugin_manager
 from pdfbuilder_relatorio import (gerencial_report, salesperson_stock_report,
                                   salesperson_financial_report)
 from relatoriodialog import DateDialog
+from stoqlib.reporting.financialreport import FinancialReport
+from stoqlib.domain.payment.views import FaturamentoSearch
+from stoqlib.gui.dialogs.datepicker import PaymentRevenueDialog
+import tempfile
+
 log = Logger("stoq-relatorio-plugin")
 
-plugin_root = os.path.dirname(__file__)
-sys.path.append(plugin_root)
+# plugin_root = os.path.dirname(__file__)
+# sys.path.append(plugin_root)
+impnf2_root = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'impnf2'))
+sys.path.append(impnf2_root)
+from impnfdomain import Impnf
 
 
 class RelatorioUI(object):
@@ -49,6 +58,7 @@ class RelatorioUI(object):
                 <menuitem action="RelatorioDeVendasNF" name="RelatorioDeVendasNF"/>
                 <menuitem action="RelatorioDeVendasNF2" name="RelatorioDeVendasNF2"/>
                 <menuitem action="RelatorioGerencial" name="RelatorioGerencial"/>
+                <menuitem action="RelatorioGerencial2" name="RelatorioGerencial2"/>
               </menu>
             </placeholder>
           </menubar>
@@ -63,16 +73,18 @@ class RelatorioUI(object):
              None, None, self._on_PrinterFinancialReportEvent),
             ('RelatorioGerencial', STOQ_DOLLAR, 'Relatorio geral de faturamento  e produtos',
              None, None, self._on_PrinterGerencialReportEvent),
+            ('RelatorioGerencial2', STOQ_DOLLAR, 'Relatorio geral de faturamento',
+             None, None, self._on_TillRevenue),
         ])
         uimanager.insert_action_group(ag, 0)
         uimanager.add_ui_from_string(ui_string)
 
-    # def _get_default_printer(self):
-    #     plugin_manager = get_plugin_manager()
-    #     if manager.is_active('impnf') or manager.is_active('impnf2'):
-    #         return Impnf.selectOneBy(is_default=True,
-    #                                 station=get_current_station(self.conn),
-    #                                 connection=self.conn)
+    def _get_default_printer(self):
+        plugin_manager = get_plugin_manager()
+        if plugin_manager.is_active('impnf') or plugin_manager.is_active('impnf2'):
+            return Impnf.selectOneBy(is_default=True,
+                                    station=get_current_station(self.conn),
+                                    connection=self.conn)
 
     def print_file(self, filename):
         if platform.system() == 'Windows':
@@ -96,7 +108,7 @@ class RelatorioUI(object):
             sumatra_path = environ.find_resource('sumatraPDF', 'SumatraPDF.exe')
             printer = self._get_default_printer()
             if not printer:
-                # info('Nao tem impressora configurada')
+                info('Nao tem impressora configurada')
                 return
             time.sleep(2)
 
@@ -126,7 +138,10 @@ class RelatorioUI(object):
         :param filename:
         :return:
         """
-        import win32api
+        try:
+            import win32api
+        except ImportError:
+            pass
         printer = self._get_default_printer()
         if not printer:
             info('Nao tem impressora configurada')
@@ -194,3 +209,20 @@ class RelatorioUI(object):
             od, cd = dates
             filename = gerencial_report(od, cd, self.conn)
             self.print_file(filename)
+
+
+    @permission_required('nonfiscal_report')
+    def _on_TillRevenue(self, button):
+        date = run_dialog(PaymentRevenueDialog, get_current_toplevel(), self.conn)
+        payments = FaturamentoSearch(self.conn, date.start_date, date.end_date)
+        payment_dict = {'saida': payments.saida,
+                        'entrada': payments.entrada}
+        pdf_path = '{}.pdf'.format(tempfile.mktemp())
+        f = FinancialReport(pdf_path, payment_dict, date.start_date, date.end_date)
+        f.save()
+        sumatra_path = environ.find_resource('sumatraPDF', 'SumatraPDF.exe')
+        cmd = '"{exe}" -print-dialog "{fname}"'.format(exe=sumatra_path,
+                                                       fname=pdf_path)
+        log.debug('executing command: {cmd}'.format(cmd=cmd))
+        # https://docs.python.org/2/library/subprocess.html#subprocess.Popen
+        proc = subprocess.Popen(cmd, shell=False, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)

@@ -124,7 +124,7 @@ class ContractEditor(BaseEditor):
 
     def create_model(self, trans):
         return NFeContract(key=u'',
-                           contract=NFeContract.NFCE300,
+                           contract=NFeContract.NF50,
                            company=None,
                            start_date=datetime.datetime.today(),
                            end_date=datetime.datetime.today() + datetime.timedelta(days=182),

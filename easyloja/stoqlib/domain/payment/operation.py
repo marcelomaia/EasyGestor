@@ -190,7 +190,7 @@ class StoreCreditPaymentOperation(object):
     implements(IPaymentOperation)
 
     description = _(u'Store Credit')
-    max_installments = 1
+    max_installments = 12
 
     #
     # IPaymentOperation

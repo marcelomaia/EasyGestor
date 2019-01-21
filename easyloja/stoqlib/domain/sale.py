@@ -599,6 +599,7 @@ class Sale(Domain):
         """Only confirmed sales can be paid
         @returns: True if the sale can be set as paid, otherwise False
         """
+        print "status: {}".format(self.status)
         return self.status == Sale.STATUS_CONFIRMED
 
     def can_set_not_paid(self):
@@ -719,7 +720,7 @@ class Sale(Domain):
         Marking a sale as paid means that all the payments have been received.
         """
         assert self.can_set_paid()
-
+        print ('status ===== {}'.format(self.status))
         for payment in self.group.payments:
             if not payment.is_paid():
                 raise StoqlibError(

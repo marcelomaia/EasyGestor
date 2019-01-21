@@ -185,6 +185,7 @@ class PaymentEditor(BaseEditor):
             facet = self.person_iface(person)
             self.person.prefill([(facet.person.name, facet)])
             self.person.select(facet)
+            self.category.update(facet.person.get_default_category())
             return
         if self.person_class == PersonAdaptToSupplier:
             facets = self.person_class.get_active_suppliers(self.trans)
@@ -410,10 +411,11 @@ class PaymentEditor(BaseEditor):
 
     def on_value__validate(self, widget, newvalue):
         till = Till.get_current(self.conn)
-        if newvalue > till.get_cash_amount():
-            return ValidationError(_("You can not specify an amount "
-                                     "removed greater than the "
-                                     "till balance.")) 
+        if till:
+            if newvalue > till.get_cash_amount():
+                return ValidationError(_("You can not specify an amount "
+                                         "removed greater than the "
+                                         "till balance."))
         if newvalue is None or newvalue <= 0:
             return ValidationError(_("The value must be greater than zero."))
 

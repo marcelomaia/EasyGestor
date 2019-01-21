@@ -24,7 +24,7 @@
 """Extra flowable implementation.
    The flowable alignment constants are defined here too.
 """
-
+import collections
 from xml.sax.saxutils import escape as xml_escape
 
 from reportlab.lib.units import mm
@@ -329,9 +329,16 @@ class Paragraph(RParagraph):
             style = self.style
             max_width = (width - (style.leftIndent + style.firstLineIndent)
                          - style.rightIndent)
+
             for frag in self.frags:
-                total_width += stringWidth(frag.text, frag.fontName,
-                                           frag.fontSize)
+                if isinstance(frag, collections.Sequence) and not isinstance(frag, basestring):
+                    for i in frag[1:]:
+                            total_width += stringWidth(i[0].text, i[0].fontName,
+                                                       i[0].fontSize)
+                else:
+                    total_width += stringWidth(frag.text, frag.fontName,
+                                               frag.fontSize)
+
                 first_line_frags.append(frag)
                 if total_width > max_width:
                     self._first_line_frags = [total_width, first_line_frags]

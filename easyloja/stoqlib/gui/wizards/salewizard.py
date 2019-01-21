@@ -273,7 +273,7 @@ class SalesPersonStep(BaseMethodSelectionStep, WizardEditorStep):
     def __init__(self, wizard, conn, model, payment_group,
                  invoice_model):
         self.invoice_model = invoice_model
-
+        self.pm_slave = None
         self.payment_group = payment_group
         marker("WizardEditorStep.__init__")
         WizardEditorStep.__init__(self, conn, wizard, model)
@@ -293,8 +293,9 @@ class SalesPersonStep(BaseMethodSelectionStep, WizardEditorStep):
 
     def _update_widgets(self):
         has_client = bool(self.model.client)
-        self.pm_slave.method_set_sensitive('store_credit', has_client)
-        self.pm_slave.method_set_sensitive('bill', has_client)
+        if self.pm_slave:
+            self.pm_slave.method_set_sensitive('store_credit', has_client)
+            self.pm_slave.method_set_sensitive('bill', has_client)
 
     def _fill_clients_combo(self):
         marker('Filling clients')

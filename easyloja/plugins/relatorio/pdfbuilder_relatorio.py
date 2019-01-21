@@ -91,7 +91,7 @@ header_items_d = PS(name='HeaderItems',
                     )
 
 items_1 = PS(name='Items',
-             fontSize=7,
+             fontSize=9,
              leading=10,
              alignment=TA_LEFT, )
 

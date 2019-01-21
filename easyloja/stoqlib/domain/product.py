@@ -562,7 +562,13 @@ class ProductStockItem(Domain):
         total_cost = self.quantity * self.stock_cost
         total_cost += new_quantity * new_cost
         total_items = self.quantity + new_quantity
-        self.stock_cost = total_cost / total_items
+        from kiwi.log import Logger
+        log = Logger("produtos")
+        log.debug('total items {}'.format(total_items))
+        if total_items != 0:
+            self.stock_cost = total_cost / total_items
+        else:
+            self.stock_cost = 0
 
 
 class ProductInitialStock(Domain):

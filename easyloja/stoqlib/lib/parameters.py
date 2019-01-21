@@ -835,7 +835,28 @@ _details = [
         int, initial=1, options={1: 'Sumatra PDF',
                                  2: 'Leitor padrão PDF',
                                  3: 'Diálogo de impressão'}),
+    ParameterDetails(
+        'TIPO_CERTIFICADO',
+        _('General'),
+        'Tipo de certificado',
+        '1=Certificado A1\n'
+        '2=Certificado A3\n',
+        int, initial=1, options={1: 'Certificado A1',
+                                 2: 'Certificado A3'}),
 
+    ParameterDetails(
+        'PATH_ENVIO_RETORNO',
+        _('NFe'),
+        _('Pasta de envio e retorno dos xmls das notas fiscais. '),
+        _('Estas devem estar separadas por ponto e vírgula (;) na ordem: envio;retorno'),
+        str, initial='/'),
+
+    ParameterDetails(
+        'ID_ESCRITORIO_CONTABILIDADE',
+        _('NFe'),
+        _('Identificação do Escritório de Contabilidade '),
+        _('CNPJ/CPF somente números. '),
+        str, initial=''),
 ]
 
 
