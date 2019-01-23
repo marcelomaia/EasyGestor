@@ -35,6 +35,7 @@ from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.reporting.base.default_style import TABLE_LINE_BLANK
 from stoqlib.reporting.base.tables import (TableColumn as TC, HIGHLIGHT_NEVER)
 from stoqlib.reporting.template import BaseStoqReport
+import datetime
 
 _ = stoqlib_gettext
 
@@ -54,7 +55,7 @@ class BasePaymentReceipt(BaseStoqReport):
         self.identify_drawee()
         self.add_blank_space()
         self.identify_recipient()
-        self.add_signature()
+        #self.add_signature()
 
         # Create separator to cut the receipt copy.
         self.add_line(dash_pattern=1)
@@ -67,7 +68,7 @@ class BasePaymentReceipt(BaseStoqReport):
             self.identify_drawee()
             self.add_blank_space()
             self.identify_recipient()
-            self.add_signature()
+            #self.add_signature()
 
     def get_recipient(self):
         """This should be implemented in subclasses"""
@@ -92,13 +93,14 @@ class BasePaymentReceipt(BaseStoqReport):
             value = 0.0
         cols = [TC('', style='Normal-Bold', width=150),
                 TC('', expand=True, truncate=True)]
-
+        due_date_format = self.payment.due_date
         data.extend([
             [_("The importance of:"), 'R$ %s (%s)' % (currency(value), get_price_cardinal(value).upper())],
             [_("Referring to:"), self.payment.description],
+            [_("Vencimento:"), due_date_format.strftime('%d/%m/%Y')],
         ])
 
-        self.add_paragraph(_('Drawee'), style='Normal-Bold')
+        # self.add_paragraph(_('Drawee'), style='Normal-Bold')
         self.add_column_table(data, cols, do_header=False,
                               highlight=HIGHLIGHT_NEVER,
                               table_line=TABLE_LINE_BLANK)
@@ -118,7 +120,7 @@ class BasePaymentReceipt(BaseStoqReport):
         cols = [TC('', style='Normal-Bold', width=150),
                 TC('', expand=True, truncate=True)]
 
-        self.add_paragraph(_('Recipient'), style='Normal-Bold')
+        # self.add_paragraph(_('Recipient'), style='Normal-Bold')
         data = [
             [_("Recipient:"), name],
             [_("CPF/CNPJ/RG:"), document],
@@ -150,6 +152,7 @@ class BasePaymentReceipt(BaseStoqReport):
             discount,
             paid_value,
             self.receipt_date.strftime('%x'))
+        print (discount,paid_value)
         if not self.payment.discount:
             title = 'Recibo: {}; Valor: R$ {}; Data: {}'.format(
                 self.payment.get_payment_number_str(),
@@ -203,7 +206,7 @@ class InPaymentReceipt(BasePaymentReceipt):
         cols = [TC('', style='Normal-Bold', width=150),
                 TC('', expand=True, truncate=True)]
 
-        self.add_paragraph(_('Recipient'), style='Normal-Bold')
+        # self.add_paragraph(_('Recipient'), style='Normal-Bold')
         data = [
             [_("Recipient:"), name],
             [_("CPF/CNPJ/RG:"), document],
@@ -218,8 +221,8 @@ class InPaymentReceipt(BasePaymentReceipt):
             self.add_paragraph(_('Vendedor'), style='Normal-Bold')
             data = [
                 [_("Nome:"), person_salesperson.name],
-                [_("Fone:"), format_phone_number(person_salesperson.phone_number)],
-                [_("Celular:"), format_phone_number(person_salesperson.mobile_number)],
+                # [_("Fone:"), format_phone_number(person_salesperson.phone_number)],
+                # [_("Celular:"), format_phone_number(person_salesperson.mobile_number)],
             ]
             self.add_column_table(data, cols, do_header=False,
                                   highlight=HIGHLIGHT_NEVER,
@@ -249,3 +252,4 @@ class OutPaymentReceipt(BasePaymentReceipt):
         else:
             drawee = self.payment.group.recipient
         return drawee
+
