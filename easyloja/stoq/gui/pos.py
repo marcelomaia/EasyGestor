@@ -1443,11 +1443,14 @@ class PosApp(AppWindow):
                 return
         trans = new_transaction()
         payment = run_dialog(InPaymentEditor, get_current_toplevel(), trans)
+        from stoqlib.domain.payment.payment import Payment
+
         if payment:
             till = Till.get_current(trans)
             category_name = ''
             payments = [payment]
-            description = payment.description
+            description = "Suprimento: {}".format(payment.description)
+            payment.set(description=description)
             category = payment.category
             if category:
                 category_name = category.name
@@ -1477,7 +1480,8 @@ class PosApp(AppWindow):
             category_name = ''
             till = Till.get_current(trans)
             payments = [payment]
-            description = payment.description
+            description = "Despesa: {}".format(payment.description)
+            payment.set(description=description)
             category = payment.category
             if category:
                 category_name = category.name

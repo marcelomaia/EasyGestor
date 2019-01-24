@@ -63,7 +63,7 @@ from stoqlib.lib.pluginmanager import get_plugin_manager
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.lib.validators import validate_cpf, validate_cnpj, validate_phone_number, validate_email
 from stoqlib.domain.till import Till
-
+from stoqlib.domain.person import PersonCategoryPaymentInfo
 _ = stoqlib_gettext
 INTERVALTYPE_ONCE = -1
 INTERVALTYPE_BIWEEKLY = 10
@@ -185,7 +185,11 @@ class PaymentEditor(BaseEditor):
             facet = self.person_iface(person)
             self.person.prefill([(facet.person.name, facet)])
             self.person.select(facet)
-            self.category.update(facet.person.get_default_category())
+            id_person_category = facet.person.get_default_category()
+            person_category = PersonCategoryPaymentInfo.selectBy(connection=self.conn, id=id_person_category)
+            for person in person_category:
+                category = person.payment_category
+                self.category.update(category)
             return
         if self.person_class == PersonAdaptToSupplier:
             facets = self.person_class.get_active_suppliers(self.trans)
