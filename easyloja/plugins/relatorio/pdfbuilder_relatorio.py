@@ -8,7 +8,7 @@ from reportlab.platypus import Image
 from reportlab.platypus.doctemplate import PageTemplate, BaseDocTemplate
 from reportlab.platypus.frames import Frame
 from reportlab.platypus.paragraph import Paragraph
-from stoqlib.database.orm import AND, OR, LIKE
+from stoqlib.database.orm import AND, OR, LIKE, NOT
 from stoqlib.database.runtime import get_current_user, get_current_branch, get_current_station, get_connection
 from stoqlib.domain.interfaces import IIndividual, ICompany, ISalesPerson
 from stoqlib.domain.payment.payment import Payment
@@ -194,9 +194,19 @@ def _get_story(company, h1_text):
 
 
 def _get_till_history(open_date, close_date, salesperson, conn):
+    despesa_src_str = '%%%s%%' % 'Despesa:'
+    quantia_removida_src_str = '%%%s%%' % 'Quantia removida'
+    suprimento_src_str = '%%%s%%' % 'Suprimento:'
+    caixa_iniciado_str = '%%%s%%' % 'Caixa iniciado'
     station = get_current_station(conn)
     till_history = TillFiscalOperationsView.select(
-        AND(TillFiscalOperationsView.q.date >= open_date,
+        AND(NOT(OR(LIKE(TillFiscalOperationsView.q.description, despesa_src_str),
+                   LIKE(TillFiscalOperationsView.q.description, quantia_removida_src_str),
+                   LIKE(TillFiscalOperationsView.q.description, suprimento_src_str),
+                   LIKE(TillFiscalOperationsView.q.description, caixa_iniciado_str)
+                   )),
+            TillFiscalOperationsView.q.value > 0,
+            TillFiscalOperationsView.q.date >= open_date,
             TillFiscalOperationsView.q.date <= close_date,
             TillFiscalOperationsView.q.station_id == station.id,
             TillFiscalOperationsView.q.salesperson_id == salesperson.id),
@@ -279,7 +289,8 @@ def _set_sangrias(story, open_date, close_date, station):
             TillFiscalOperationsView.q.date > open_date,
             TillFiscalOperationsView.q.date <= close_date,
             TillFiscalOperationsView.q.station_id == station.id,
-        ))
+        )
+    )
 
     story.append(Paragraph('SANGRIAS',
                            header_items_c))
@@ -447,8 +458,17 @@ def gerencial_report(open_date, close_date, conn):
                            .format(close_date=close_date.strftime('%d/%m/%Y %X')),
                            header_items_l))
     story.append(ReportLine())
+    despesa_src_str = '%%%s%%' % 'Despesa:'
+    quantia_removida_src_str = '%%%s%%' % 'Quantia removida'
+    suprimento_src_str = '%%%s%%' % 'Suprimento:'
+    caixa_iniciado_str = '%%%s%%' % 'Caixa iniciado'
     till_history = TillFiscalOperationsView.select(
-        AND(TillFiscalOperationsView.q.date >= open_date,
+        AND(NOT(OR(LIKE(TillFiscalOperationsView.q.description, despesa_src_str),
+                   LIKE(TillFiscalOperationsView.q.description, quantia_removida_src_str),
+                   LIKE(TillFiscalOperationsView.q.description, suprimento_src_str),
+                   LIKE(TillFiscalOperationsView.q.description, caixa_iniciado_str)
+                   )),
+            TillFiscalOperationsView.q.date >= open_date,
             TillFiscalOperationsView.q.date <= close_date),
         connection=conn)
 
