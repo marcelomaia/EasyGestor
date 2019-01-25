@@ -83,6 +83,7 @@ class BasePaymentReceipt(BaseStoqReport):
         data = []
         if payer:
             data.extend([
+                [_("Date:"), self.receipt_date.strftime('%x')],
                 [_("I/We Received from:"), payer.name],
                 [_("Address:"), payer.get_address_string()],
             ])
@@ -146,18 +147,17 @@ class BasePaymentReceipt(BaseStoqReport):
         if not self.payment.paid_value:
             paid_value = total_value
         discount = get_formatted_price(self.payment.discount)
-        title = 'Recibo: {}; SubTotal: {} - Desconto: {}  = Total: {}; Data: {}'.format(
+        title = 'Recibo: {}; SubTotal: {} - Desconto: {}  = Total: {}'.format(
             self.payment.get_payment_number_str(),
             total_value,
             discount,
-            paid_value,
-            self.receipt_date.strftime('%x'))
+            paid_value,)
         print (discount,paid_value)
         if not self.payment.discount:
             title = 'Recibo: {}; Valor: R$ {}; Data: {}'.format(
                 self.payment.get_payment_number_str(),
                 paid_value,
-                self.receipt_date.strftime('%x'))
+                self.receipt_date.strftime('%d/%m/%y'))
         return title
 
 
