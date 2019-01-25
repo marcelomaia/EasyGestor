@@ -193,7 +193,9 @@ class BasePriceSuggestionEditor(BaseEditor):
         self.gain.update(0)
         self.others.update(0)
         self.financial.update(0)
-        self.calculate_button.set_tooltip_text('Calcular...')
+        self.simple.update(0)
+        self.freight.update(0)
+        # self.calculate_button.set_tooltip_text('Calcular...')
         self.price.set_data_format(get_price_format_str())
 
     #
@@ -209,8 +211,10 @@ class BasePriceSuggestionEditor(BaseEditor):
         gain = self.gain.read()
         financial = self.financial.read()
         others = self.others.read()
+        simple = self.simple.read()
+        freight = self.freight.read()
 
-        markup = Decimal(Decimal(100.00) - icms - confins - commission - gain - financial - others) / Decimal(100.00)
+        markup = Decimal(Decimal(100.00) - icms - confins - commission - gain - financial - others - simple - freight) / Decimal(100.00)
         print markup, 'markup'
         final = cost / markup
 
@@ -239,21 +243,47 @@ class BasePriceSuggestionEditor(BaseEditor):
     # Callbacks
     #
 
-    def on_calculate_button__clicked(self, button):
-        icms = self.icms.read()
-        confins = self.confins.read()
-        commission = self.commission.read()
-        gain = self.gain.read()
-        financial = self.financial.read()
-        others = self.others.read()
-        if icms + confins + commission + gain + financial + others >= 100:
-            info('A somatoria das porcentagens é maior que 100',
-                 'A somatória de icms, confins, commissão, lucro, custo, financeiro '
-                 'e outros não pode ser maior ou igual a 100')
-            self.price.update(Decimal(0))
-            return
+    # def on_calculate_button__clicked(self, button):
+    #     icms = self.icms.read()
+    #     confins = self.confins.read()
+    #     commission = self.commission.read()
+    #     gain = self.gain.read()
+    #     financial = self.financial.read()
+    #     others = self.others.read()
+    #     if icms + confins + commission + gain + financial + others >= 100:
+    #         info('A somatoria das porcentagens é maior que 100',
+    #              'A somatória de icms, confins, commissão, lucro, custo, financeiro '
+    #              'e outros não pode ser maior ou igual a 100')
+    #         self.price.update(Decimal(0))
+    #         return
+    #     self.compute_final_price()
+
+    def on_cost__changed(self, *args):
         self.compute_final_price()
 
+    def on_icms__changed(self, *args):
+        self.compute_final_price()
+
+    def on_confins__changed(self, *args):
+        self.compute_final_price()
+
+    def on_commission__changed(self, *args):
+        self.compute_final_price()
+
+    def on_gain__changed(self, *args):
+        self.compute_final_price()
+
+    def on_financial__changed(self, *args):
+        self.compute_final_price()
+
+    def on_others__changed(self, *args):
+        self.compute_final_price()
+
+    def on_simple__changed(self, *args):
+        self.compute_final_price()
+        
+    def on_freight__changed(self, *args):
+        self.compute_final_price()
 
 class SellablePriceEditor(BasePriceEditor):
     model_name = _(u'Product Price')

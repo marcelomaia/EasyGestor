@@ -4,18 +4,22 @@
   <!-- interface-requires kiwiwidgets 0.0 -->
   <!-- interface-naming-policy project-wide -->
   <object class="GtkWindow" id="Markup">
+    <property name="can_focus">False</property>
     <property name="window_position">center</property>
     <child>
       <object class="GtkHBox" id="hbox1">
         <property name="visible">True</property>
+        <property name="can_focus">False</property>
         <child>
           <object class="GtkTable" id="table1">
             <property name="visible">True</property>
-            <property name="n_rows">8</property>
+            <property name="can_focus">False</property>
+            <property name="n_rows">10</property>
             <property name="n_columns">2</property>
             <child>
               <object class="GtkLabel" id="label1">
                 <property name="visible">True</property>
+                <property name="can_focus">False</property>
                 <property name="xalign">0</property>
                 <property name="label" translatable="yes">Preço de compra:</property>
               </object>
@@ -23,6 +27,7 @@
             <child>
               <object class="GtkLabel" id="label2">
                 <property name="visible">True</property>
+                <property name="can_focus">False</property>
                 <property name="xalign">0</property>
                 <property name="label" translatable="yes">ICMS %</property>
               </object>
@@ -34,6 +39,7 @@
             <child>
               <object class="GtkLabel" id="label3">
                 <property name="visible">True</property>
+                <property name="can_focus">False</property>
                 <property name="xalign">0</property>
                 <property name="label" translatable="yes">CONFINS %</property>
               </object>
@@ -45,6 +51,7 @@
             <child>
               <object class="GtkLabel" id="label4">
                 <property name="visible">True</property>
+                <property name="can_focus">False</property>
                 <property name="xalign">0</property>
                 <property name="label" translatable="yes">Comissão %</property>
               </object>
@@ -56,6 +63,7 @@
             <child>
               <object class="ProxyEntry" id="cost">
                 <property name="visible">True</property>
+                <property name="can_focus">True</property>
                 <property name="invisible_char">•</property>
                 <property name="secondary_icon_name">applications-office</property>
                 <property name="primary_icon_activatable">False</property>
@@ -73,6 +81,7 @@
             <child>
               <object class="ProxyEntry" id="icms">
                 <property name="visible">True</property>
+                <property name="can_focus">True</property>
                 <property name="invisible_char">•</property>
                 <property name="secondary_icon_stock">gtk-convert</property>
                 <property name="primary_icon_activatable">False</property>
@@ -92,6 +101,7 @@
             <child>
               <object class="ProxyEntry" id="confins">
                 <property name="visible">True</property>
+                <property name="can_focus">True</property>
                 <property name="invisible_char">•</property>
                 <property name="secondary_icon_stock">gtk-convert</property>
                 <property name="primary_icon_activatable">False</property>
@@ -111,6 +121,7 @@
             <child>
               <object class="ProxyEntry" id="commission">
                 <property name="visible">True</property>
+                <property name="can_focus">True</property>
                 <property name="invisible_char">•</property>
                 <property name="secondary_icon_name">edit-select-all</property>
                 <property name="primary_icon_activatable">False</property>
@@ -130,6 +141,7 @@
             <child>
               <object class="ProxyEntry" id="gain">
                 <property name="visible">True</property>
+                <property name="can_focus">True</property>
                 <property name="invisible_char">•</property>
                 <property name="secondary_icon_stock">gtk-about</property>
                 <property name="primary_icon_activatable">False</property>
@@ -149,6 +161,7 @@
             <child>
               <object class="ProxyEntry" id="others">
                 <property name="visible">True</property>
+                <property name="can_focus">True</property>
                 <property name="invisible_char">•</property>
                 <property name="xalign">1</property>
                 <property name="invisible_char_set">True</property>
@@ -170,6 +183,7 @@
             <child>
               <object class="ProxyLabel" id="kiwilabel2">
                 <property name="visible">True</property>
+                <property name="can_focus">False</property>
                 <property name="xalign">0</property>
                 <property name="label" translatable="yes">Outros %</property>
               </object>
@@ -181,6 +195,7 @@
             <child>
               <object class="ProxyLabel" id="kiwilabel3">
                 <property name="visible">True</property>
+                <property name="can_focus">False</property>
                 <property name="xalign">0</property>
                 <property name="label" translatable="yes">&lt;b&gt;Lucro %&lt;/b&gt;</property>
               </object>
@@ -190,40 +205,9 @@
               </packing>
             </child>
             <child>
-              <object class="ProxyLabel" id="kiwilabel1">
-                <property name="visible">True</property>
-                <property name="xalign">0</property>
-                <property name="label" translatable="yes">Preço Final</property>
-              </object>
-              <packing>
-                <property name="top_attach">7</property>
-                <property name="bottom_attach">8</property>
-              </packing>
-            </child>
-            <child>
-              <object class="ProxyEntry" id="price">
-                <property name="visible">True</property>
-                <property name="invisible_char">•</property>
-                <property name="xalign">1</property>
-                <property name="invisible_char_set">True</property>
-                <property name="secondary_icon_name">dialog-ok</property>
-                <property name="primary_icon_activatable">False</property>
-                <property name="secondary_icon_activatable">True</property>
-                <property name="primary_icon_sensitive">True</property>
-                <property name="secondary_icon_sensitive">True</property>
-                <property name="data_type">Decimal</property>
-                <property name="model_attribute">price</property>
-              </object>
-              <packing>
-                <property name="left_attach">1</property>
-                <property name="right_attach">2</property>
-                <property name="top_attach">7</property>
-                <property name="bottom_attach">8</property>
-              </packing>
-            </child>
-            <child>
               <object class="ProxyLabel" id="kiwilabel4">
                 <property name="visible">True</property>
+                <property name="can_focus">False</property>
                 <property name="xalign">0</property>
                 <property name="ypad">2</property>
                 <property name="label" translatable="yes">Despesas financeiras %</property>
@@ -236,6 +220,7 @@
             <child>
               <object class="ProxyEntry" id="financial">
                 <property name="visible">True</property>
+                <property name="can_focus">True</property>
                 <property name="invisible_char">•</property>
                 <property name="secondary_icon_name">accessories-dictionary</property>
                 <property name="primary_icon_activatable">False</property>
@@ -252,6 +237,103 @@
                 <property name="bottom_attach">7</property>
               </packing>
             </child>
+            <child>
+              <object class="ProxyLabel" id="kiwilabel1">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="label" translatable="yes">&lt;b&gt;Preço final&lt;/b&gt;</property>
+              </object>
+              <packing>
+                <property name="top_attach">9</property>
+                <property name="bottom_attach">10</property>
+              </packing>
+            </child>
+            <child>
+              <object class="ProxyEntry" id="price">
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="invisible_char">●</property>
+                <property name="width_chars">0</property>
+                <property name="xalign">1</property>
+                <property name="secondary_icon_name">dialog-ok</property>
+                <property name="primary_icon_activatable">False</property>
+                <property name="secondary_icon_activatable">False</property>
+                <property name="primary_icon_sensitive">True</property>
+                <property name="secondary_icon_sensitive">True</property>
+                <property name="data_type">Decimal</property>
+                <property name="model_attribute">price</property>
+              </object>
+              <packing>
+                <property name="left_attach">1</property>
+                <property name="right_attach">2</property>
+                <property name="top_attach">9</property>
+                <property name="bottom_attach">10</property>
+              </packing>
+            </child>
+            <child>
+              <object class="ProxyLabel" id="kiwilabel6">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="xalign">0</property>
+                <property name="label" translatable="yes">Simples%</property>
+              </object>
+              <packing>
+                <property name="top_attach">7</property>
+                <property name="bottom_attach">8</property>
+              </packing>
+            </child>
+            <child>
+              <object class="ProxyEntry" id="simple">
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="invisible_char">●</property>
+                <property name="secondary_icon_name">accessories-calculator</property>
+                <property name="primary_icon_activatable">False</property>
+                <property name="secondary_icon_activatable">False</property>
+                <property name="primary_icon_sensitive">True</property>
+                <property name="secondary_icon_sensitive">True</property>
+                <property name="data_type">Decimal</property>
+                <property name="model_attribute">simple</property>
+              </object>
+              <packing>
+                <property name="left_attach">1</property>
+                <property name="right_attach">2</property>
+                <property name="top_attach">7</property>
+                <property name="bottom_attach">8</property>
+              </packing>
+            </child>
+            <child>
+              <object class="ProxyLabel" id="kiwilabel7">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="xalign">0</property>
+                <property name="label" translatable="yes">Frete%</property>
+              </object>
+              <packing>
+                <property name="top_attach">8</property>
+                <property name="bottom_attach">9</property>
+              </packing>
+            </child>
+            <child>
+              <object class="ProxyEntry" id="freight">
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="invisible_char">●</property>
+                <property name="secondary_icon_name">airplane-mode-symbolic.symbolic</property>
+                <property name="primary_icon_activatable">False</property>
+                <property name="secondary_icon_activatable">False</property>
+                <property name="primary_icon_sensitive">True</property>
+                <property name="secondary_icon_sensitive">True</property>
+                <property name="data_type">Decimal</property>
+                <property name="model_attribute">freight</property>
+              </object>
+              <packing>
+                <property name="left_attach">1</property>
+                <property name="right_attach">2</property>
+                <property name="top_attach">8</property>
+                <property name="bottom_attach">9</property>
+              </packing>
+            </child>
           </object>
           <packing>
             <property name="expand">True</property>
@@ -262,68 +344,12 @@
         <child>
           <object class="GtkVSeparator" id="vseparator1">
             <property name="visible">True</property>
+            <property name="can_focus">False</property>
           </object>
           <packing>
             <property name="expand">False</property>
             <property name="fill">True</property>
             <property name="position">1</property>
-          </packing>
-        </child>
-        <child>
-          <object class="GtkVButtonBox" id="vbuttonbox1">
-            <property name="visible">True</property>
-            <property name="layout_style">end</property>
-            <child>
-              <placeholder/>
-            </child>
-            <child>
-              <placeholder/>
-            </child>
-            <child>
-              <object class="GtkButton" id="calculate_button">
-                <property name="visible">True</property>
-                <property name="receives_default">True</property>
-                <property name="use_action_appearance">False</property>
-                <property name="relief">none</property>
-                <child>
-                  <object class="GtkHBox" id="hbox2">
-                    <property name="visible">True</property>
-                    <child>
-                      <object class="ProxyLabel" id="kiwilabel5">
-                        <property name="visible">True</property>
-                        <property name="label" translatable="yes">&lt;b&gt;Calcular...&lt;/b&gt;</property>
-                      </object>
-                      <packing>
-                        <property name="expand">True</property>
-                        <property name="fill">True</property>
-                        <property name="position">0</property>
-                      </packing>
-                    </child>
-                    <child>
-                      <object class="GtkImage" id="image1">
-                        <property name="visible">True</property>
-                        <property name="icon_name">document-page-setup</property>
-                      </object>
-                      <packing>
-                        <property name="expand">True</property>
-                        <property name="fill">True</property>
-                        <property name="position">1</property>
-                      </packing>
-                    </child>
-                  </object>
-                </child>
-              </object>
-              <packing>
-                <property name="expand">False</property>
-                <property name="fill">True</property>
-                <property name="position">2</property>
-              </packing>
-            </child>
-          </object>
-          <packing>
-            <property name="expand">True</property>
-            <property name="fill">True</property>
-            <property name="position">2</property>
           </packing>
         </child>
       </object>
