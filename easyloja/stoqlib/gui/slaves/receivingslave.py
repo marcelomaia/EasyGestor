@@ -311,6 +311,11 @@ class ReceivingInvoiceSlave(BaseEditorSlave):
             self.model.expense_value = 0
         self.proxy.update('total')
 
+    def on_nfe_key__validate(self, widget, value):
+        nfe = ReceivingOrder.selectBy(connection=self.conn, nfe_key=value)
+        if nfe:
+            return ValidationError("Chave da nota fiscal já existe")
+
     def on_category__changed(self, *args):
         category = self.category.read()
         print(category)

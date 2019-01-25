@@ -184,6 +184,7 @@ class RelatorioUI(object):
             return od, cd
         return None
 
+    @permission_required('nonfiscal_report')
     def _on_PrinterStockReportEvent(self, arg):
         log.debug('{} solicitou relatorio de estoque'.format(get_current_user(self.conn).username))
         dates = self._get_open_and_close_date()
@@ -192,6 +193,7 @@ class RelatorioUI(object):
             filename = salesperson_stock_report(open_date, close_date, self.conn)
             self.print_file(filename)
 
+    @permission_required('nonfiscal_report')
     def _on_PrinterFinancialReportEvent(self, arg):
         log.debug('{} solicitou relatorio financeiro'.format(get_current_user(self.conn).username))
         dates = self._get_open_and_close_date()

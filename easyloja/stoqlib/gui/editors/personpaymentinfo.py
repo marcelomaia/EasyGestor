@@ -3,6 +3,7 @@ from stoqlib.domain.person import PersonCategoryPaymentInfo
 from stoqlib.gui.editors.baseeditor import BaseEditor
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.lib.message import warning
+from kiwi.datatypes import ValidationError
 
 _ = stoqlib_gettext
 
@@ -23,8 +24,9 @@ class PersonPaymentEditor(BaseEditor):
         self._setup_widgets()
         self.proxy = self.add_proxy(self.model, self.proxy_widgets)
 
-    def on_is_default__toggled(self, *args, **kwargs):
-        default_category = self.model.person.get_default_category()
-        if default_category:
-            warning(_(u'This person already has a default payment category'))
-            self.is_default.set_active(False)
+    # def on_is_default__toggled(self, *args, **kwargs):
+    #     default_category = self.model.person.get_default_category()
+    #     print default_category
+    #     if default_category:
+    #         warning(_(u'This person already has a default payment category'))
+    #         self.is_default.set_active(False)

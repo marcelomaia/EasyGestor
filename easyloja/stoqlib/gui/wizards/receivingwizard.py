@@ -26,7 +26,7 @@
 
 import datetime
 from decimal import Decimal
-
+from stoqlib.domain.person import PersonCategoryPaymentInfo
 from kiwi.datatypes import currency
 from kiwi.ui.objectlist import Column, SearchColumn
 
@@ -333,8 +333,12 @@ class ReceivingInvoiceStep(WizardEditorStep):
 
     def validate_step(self):
         create_freight_payment = self.invoice_slave.create_freight_payment()
-        self.model.update_payments(create_freight_payment, self.category, self.cost_center)
-        return self.model
+        id_person_category = self.model.supplier.person.get_default_category()
+        person_category = PersonCategoryPaymentInfo.selectBy(connection=self.conn, id=id_person_category)
+        for person in person_category:
+            category = person.payment_category
+            self.model.update_payments(create_freight_payment, category, self.cost_center)
+            return self.model
 
     # Callbacks
 
