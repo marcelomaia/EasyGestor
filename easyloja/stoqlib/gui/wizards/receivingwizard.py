@@ -333,12 +333,14 @@ class ReceivingInvoiceStep(WizardEditorStep):
 
     def validate_step(self):
         create_freight_payment = self.invoice_slave.create_freight_payment()
-        id_person_category = self.model.supplier.person.get_default_category()
-        person_category = PersonCategoryPaymentInfo.selectBy(connection=self.conn, id=id_person_category)
-        for person in person_category:
-            category = person.payment_category
-            self.model.update_payments(create_freight_payment, category, self.cost_center)
-            return self.model
+        person = self.model.supplier.person
+        categories = PersonCategoryPaymentInfo.selectBy(connection=self.conn, person=person.id)
+        for category in categories:
+            if category.is_default:
+                self.model.update_payments(create_freight_payment, category, self.cost_center)
+            else:
+                self.model.update_payments(create_freight_payment, self.category, self.cost_center)
+        return self.model
 
     # Callbacks
 

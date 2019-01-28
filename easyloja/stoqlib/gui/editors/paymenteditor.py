@@ -185,11 +185,10 @@ class PaymentEditor(BaseEditor):
             facet = self.person_iface(person)
             self.person.prefill([(facet.person.name, facet)])
             self.person.select(facet)
-            id_person_category = facet.person.get_default_category()
-            person_category = PersonCategoryPaymentInfo.selectBy(connection=self.conn, id=id_person_category)
-            for person in person_category:
-                category = person.payment_category
-                self.category.update(category)
+            categories = PersonCategoryPaymentInfo.selectBy(connection=self.conn, person=facet.person.id)
+            for category in categories:
+                if category.is_default:
+                    self.category.update(category)
             return
         if self.person_class == PersonAdaptToSupplier:
             facets = self.person_class.get_active_suppliers(self.trans)
