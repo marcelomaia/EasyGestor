@@ -64,6 +64,9 @@ from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.lib.validators import validate_cpf, validate_cnpj, validate_phone_number, validate_email
 from stoqlib.domain.till import Till
 from stoqlib.domain.person import PersonCategoryPaymentInfo
+from stoq.gui.shell import get_shell
+
+
 _ = stoqlib_gettext
 INTERVALTYPE_ONCE = -1
 INTERVALTYPE_BIWEEKLY = 10
@@ -414,13 +417,14 @@ class PaymentEditor(BaseEditor):
     #
 
     def on_value__validate(self, widget, newvalue):
-        #TODO Fazer uma validação para não retirar do caixa mais do que tem SOMENTE no PDV
-        # till = Till.get_current(self.conn)
-        # if till:
-        #     if newvalue > till.get_cash_amount():
-        #         return ValidationError(_("You can not specify an amount "
-        #                                  "removed greater than the "
-        #                                  "till balance."))
+        appname = get_shell()._appname
+        if appname == 'pos':
+            till = Till.get_current(self.conn)
+            if till:
+                if newvalue > till.get_cash_amount():
+                    return ValidationError(_("You can not specify an amount "
+                                             "removed greater than the "
+                                             "till balance."))
         if newvalue is None or newvalue <= 0:
             return ValidationError(_("The value must be greater than zero."))
 
