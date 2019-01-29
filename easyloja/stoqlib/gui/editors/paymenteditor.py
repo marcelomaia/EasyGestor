@@ -417,14 +417,6 @@ class PaymentEditor(BaseEditor):
     #
 
     def on_value__validate(self, widget, newvalue):
-        appname = get_shell()._appname
-        if appname == 'pos':
-            till = Till.get_current(self.conn)
-            if till:
-                if newvalue > till.get_cash_amount():
-                    return ValidationError(_("You can not specify an amount "
-                                             "removed greater than the "
-                                             "till balance."))
         if newvalue is None or newvalue <= 0:
             return ValidationError(_("The value must be greater than zero."))
 
@@ -589,6 +581,18 @@ class OutPaymentEditor(PaymentEditor):
             items = [(supplier.person.name, supplier)]
             self.person.prefill(items)
             self.person.select(supplier)
+
+    def on_value__validate(self, widget, newvalue):
+        appname = get_shell()._appname
+        if appname == 'pos':
+            till = Till.get_current(self.conn)
+            if till:
+                if newvalue > till.get_cash_amount():
+                    return ValidationError(_("You can not specify an amount "
+                                             "removed greater than the "
+                                             "till balance."))
+        if newvalue is None or newvalue <= 0:
+            return ValidationError(_("The value must be greater than zero."))
 
     def on_confirm(self):
         self.model.base_value = self.model.value
