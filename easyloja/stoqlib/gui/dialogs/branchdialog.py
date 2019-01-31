@@ -23,6 +23,8 @@
 ##
 ##
 
+import requests
+import json
 from kiwi.datatypes import ValidationError
 from stoqlib.api import api
 from stoqlib.database.admin import create_main_branch
@@ -113,8 +115,21 @@ class BranchDialog(BaseEditor):
     def on_confirm(self):
         self._address_slave.confirm()
         self._update_system_parameters(self.model)
+        self._send_to_api(self.model, self.company_proxy.model)
         return self.model
 
+    def _send_to_api(self, person, company):
+        data = {
+            'name': person.name,
+            'cnpj': company.cnpj,
+            'phone_number': person.phone_number
+        }
+        url = 'http://hallevent.com:8100/api/'
+        headers = {'Content-type': 'application/json', 'Accept': 'text/plain'}
+        try:
+            r = requests.post(url=url, data=json.dumps(data), headers=headers)
+        except:
+            pass
     #
     # Kiwi Callbacks
     #
