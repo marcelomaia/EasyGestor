@@ -338,7 +338,7 @@ class ReceivingInvoiceStep(WizardEditorStep):
         if categories:
             for category in categories:
                 if category.is_default:
-                    self.model.update_payments(create_freight_payment, category, self.cost_center)
+                    self.model.update_payments(create_freight_payment, category.payment_category, self.cost_center)
         else:
             self.model.update_payments(create_freight_payment, self.category, self.cost_center)
         return self.model
