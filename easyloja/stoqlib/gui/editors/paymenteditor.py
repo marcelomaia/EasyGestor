@@ -192,7 +192,7 @@ class PaymentEditor(BaseEditor):
             if categories:
                 for category in categories:
                     if category.is_default:
-                        self.category.update(category)
+                        self.category.update(category.payment_category)
             return
         if self.person_class == PersonAdaptToSupplier:
             facets = self.person_class.get_active_suppliers(self.trans)
