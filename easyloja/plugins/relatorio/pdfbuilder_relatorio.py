@@ -8,7 +8,7 @@ from reportlab.platypus import Image
 from reportlab.platypus.doctemplate import PageTemplate, BaseDocTemplate
 from reportlab.platypus.frames import Frame
 from reportlab.platypus.paragraph import Paragraph
-from stoqlib.database.orm import AND, OR, LIKE, NOT
+from stoqlib.database.orm import AND, OR, LIKE, NOT, IN, INNERJOINOn, ILIKE
 from stoqlib.database.runtime import get_current_user, get_current_branch, get_current_station, get_connection
 from stoqlib.domain.interfaces import IIndividual, ICompany, ISalesPerson
 from stoqlib.domain.payment.payment import Payment
@@ -20,8 +20,11 @@ from stoqlib.lib.formatters import format_phone_number
 from stoqlib.lib.osutils import get_application_dir
 from stoqlib.lib.parameters import sysparam
 from stoqlib.reporting.base.flowables import ReportLine
-from stoqlib.database.orm import IN
+from stoqlib.domain.payment.category import PaymentCategory
+from stoqlib.domain.payment.payment import (Payment, PaymentAdaptToOutPayment,
+                                            PaymentAdaptToInPayment)
 from kiwi.log import Logger
+from sqlobject.sqlbuilder import SQLConstant, Select
 
 log = Logger('stoq-relatorio-plugin')
 
@@ -531,3 +534,49 @@ def gerencial_report(open_date, close_date, conn):
     doc = PDFBuilder(filename)
     doc.multiBuild(story)
     return filename
+
+
+def category_in_payment_report(payment_adapt, open_date, close_date, conn):
+    branch = get_current_branch(conn)
+    company = ICompany(branch)
+    if payment_adapt == PaymentAdaptToOutPayment:
+        report_type = 'SAIDA'
+    else:
+        report_type = 'ENTRADA'
+    story = _get_story(company, 'RELATORIO DE CATEGORIA DE {} DE PAGAMENTOS'.format(report_type))
+    story.append(Paragraph('Início: {open_date}'
+                           .format(open_date=open_date.strftime('%d/%m/%Y %X')),
+                           header_items_l))
+    story.append(Paragraph('Fim: {close_date}'
+                           .format(close_date=close_date.strftime('%d/%m/%Y %X')),
+                           header_items_l))
+    story.append(ReportLine())
+    story.append(Paragraph('<b>VALOR|-|CATEGORIA</b>', header_items_l))
+    story.append(ReportLine())
+    select = _get_category_payment_query(payment_adapt, open_date, close_date)
+    query = conn.sqlrepr(select)
+    rows = conn.queryAll(query)
+    for category_name, paid_value in rows:
+        if paid_value:
+            story.append(
+                Paragraph('{value} -- {name}'.format(value=align_text(str(float(paid_value)), 10, LEFT),
+                                                    name=align_text(category_name, 58, LEFT)), items_1))
+    story.append(ReportLine())
+    filename = os.path.join(get_application_dir(), 'categories.pdf')
+    doc = PDFBuilder(filename)
+    doc.multiBuild(story)
+    return filename
+
+
+def _get_category_payment_query(payment_adapt, open_date, close_date):
+    fields = [PaymentCategory.q.name, SQLConstant('SUM(payment.paid_value)')]
+    select = Select(fields,
+                    where=AND(Payment.q.id == payment_adapt.q.originalID,
+                              Payment.q.paid_date >= open_date,
+                              Payment.q.paid_date <= close_date,
+                              NOT(ILIKE(PaymentCategory.q.name, '%AUTO%'))),
+                    join=INNERJOINOn(Payment, PaymentCategory, Payment.q.category == PaymentCategory.q.id),
+                    groupBy=PaymentCategory.q.name,
+                    orderBy=SQLConstant('-SUM(payment.paid_value)'),
+                    staticTables=['payment'])
+    return select

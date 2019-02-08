@@ -19,7 +19,9 @@ from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.permissions import permission_required
 from stoqlib.lib.pluginmanager import get_plugin_manager
 from pdfbuilder_relatorio import (gerencial_report, salesperson_stock_report,
-                                  salesperson_financial_report)
+                                  salesperson_financial_report, category_in_payment_report)
+from stoqlib.domain.payment.payment import (Payment, PaymentAdaptToOutPayment,
+                                            PaymentAdaptToInPayment)
 from relatoriodialog import DateDialog
 from stoqlib.reporting.financialreport import FinancialReport
 from stoqlib.domain.payment.views import FaturamentoSearch
@@ -59,6 +61,8 @@ class RelatorioUI(object):
                 <menuitem action="RelatorioDeVendasNF2" name="RelatorioDeVendasNF2"/>
                 <menuitem action="RelatorioGerencial" name="RelatorioGerencial"/>
                 <menuitem action="RelatorioGerencial2" name="RelatorioGerencial2"/>
+                <menuitem action="RelatorioCategoriaEntrada" name="RelatorioCategoriaEntrada"/>
+                <menuitem action="RelatorioCategoriaSaida" name="RelatorioCategoriaSaida"/>
               </menu>
             </placeholder>
           </menubar>
@@ -75,6 +79,10 @@ class RelatorioUI(object):
              None, None, self._on_PrinterGerencialReportEvent),
             ('RelatorioGerencial2', STOQ_DOLLAR, 'Relatorio geral de faturamento',
              None, None, self._on_TillRevenue),
+            ('RelatorioCategoriaEntrada', STOQ_DOLLAR, 'Relatorio categoria entrada',
+             None, None, self._on_InCategoryReportEvent),
+            ('RelatorioCategoriaSaida', STOQ_DOLLAR, 'Relatorio categoria saida',
+             None, None, self._on_OutCategoryReportEvent),
         ])
         uimanager.insert_action_group(ag, 0)
         uimanager.add_ui_from_string(ui_string)
@@ -228,3 +236,17 @@ class RelatorioUI(object):
         log.debug('executing command: {cmd}'.format(cmd=cmd))
         # https://docs.python.org/2/library/subprocess.html#subprocess.Popen
         proc = subprocess.Popen(cmd, shell=False, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+
+    def _on_InCategoryReportEvent(self, arg):
+        dates = self._get_open_and_close_date()
+        if dates:
+            od, cd = dates
+            filename = category_in_payment_report(PaymentAdaptToInPayment, od, cd, self.conn)
+            self.print_file(filename)
+
+    def _on_OutCategoryReportEvent(self, arg):
+        dates = self._get_open_and_close_date()
+        if dates:
+            od, cd = dates
+            filename = category_in_payment_report(PaymentAdaptToOutPayment, od, cd, self.conn)
+            self.print_file(filename)
