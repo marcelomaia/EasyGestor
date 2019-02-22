@@ -180,20 +180,26 @@ class NFeContract(Domain):
      NF100,
      NF200,
      NF300,
-     NF_LICENCIAMENTO) = range(5)
+     NF_LICENCIAMENTO,
+     NF50_YEAR,
+     NF100_YEAR) = range(7)
 
     contract_values = {NF50: 50,
                        NF100: 100,
                        NF200: 200,
                        NF300: 300,
-                       NF_LICENCIAMENTO: 10000}
+                       NF_LICENCIAMENTO: 10000,
+                       NF50_YEAR: 50,
+                       NF100_YEAR: 100}
 
     contract_types = {
         NF50: '50 -- NFes e NFCes mensais',
         NF100: '100 -- NFes e NFCes mensais',
         NF200: '200 -- NFes e NFCes mensais',
         NF300: '300 -- NFes e NFCes mensais',
-        NF_LICENCIAMENTO: 'LICENCIAMENTO NF'
+        NF_LICENCIAMENTO: 'LICENCIAMENTO NF',
+        NF50_YEAR: '50 -- NFes e NFCes anuais',
+        NF100_YEAR: '100 -- NFes e NFCes anuais',
     }
 
     key = UnicodeCol(default='')

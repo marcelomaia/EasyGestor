@@ -549,7 +549,6 @@ class SaleQuoteItemStep(SellableItemStep):
 
         class MyList(SimpleListDialog):
             size = (500, 200)
-
         run_dialog(MyList, get_current_toplevel(), columns, self.missing.values(),
                    title=_("Missing products"))
 
@@ -631,8 +630,9 @@ class SaleQuoteWizard(BaseWizard):
         if model.status not in [Sale.STATUS_QUOTE,
                                 Sale.STATUS_ORDERED,
                                 Sale.STATUS_FISCAL_NOTE]:
-            raise ValueError('Invalid sale status. It should '
-                             'be STATUS_QUOTE or STATUS_ORDERED')
+            from stoqlib.lib.message import warning
+            warning('Só é possivel editar uma venda com status Pedido ou Cotação')
+            return
 
         register_payment_operations()
         first_step = StartSaleQuoteStep(conn, self, model)
