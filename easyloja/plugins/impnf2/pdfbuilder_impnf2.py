@@ -249,6 +249,19 @@ def build_sale_document(sale, conn):
             story.append(Paragraph('CNPJ: {cnpj}'.format(cnpj=company.cnpj), header_items_l))
         else:
             story.append(Paragraph('CPF: {cpf}'.format(cpf=individual.cpf), header_items_l))
+        addr = client.person.get_main_address()
+        if addr:
+            story.append(Paragraph('Rua: {street}'.format(street=addr._get_street()), header_items_l))
+            if addr._get_streetnumber():
+                story.append(
+                    Paragraph('Numero: {streetnumber}'.format(streetnumber=addr._get_streetnumber()),
+                              header_items_l))
+            story.append(Paragraph('Bairro: {district}'.format(district=addr._get_district()),
+                                   header_items_l))
+            if addr._get_complement():
+                story.append(
+                    Paragraph('Complemento: {complement}'.format(complement=addr._get_complement()),
+                              header_items_l))
         story.append(ReportLine())
     if sale.status not in [Sale.STATUS_CONFIRMED, Sale.STATUS_PAID]:
         story.append(Paragraph('Data de abertura: {open_date}. Vence em: {expire_date}'
@@ -307,6 +320,21 @@ def build_tab_document(sale):
         client = sale.client
         story.append(Paragraph('Cliente: {client}'.format(client=client.person.name), header_items_l))
         story.append(Paragraph('Fone: {phone}'.format(phone=client.person.phone_number), header_items_l))
+        addr = client.person.get_main_address()
+        if addr:
+            story.append(Paragraph('Rua: {street}'.format(street=addr._get_street()), header_items_l))
+            if addr._get_streetnumber():
+                story.append(
+                    Paragraph('Numero: {streetnumber}'.format(streetnumber=addr._get_streetnumber()),
+                              header_items_l))
+            story.append(Paragraph('Bairro: {district}'.format(district=addr._get_district()),
+                                   header_items_l))
+            if addr._get_complement():
+                story.append(
+                    Paragraph('Complemento: {complement}'.format(complement=addr._get_complement()),
+                              header_items_l))
+            #story.append(Paragraph('CEP: {cep}'.format(complement=addr._get_postal_code()),
+            #                       header_items_l))
         story.append(ReportLine())
     filename = os.path.join(get_application_dir(), 'tab.pdf')
     doc = PDFBuilder(filename)
@@ -450,7 +478,6 @@ def in_out_payment_report(till, value, reason, conn):
                            header_items_l))
     story.append(Paragraph('Estação: {station}'.format(station=station.name),
                            header_items_l))
-    log.debug('closing date ================================= {}'.format(till.closing_date))
 
     if till.closing_date:
         closing_date = till.closing_date

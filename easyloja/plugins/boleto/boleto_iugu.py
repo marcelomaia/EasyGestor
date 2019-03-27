@@ -308,6 +308,9 @@ class Boleto(object):
                         items=items,
                         current_fines_option=True,  # manter os juros
                         keep_early_payment_discount=False, )
+            payment.value = payment.value + payment.penalty
+            trans = new_transaction()
+            trans.commit(close=True)
             self._save_duplicate(payment, iugu_id, data)
 
     def cancel_bill(self, payment, conn):
